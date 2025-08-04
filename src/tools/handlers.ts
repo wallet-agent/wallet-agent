@@ -20,6 +20,7 @@ import {
 } from "../core/transaction-helpers.js";
 import {
   AddCustomChainArgsSchema,
+  AddressSchema,
   ConnectWalletArgsSchema,
   EnsNameSchema,
   EstimateGasArgsSchema,
@@ -32,6 +33,8 @@ import {
   SignMessageArgsSchema,
   SignTypedDataArgsSchema,
   SwitchChainArgsSchema,
+  TokenAmountSchema,
+  TokenIdSchema,
   TransactionHashSchema,
   UpdateCustomChainArgsSchema,
 } from "../schemas.js";
@@ -266,7 +269,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -311,10 +314,16 @@ export async function handleToolCall(request: CallToolRequest) {
               `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
             );
           }
-          throw new McpError(
-            ErrorCode.InvalidParams,
-            error instanceof Error ? error.message : String(error),
-          );
+          // Chain not found errors should be treated as invalid params
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          if (
+            errorMessage.includes("not found") &&
+            errorMessage.includes("chain")
+          ) {
+            throw new McpError(ErrorCode.InvalidParams, errorMessage);
+          }
+          throw new McpError(ErrorCode.InternalError, errorMessage);
         }
       }
 
@@ -348,10 +357,17 @@ export async function handleToolCall(request: CallToolRequest) {
               `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
             );
           }
-          throw new McpError(
-            ErrorCode.InvalidParams,
-            error instanceof Error ? error.message : String(error),
-          );
+          // Private key validation errors should be treated as invalid params
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          if (
+            errorMessage.includes("Private key must be 32 bytes") ||
+            errorMessage.includes("Environment variable") ||
+            errorMessage.includes("Invalid private key")
+          ) {
+            throw new McpError(ErrorCode.InvalidParams, errorMessage);
+          }
+          throw new McpError(ErrorCode.InternalError, errorMessage);
         }
       }
 
@@ -422,7 +438,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -465,7 +481,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -535,7 +551,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -580,7 +596,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -591,15 +607,15 @@ export async function handleToolCall(request: CallToolRequest) {
           const { token, to, amount } = z
             .object({
               token: z.string(),
-              to: z.string(),
-              amount: z.string(),
+              to: AddressSchema,
+              amount: TokenAmountSchema,
             })
             .parse(args);
 
           const container = getContainer();
           const hash = await container.tokenEffects.transferToken({
             token,
-            to: to as Address,
+            to,
             amount,
           });
 
@@ -619,7 +635,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -630,15 +646,15 @@ export async function handleToolCall(request: CallToolRequest) {
           const { token, spender, amount } = z
             .object({
               token: z.string(),
-              spender: z.string(),
-              amount: z.string(),
+              spender: AddressSchema,
+              amount: TokenAmountSchema,
             })
             .parse(args);
 
           const container = getContainer();
           const hash = await container.tokenEffects.approveToken({
             token,
-            spender: spender as Address,
+            spender,
             amount,
           });
 
@@ -658,7 +674,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -669,14 +685,14 @@ export async function handleToolCall(request: CallToolRequest) {
           const { token, address } = z
             .object({
               token: z.string(),
-              address: z.string().optional(),
+              address: AddressSchema.optional(),
             })
             .parse(args);
 
           const container = getContainer();
           const result = await container.tokenEffects.getTokenBalance({
             token,
-            ...(address && { address: address as Address }),
+            ...(address && { address }),
           });
 
           return {
@@ -695,7 +711,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -728,7 +744,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -739,15 +755,15 @@ export async function handleToolCall(request: CallToolRequest) {
           const { nft, to, tokenId } = z
             .object({
               nft: z.string(),
-              to: z.string(),
-              tokenId: z.string(),
+              to: AddressSchema,
+              tokenId: TokenIdSchema,
             })
             .parse(args);
 
           const container = getContainer();
           const hash = await container.tokenEffects.transferNFT({
             nft,
-            to: to as Address,
+            to,
             tokenId,
           });
 
@@ -767,7 +783,7 @@ export async function handleToolCall(request: CallToolRequest) {
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }
@@ -778,7 +794,7 @@ export async function handleToolCall(request: CallToolRequest) {
           const { nft, tokenId } = z
             .object({
               nft: z.string(),
-              tokenId: z.string(),
+              tokenId: TokenIdSchema,
             })
             .parse(args);
 
@@ -803,10 +819,16 @@ export async function handleToolCall(request: CallToolRequest) {
               `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
             );
           }
-          throw new McpError(
-            ErrorCode.InvalidParams,
-            error instanceof Error ? error.message : String(error),
-          );
+          // Contract resolution errors should be treated as invalid params
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          if (
+            errorMessage.includes("not found") &&
+            errorMessage.includes("Contract")
+          ) {
+            throw new McpError(ErrorCode.InvalidParams, errorMessage);
+          }
+          throw new McpError(ErrorCode.InternalError, errorMessage);
         }
       }
 
@@ -815,7 +837,7 @@ export async function handleToolCall(request: CallToolRequest) {
           const { nft, tokenId } = z
             .object({
               nft: z.string(),
-              tokenId: z.string().optional(),
+              tokenId: TokenIdSchema.optional(),
             })
             .parse(args);
 
@@ -840,10 +862,16 @@ export async function handleToolCall(request: CallToolRequest) {
               `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
             );
           }
-          throw new McpError(
-            ErrorCode.InvalidParams,
-            error instanceof Error ? error.message : String(error),
-          );
+          // Contract resolution errors should be treated as invalid params
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          if (
+            errorMessage.includes("not found") &&
+            errorMessage.includes("Contract")
+          ) {
+            throw new McpError(ErrorCode.InvalidParams, errorMessage);
+          }
+          throw new McpError(ErrorCode.InternalError, errorMessage);
         }
       }
 
@@ -1113,7 +1141,7 @@ ${result.willRevert ? "The transaction will revert if executed." : "The transact
             );
           }
           throw new McpError(
-            ErrorCode.InvalidParams,
+            ErrorCode.InternalError,
             error instanceof Error ? error.message : String(error),
           );
         }

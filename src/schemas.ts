@@ -152,3 +152,27 @@ export const ChainConfigSchema = z.object({
     })
     .optional(),
 });
+
+// Schema for numeric amount strings (used for token amounts)
+export const NumericStringSchema = z
+  .string()
+  .regex(/^\d*\.?\d+$/, "Invalid numeric value")
+  .refine((val) => {
+    try {
+      const num = parseFloat(val);
+      return !Number.isNaN(num) && num >= 0;
+    } catch {
+      return false;
+    }
+  }, "Must be a valid non-negative number");
+
+// Schema for token amounts (accepts numeric values or "max")
+export const TokenAmountSchema = z.string().refine((val) => {
+  if (val.toLowerCase() === "max") return true;
+  return /^\d*\.?\d+$/.test(val) && parseFloat(val) >= 0;
+}, "Must be a valid non-negative number or 'max'");
+
+// Schema for NFT token IDs (must be numeric string)
+export const TokenIdSchema = z
+  .string()
+  .regex(/^\d+$/, "Token ID must be numeric");
