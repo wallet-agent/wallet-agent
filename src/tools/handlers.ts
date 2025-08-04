@@ -151,7 +151,7 @@ export async function handleToolCall(request: CallToolRequest) {
 					content: [
 						{
 							type: "text",
-							text: `Balance: ${result.balance} native tokens`,
+							text: `Balance: ${result.balance} ${result.symbol}`,
 						},
 					],
 				};

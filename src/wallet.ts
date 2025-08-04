@@ -4,6 +4,7 @@ import { formatEther } from "viem";
 import {
 	config,
 	currentWalletType,
+	getAllChains,
 	mockAccounts,
 	privateKeyWallets,
 } from "./chains.js";
@@ -84,9 +85,16 @@ export async function getWalletBalance(address?: Address) {
 		chainId: currentChainId as (typeof config.chains)[number]["id"],
 	});
 
+	// Get the current chain to find native currency symbol
+	const currentChain = getAllChains().find(
+		(chain) => chain.id === currentChainId,
+	);
+	const nativeCurrencySymbol = currentChain?.nativeCurrency.symbol || "tokens";
+
 	return {
 		address: addressToCheck,
 		balance: formatEther(balance.value),
 		balanceRaw: balance.value,
+		symbol: nativeCurrencySymbol,
 	};
 }
