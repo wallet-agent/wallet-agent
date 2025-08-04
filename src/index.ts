@@ -49,8 +49,17 @@ function getAllChains(): Chain[] {
 	return [...builtInChains, ...customChains.values()];
 }
 
+// Helper to create transports for all chains
+function createTransports(): Record<number, ReturnType<typeof http>> {
+	const transports: Record<number, ReturnType<typeof http>> = {};
+	for (const chain of getAllChains()) {
+		transports[chain.id] = http(chain.rpcUrls.default.http[0]);
+	}
+	return transports;
+}
+
 // Create Wagmi config with mock connector
-const config = createConfig({
+let config = createConfig({
 	chains: [mainnet, sepolia, polygon, anvil],
 	connectors: [
 		mock({
@@ -67,6 +76,28 @@ const config = createConfig({
 		[anvil.id]: http(),
 	},
 });
+
+// Helper to recreate config with new chains
+function updateConfig() {
+	const allChains = getAllChains();
+	// Ensure we always have at least one chain
+	if (allChains.length === 0) {
+		throw new Error("No chains available");
+	}
+	// @ts-expect-error - Dynamic chains require bypassing static typing
+	config = createConfig({
+		chains: allChains as [Chain, ...Chain[]],
+		connectors: [
+			mock({
+				accounts: mockAccounts,
+				features: {
+					reconnect: true,
+				},
+			}),
+		],
+		transports: createTransports(),
+	});
+}
 
 // Server state
 let connectedAddress: Address | undefined;
@@ -507,6 +538,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 				// Store custom chain
 				customChains.set(chainId, customChain);
+
+				// Recreate config with new chain
+				updateConfig();
 
 				return {
 					content: [
