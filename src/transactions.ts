@@ -1,8 +1,13 @@
 import { sendTransaction, switchChain } from "@wagmi/core";
 import type { Address } from "viem";
 import { parseEther } from "viem";
-import { config, getAllChains } from "./chains.js";
-import { connectedAddress, setCurrentChainId } from "./wallet.js";
+import { config, currentWalletType, getAllChains } from "./chains.js";
+import {
+	connectedAddress,
+	currentChainId,
+	setCurrentChainId,
+} from "./wallet.js";
+import { createPrivateKeyWalletClient } from "./wallet-manager.js";
 
 export async function sendWalletTransaction(params: {
 	to: Address;
@@ -14,6 +19,22 @@ export async function sendWalletTransaction(params: {
 	}
 
 	const value = parseEther(params.value);
+
+	if (currentWalletType === "privateKey") {
+		// Use private key wallet client
+		const chain = getAllChains().find((c) => c.id === currentChainId);
+		if (!chain) throw new Error("Chain not found");
+
+		const walletClient = createPrivateKeyWalletClient(connectedAddress, chain);
+		const hash = await walletClient.sendTransaction({
+			to: params.to,
+			value,
+			...(params.data ? { data: params.data } : {}),
+		});
+		return hash;
+	}
+
+	// Use mock wallet
 	const transactionParams = {
 		to: params.to,
 		value,

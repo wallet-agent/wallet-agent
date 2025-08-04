@@ -32,7 +32,28 @@ export function importPrivateKey(privateKey: `0x${string}`): Address {
 
 // Remove a private key
 export function removePrivateKey(address: Address): boolean {
-	return privateKeyWallets.delete(address);
+	// Clear the private key from memory before deletion
+	if (privateKeyWallets.has(address)) {
+		// Overwrite the key in memory (though JS doesn't guarantee this)
+		privateKeyWallets.set(
+			address,
+			"0x0000000000000000000000000000000000000000000000000000000000000000" as `0x${string}`,
+		);
+		return privateKeyWallets.delete(address);
+	}
+	return false;
+}
+
+// Clear all private keys (for security)
+export function clearAllPrivateKeys(): void {
+	// Overwrite all keys before clearing
+	for (const [address] of privateKeyWallets) {
+		privateKeyWallets.set(
+			address,
+			"0x0000000000000000000000000000000000000000000000000000000000000000" as `0x${string}`,
+		);
+	}
+	privateKeyWallets.clear();
 }
 
 // List all imported wallets

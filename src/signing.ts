@@ -33,6 +33,22 @@ export async function signWalletTypedData(params: {
 		throw new Error("No wallet connected");
 	}
 
+	if (currentWalletType === "privateKey") {
+		// Use private key wallet client
+		const chain = getAllChains().find((c) => c.id === currentChainId);
+		if (!chain) throw new Error("Chain not found");
+
+		const walletClient = createPrivateKeyWalletClient(connectedAddress, chain);
+		const signature = await walletClient.signTypedData({
+			domain: params.domain,
+			types: params.types,
+			primaryType: params.primaryType,
+			message: params.message,
+		} as any);
+		return signature;
+	}
+
+	// Use mock wallet
 	const signature = await signTypedData(config, {
 		domain: params.domain,
 		types: params.types,
