@@ -46,7 +46,7 @@ let currentChainId: number = mainnet.id;
 // Create MCP server
 const server = new Server(
   {
-    name: "wallet-mcp",
+    name: "mcp-wallet",
     version: "0.1.0",
   },
   {
@@ -463,7 +463,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Wallet MCP server started");
+  console.error("MCP Wallet server started");
 }
 
 main().catch((error) => {

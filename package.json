@@ -1,11 +1,11 @@
 {
-  "name": "wallet-mcp",
+  "name": "mcp-wallet",
   "version": "0.1.0",
   "description": "MCP server for Web3 wallet interactions using Wagmi mock connector",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "wallet-mcp": "./dist/index.js"
+    "mcp-wallet": "./dist/index.js"
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --target node",

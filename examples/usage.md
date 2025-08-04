@@ -1,6 +1,6 @@
-# Wallet MCP Server Usage Examples
+# MCP Wallet Server Usage Examples
 
-This document shows example interactions with the Wallet MCP server through an AI assistant.
+This document shows example interactions with the MCP Wallet server through an AI assistant.
 
 ## Basic Wallet Operations
 

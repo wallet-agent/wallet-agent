@@ -1,9 +1,9 @@
 {
   "mcpServers": {
-    "wallet-mcp": {
+    "mcp-wallet": {
       "command": "node",
       "args": ["./dist/index.js"],
-      "cwd": "/Users/blockshane/github.com/shanev/wallet-mcp"
+      "cwd": "/Users/blockshane/github.com/shanev/mcp-wallet"
     }
   }
 }

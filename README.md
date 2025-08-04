@@ -1,4 +1,4 @@
-# Wallet MCP Server
+# MCP Wallet Server
 
 An MCP (Model Context Protocol) server that enables AI coding tools like Cursor and Claude Code to interact with Web3 wallets. Built using Wagmi's mock wallet connector for safe, deterministic wallet operations without requiring a real browser extension.
 
@@ -37,9 +37,9 @@ bun run build
    ```json
    {
      "mcpServers": {
-       "wallet-mcp": {
+       "mcp-wallet": {
          "command": "node",
-         "args": ["/path/to/wallet-mcp/dist/index.js"]
+         "args": ["/path/to/mcp-wallet/dist/index.js"]
        }
      }
    }
