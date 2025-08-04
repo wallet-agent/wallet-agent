@@ -38,8 +38,8 @@ const mockAccounts = [
 	"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
 ] as const satisfies readonly Address[];
 
-// Built-in chains
-const builtInChains = [mainnet, sepolia, polygon, anvil];
+// Built-in chains (Anvil first as default)
+const builtInChains = [anvil, mainnet, sepolia, polygon];
 
 // Custom chains storage
 const customChains = new Map<number, Chain>();
@@ -60,7 +60,7 @@ function createTransports(): Record<number, ReturnType<typeof http>> {
 
 // Create Wagmi config with mock connector
 let config = createConfig({
-	chains: [mainnet, sepolia, polygon, anvil],
+	chains: [anvil, mainnet, sepolia, polygon],
 	connectors: [
 		mock({
 			accounts: mockAccounts,
@@ -70,10 +70,10 @@ let config = createConfig({
 		}),
 	],
 	transports: {
+		[anvil.id]: http(),
 		[mainnet.id]: http(),
 		[sepolia.id]: http(),
 		[polygon.id]: http(),
-		[anvil.id]: http(),
 	},
 });
 
@@ -101,7 +101,7 @@ function updateConfig() {
 
 // Server state
 let connectedAddress: Address | undefined;
-let currentChainId: number = mainnet.id;
+let currentChainId: number = anvil.id;
 
 // Create MCP server
 const server = new Server(
