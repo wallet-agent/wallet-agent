@@ -1,6 +1,6 @@
 # Wallet Agent
 
-MCP server for Web3 wallet interactions in Claude Code. Supports mock wallets for testing and real wallets via private key import.
+MCP server for Web3 wallet interactions in AI assistants like Claude Code and Cursor. Supports mock wallets for testing and real wallets via private key import.
 
 ## Quick Start
 
@@ -97,4 +97,4 @@ claude mcp add wallet-agent bun /path/to/wallet-agent/dist/index.ts
 
 ## License
 
-MIT
+AGPL-3.0
