@@ -21,6 +21,9 @@ describe("TokenEffects", () => {
 	const testAccount = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266" as Address;
 
 	beforeEach(() => {
+		// Reset all mocks to ensure clean state
+		mock.restore();
+		
 		// Mock contract adapter
 		mockContractAdapter = {
 			loadFromFile: mock(async () => {}),

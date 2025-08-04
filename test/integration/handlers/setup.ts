@@ -15,24 +15,22 @@ export const TEST_PRIVATE_KEY =
 
 // Helper to reset container state before each test
 export function setupContainer() {
-	beforeEach(() => {
-		// Get fresh container instance
+	beforeEach(async () => {
+		// Reset the container singleton to get a fresh instance
+		Container.resetInstance();
+		
+		// Get the new container instance
 		const container = Container.getInstance();
 
-		// Reset wallet state
-		container.walletEffects.setWalletType("mock");
+		// Ensure wallet is disconnected and set to mock mode
 		if (container.walletEffects.getCurrentAccount().isConnected) {
-			container.walletEffects.disconnectWallet();
+			await container.walletEffects.disconnectWallet();
 		}
+		container.walletEffects.setWalletType("mock");
 
-		// Clear any imported private keys
+		// Double-check maps are cleared (resetInstance should handle this)
 		privateKeyWallets.clear();
-
-		// Clear custom chains
 		customChains.clear();
-
-		// Reset to default chain (Anvil)
-		container.updateWagmiConfig();
 	});
 }
 

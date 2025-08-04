@@ -284,33 +284,33 @@ describe("Transaction Tools Integration", () => {
     test("should fail to remove built-in chain", async () => {
       await expectToolExecutionError(
         "remove_custom_chain",
-        { chainId: 31337 }, // Anvil's chain ID
-        "Custom chain with ID 31337 not found"
+        { chainId: 1 }, // Mainnet - not connected, but built-in
+        "Cannot remove built-in chain with ID 1"
       );
     });
   });
 
   describe("Cross-tool Integration", () => {
     test("should estimate gas after switching chains", async () => {
-      // Connect wallet
-      await expectToolSuccess(
-        "connect_wallet",
-        { address: TEST_ADDRESS_1 }
-      );
-
-      // Add custom chain
+      // Add custom chain first
       await expectToolSuccess(
         "add_custom_chain",
         {
           chainId: 12345,
           name: "Test Chain",
-          rpcUrl: "https://test.example.com",
+          rpcUrl: "http://127.0.0.1:8545", // Use Anvil's RPC
           nativeCurrency: {
             name: "Test Token",
             symbol: "TEST",
             decimals: 18,
           },
         }
+      );
+
+      // Connect wallet after adding chain (since updateWagmiConfig resets connection)
+      await expectToolSuccess(
+        "connect_wallet",
+        { address: TEST_ADDRESS_1 }
       );
 
       // Switch to custom chain

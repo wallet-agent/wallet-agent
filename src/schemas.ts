@@ -106,11 +106,17 @@ export const EstimateGasArgsSchema = z.object({
 });
 
 export const TransactionHashSchema = z.object({
-  hash: HexStringSchema,
+  hash: z
+    .string()
+    .regex(/^0x[a-fA-F0-9]{64}$/, "Transaction hash must be 32 bytes (64 hex characters)")
+    .transform((val) => val as `0x${string}`),
 });
 
 export const EnsNameSchema = z.object({
-  name: z.string().min(1, "ENS name is required"),
+  name: z
+    .string()
+    .min(1, "ENS name is required")
+    .regex(/^[a-zA-Z0-9-]+(\.eth|\.xyz|\.com|\.org|\.io|\.app|\.dev|\.art|\.nft)$/, "Invalid ENS name format"),
 });
 
 export const RemoveCustomChainArgsSchema = z.object({

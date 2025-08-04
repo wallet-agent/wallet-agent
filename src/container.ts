@@ -105,6 +105,17 @@ export class Container {
   }
 
   /**
+   * Reset the container instance (for testing only)
+   */
+  static resetInstance(): void {
+    if (process.env.NODE_ENV === "test") {
+      Container.instance = null as any;
+      customChains.clear();
+      privateKeyWallets.clear();
+    }
+  }
+
+  /**
    * Update Wagmi config when chains change
    */
   updateWagmiConfig(): void {
@@ -121,6 +132,13 @@ export class Container {
       this.chainAdapter,
       mockAccounts,
       () => Array.from(privateKeyWallets.keys()),
+    );
+
+    // Update transaction effects with new wallet effects
+    this.transactionEffects = new TransactionEffects(
+      this.walletEffects,
+      this.chainAdapter,
+      this.contractAdapter,
     );
   }
 

@@ -156,7 +156,14 @@ export class TransactionEffects {
           ? (Number(transaction.value) / 1e18).toString()
           : "0",
       };
-    } catch (error) {
+    } catch (error: any) {
+      // Handle viem's TransactionNotFoundError
+      if (error.name === "TransactionNotFoundError") {
+        return {
+          status: "not_found",
+          hash,
+        };
+      }
       throw new Error(`Failed to get transaction status: ${error}`);
     }
   }
@@ -195,7 +202,11 @@ export class TransactionEffects {
         logs: receipt.logs.length,
         symbol: chain.nativeCurrency.symbol,
       };
-    } catch (error) {
+    } catch (error: any) {
+      // Handle viem's TransactionReceiptNotFoundError
+      if (error.name === "TransactionReceiptNotFoundError") {
+        return null;
+      }
       throw new Error(`Failed to get transaction receipt: ${error}`);
     }
   }
