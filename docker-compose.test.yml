@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - CI=true
+      - NODE_ENV=test
+    volumes:
+      # Mount source code for faster iteration
+      - ./src:/app/src
+      - ./test:/app/test
+    command: bun test

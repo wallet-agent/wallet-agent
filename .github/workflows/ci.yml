@@ -44,8 +44,11 @@ jobs:
     - name: Run linter
       run: bun run lint
 
-    - name: Run tests
-      run: bun test
+    - name: Run unit tests
+      run: bun test test/core test/effects test/schemas.test.ts
+    
+    - name: Run integration tests
+      run: bun test test/integration
 
     - name: Build project
       run: bun run build

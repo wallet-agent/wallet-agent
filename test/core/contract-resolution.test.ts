@@ -1,12 +1,12 @@
 import { describe, expect, it, mock } from "bun:test";
 import type { Address } from "viem";
-import type { ContractAdapter } from "../../src/adapters/contract-adapter";
-import { ERC20_ABI, ERC721_ABI } from "../../src/core/builtin-contracts";
+import type { ContractAdapter } from "../../src/adapters/contract-adapter.js";
+import { ERC20_ABI, ERC721_ABI } from "../../src/core/builtin-contracts.js";
 import {
   INTERFACE_IDS,
   resolveContract,
   supportsInterface,
-} from "../../src/core/contract-resolution";
+} from "../../src/core/contract-resolution.js";
 
 describe("Contract Resolution", () => {
   const mockContractAdapter: ContractAdapter = {
