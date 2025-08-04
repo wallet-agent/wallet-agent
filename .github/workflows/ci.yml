@@ -27,11 +27,13 @@ jobs:
 
     - name: Start Anvil
       run: |
-        docker run -d --name anvil -p 8545:8545 --entrypoint /bin/sh ghcr.io/foundry-rs/foundry:latest -c "anvil --host 0.0.0.0"
-        sleep 5
+        docker run -d --name anvil -p 8545:8545 --entrypoint /bin/sh ghcr.io/foundry-rs/foundry:latest -c "anvil --host 0.0.0.0 --fork-url https://eth.llamarpc.com"
+        echo "Waiting for Anvil to start and sync..."
+        sleep 15
         curl -X POST http://localhost:8545 \
           -H "Content-Type: application/json" \
           -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' || exit 1
+        echo "Anvil is ready"
 
     - name: Cache dependencies
       uses: actions/cache@v4
