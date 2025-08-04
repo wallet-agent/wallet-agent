@@ -1,5 +1,5 @@
 {
-	"name": "mcp-wallet",
+	"name": "wallet-agent",
 	"version": "0.1.0",
 	"description": "MCP server for Web3 wallet interactions on EVM-compatible chains using Wagmi",
 	"keywords": [
@@ -17,12 +17,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/shanev/mcp-wallet.git"
+		"url": "https://github.com/shanev/wallet-agent.git"
 	},
 	"main": "dist/index.js",
 	"type": "module",
 	"bin": {
-		"mcp-wallet": "./dist/index.js"
+		"wallet-agent": "./dist/index.js"
 	},
 	"files": [
 		"dist/**/*",

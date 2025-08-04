@@ -1,4 +1,4 @@
-# MCP Wallet Server
+# Wallet Agent
 
 An MCP (Model Context Protocol) server that enables AI coding tools like Claude Code and Cursor to interact with Web3 wallets on any EVM-compatible blockchain. Supports both mock wallets for testing and real wallets via private key import.
 
@@ -19,9 +19,9 @@ An MCP (Model Context Protocol) server that enables AI coding tools like Claude 
 Run directly without installation:
 
 ```bash
-npx mcp-wallet
+npx wallet-agent
 # or
-bunx mcp-wallet
+bunx wallet-agent
 ```
 
 ## Installation
@@ -30,26 +30,26 @@ bunx mcp-wallet
 
 #### Option 1: Using npx (Recommended)
 ```bash
-claude mcp add mcp-wallet npx mcp-wallet
+claude mcp add wallet-agent npx wallet-agent
 ```
 
 #### Option 2: Using bunx
 ```bash
-claude mcp add mcp-wallet bunx mcp-wallet
+claude mcp add wallet-agent bunx wallet-agent
 ```
 
 #### Option 3: Local Installation
 1. Clone and build the project:
    ```bash
-   git clone https://github.com/shanev/mcp-wallet.git
-   cd mcp-wallet
+   git clone https://github.com/shanev/wallet-agent.git
+   cd wallet-agent
    bun install
    bun run build
    ```
 
 2. Add to Claude Code:
    ```bash
-   claude mcp add mcp-wallet bun /path/to/mcp-wallet/dist/index.ts
+   claude mcp add wallet-agent bun /path/to/wallet-agent/dist/index.ts
    ```
 
 The server will be available immediately. Verify it's running with `/mcp` in Claude Code.

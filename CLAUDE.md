@@ -1,12 +1,12 @@
 ---
-description: MCP Wallet Server development guidelines and architecture notes
+description: Wallet Agent development guidelines and architecture notes
 globs: "src/**/*.ts, *.json, *.md"
 alwaysApply: true
 ---
 
-# MCP Wallet Server Development Guidelines
+# Wallet Agent Development Guidelines
 
-This document contains project-specific guidelines for AI assistants working on the MCP Wallet Server codebase. For general usage and features, see @README.md.
+This document contains project-specific guidelines for AI assistants working on the Wallet Agent codebase. For general usage and features, see @README.md.
 
 ## Architecture Overview
 
