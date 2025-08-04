@@ -16,7 +16,7 @@ import { handleToolCall } from "./tools/handlers.js";
 export function createMcpServer() {
   const server = new Server(
     {
-      name: "mcp-wallet",
+      name: "wallet-agent",
       version: "0.1.0",
     },
     {
