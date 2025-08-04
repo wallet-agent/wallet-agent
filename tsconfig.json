@@ -1,52 +1,52 @@
 {
-	"compilerOptions": {
-		// Environment setup & latest features
-		"lib": ["ESNext", "DOM"],
-		"target": "ESNext",
-		"module": "Preserve",
-		"moduleDetection": "force",
-		"jsx": "react-jsx",
-		"allowJs": true,
+  "compilerOptions": {
+    // Environment setup & latest features
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "module": "Preserve",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
 
-		// Bun compatibility - for IDE type checking only
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"verbatimModuleSyntax": true,
-		"noEmit": true, // Bun handles emit, not tsc
+    // Bun compatibility - for IDE type checking only
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true, // Bun handles emit, not tsc
 
-		// Strict type checking
-		"strict": true,
-		"noImplicitAny": true,
-		"strictNullChecks": true,
-		"strictFunctionTypes": true,
-		"strictBindCallApply": true,
-		"strictPropertyInitialization": true,
-		"noImplicitThis": true,
-		"alwaysStrict": true,
-		"useUnknownInCatchVariables": true,
-		"noUncheckedIndexedAccess": true,
+    // Strict type checking
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "useUnknownInCatchVariables": true,
+    "noUncheckedIndexedAccess": true,
 
-		// Additional checks
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"exactOptionalPropertyTypes": true,
-		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
-		"noImplicitOverride": true,
-		"noPropertyAccessFromIndexSignature": false,
-		"allowUnusedLabels": false,
-		"allowUnreachableCode": false,
+    // Additional checks
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
 
-		// Module resolution
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"forceConsistentCasingInFileNames": true,
+    // Module resolution
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
 
-		// Skip type checking of declaration files
-		"skipLibCheck": true
-	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist"]
+    // Skip type checking of declaration files
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
