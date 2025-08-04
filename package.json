@@ -48,9 +48,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.3",
-    "@playwright/test": "^1.54.2",
     "@types/bun": "latest",
-    "playwright": "^1.54.2",
     "simple-git-hooks": "^2.13.1"
   },
   "peerDependencies": {
