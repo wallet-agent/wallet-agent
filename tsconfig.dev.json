@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*", "test/**/*"],
+  "compilerOptions": {
+    // Less strict for test files to allow mocking and testing patterns
+    "exactOptionalPropertyTypes": false
+  }
+}

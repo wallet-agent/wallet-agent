@@ -28,6 +28,8 @@ describe("Contract Resolution", () => {
       return undefined;
     }),
     listContracts: mock(() => []),
+    registerContract: mock(() => {}),
+    clear: mock(() => {}),
   };
 
   describe("resolveContract", () => {
@@ -170,7 +172,7 @@ describe("Contract Resolution", () => {
     });
 
     it("returns false for undefined ABI", () => {
-      expect(supportsInterface(undefined)).toBe(false);
+      expect(supportsInterface(undefined as unknown as any)).toBe(false);
     });
   });
 

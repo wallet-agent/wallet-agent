@@ -20,24 +20,24 @@ export function createMockTransport(
 ): Transport {
   // Default responses for common RPC methods
   const defaultResponses: MockResponses = new Map([
-    ["eth_chainId", "0x7a69"], // 31337 (Anvil chain ID)
-    ["eth_blockNumber", "0x0"],
-    ["net_version", "31337"],
-    ["eth_accounts", []],
-    ["eth_getBalance", "0x0"],
-    ["eth_getCode", "0x"], // No contract deployed by default
-    ["eth_gasPrice", "0x4a817c800"], // 20 gwei
-    ["eth_estimateGas", "0x5208"], // 21000 gas
-    ["eth_getTransactionCount", "0x0"],
+    ["eth_chainId", "0x7a69" as unknown], // 31337 (Anvil chain ID)
+    ["eth_blockNumber", "0x0" as unknown],
+    ["net_version", "31337" as unknown],
+    ["eth_accounts", [] as unknown],
+    ["eth_getBalance", "0x0" as unknown],
+    ["eth_getCode", "0x" as unknown], // No contract deployed by default
+    ["eth_gasPrice", "0x4a817c800" as unknown], // 20 gwei
+    ["eth_estimateGas", "0x5208" as unknown], // 21000 gas
+    ["eth_getTransactionCount", "0x0" as unknown],
     [
       "eth_getBlockByNumber",
       {
         number: "0x0",
         timestamp: "0x0",
         baseFeePerGas: "0x3b9aca00", // 1 gwei
-      },
+      } as unknown,
     ],
-    ["eth_call", { error: "execution reverted" }], // Default to revert
+    ["eth_call", { error: "execution reverted" } as unknown], // Default to revert
   ]);
 
   // Merge custom responses with defaults
@@ -48,12 +48,21 @@ export function createMockTransport(
 
   // Return a transport function
   return () => ({
+    config: {
+      key: "mock",
+      name: "Mock Transport",
+      request: {} as unknown as any,
+      retryCount: 3,
+      retryDelay: 150,
+      timeout: 10_000,
+      type: "mock",
+    },
     request: async ({
       method,
       params,
     }: {
       method: string;
-      params?: unknown[];
+      params?: unknown;
     }) => {
       // Check if we have a response for this method
       const response = allResponses.get(method);
@@ -68,8 +77,8 @@ export function createMockTransport(
       }
 
       // Handle error responses
-      if (typeof response === "object" && response.error) {
-        throw new Error(response.error);
+      if (typeof response === "object" && response && "error" in response) {
+        throw new Error((response as { error: string }).error);
       }
 
       // Return the mocked response
@@ -85,10 +94,10 @@ export function mockContractCall(
   contractAddress: string,
   functionSelector: string,
   returnValue: string | { error: string },
-): [string, (params: unknown[]) => string] {
+): [string, unknown] {
   return [
     "eth_call",
-    (params: unknown[]) => {
+    ((params: unknown[]) => {
       const [callData] = params as [{ to?: string; data?: string }];
       if (
         (contractAddress === "*" ||
@@ -101,7 +110,7 @@ export function mockContractCall(
         return returnValue;
       }
       throw new Error("execution reverted");
-    },
+    }) as unknown,
   ];
 }
 
@@ -112,27 +121,27 @@ export const MockPresets = {
   // Mock responses for a non-existent contract
   noContract: (): MockResponses =>
     new Map([
-      ["eth_getCode", "0x"],
-      ["eth_call", { error: "execution reverted" }],
+      ["eth_getCode", "0x" as unknown],
+      ["eth_call", { error: "execution reverted" } as unknown],
     ]),
 
   // Mock responses for an address with no contract that properly handles calls
   noContractWithProperError: (_address?: string): MockResponses =>
     new Map([
-      ["eth_getCode", "0x"],
+      ["eth_getCode", "0x" as unknown],
       [
         "eth_call",
-        (_params: unknown[]) => {
+        ((_params: unknown[]) => {
           // Return error that indicates no data returned
           throw new Error("execution reverted: returned no data");
-        },
+        }) as unknown,
       ],
     ]),
 
   // Mock responses for an ERC20 token
   erc20Token: (decimals = 18): MockResponses =>
     new Map([
-      ["eth_getCode", "0x606060405260043610610041576000"], // Some bytecode
+      ["eth_getCode", "0x606060405260043610610041576000" as unknown], // Some bytecode
       mockContractCall(
         "*",
         "0x313ce567",
@@ -146,8 +155,8 @@ export const MockPresets = {
   // Mock responses for transaction operations
   transactionSuccess: (txHash: string): MockResponses =>
     new Map([
-      ["eth_sendRawTransaction", txHash],
-      ["eth_sendTransaction", txHash],
+      ["eth_sendRawTransaction", txHash as unknown],
+      ["eth_sendTransaction", txHash as unknown],
       [
         "eth_getTransactionByHash",
         {
@@ -156,7 +165,7 @@ export const MockPresets = {
           from: "0x0000000000000000000000000000000000000000",
           to: "0x0000000000000000000000000000000000000000",
           value: "0x0",
-        },
+        } as unknown,
       ],
       [
         "eth_getTransactionReceipt",
@@ -165,7 +174,7 @@ export const MockPresets = {
           blockNumber: "0x1",
           status: "0x1",
           gasUsed: "0x5208",
-        },
+        } as unknown,
       ],
     ]),
 };
