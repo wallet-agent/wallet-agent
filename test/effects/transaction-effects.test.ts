@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
-import type { PublicClient } from "viem";
-import { createPublicClient, http, parseEther } from "viem";
+import type { Transaction, TransactionReceipt } from "viem";
+import { parseEther } from "viem";
 import { anvil, mainnet } from "viem/chains";
 import type { ContractAdapter } from "../../src/adapters/contract-adapter.js";
 import type { ChainAdapter } from "../../src/adapters/wallet-adapter.js";
@@ -33,7 +33,9 @@ describe("TransactionEffects", () => {
 
     // Mock createPublicClient to return our mocked client
     const createPublicClientSpy = spyOn(
-      TransactionEffects.prototype as any,
+      TransactionEffects.prototype as TransactionEffects & {
+        createPublicClient: () => unknown;
+      },
       "createPublicClient",
     );
     createPublicClientSpy.mockReturnValue({
@@ -49,7 +51,7 @@ describe("TransactionEffects", () => {
     mockWalletEffects = {
       getAddress: mock(() => "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
       getChainId: mock(() => anvil.id),
-    } as any;
+    } as unknown as WalletEffects;
 
     // Mock chain adapter
     mockChainAdapter = {
@@ -58,7 +60,7 @@ describe("TransactionEffects", () => {
         if (chainId === mainnet.id) return mainnet;
         return undefined;
       }),
-    } as any;
+    } as unknown as ChainAdapter;
 
     // Mock contract adapter
     mockContractAdapter = {
@@ -75,7 +77,7 @@ describe("TransactionEffects", () => {
           },
         ],
       })),
-    } as any;
+    } as unknown as ContractAdapter;
 
     transactionEffects = new TransactionEffects(
       mockWalletEffects,
@@ -186,7 +188,7 @@ describe("TransactionEffects", () => {
         to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         value: 1000000000000000000n, // 1 ETH
         blockNumber: null,
-      } as any);
+      } as unknown as Transaction);
 
       const result = await transactionEffects.getTransactionStatus(hash);
 
@@ -206,7 +208,7 @@ describe("TransactionEffects", () => {
         to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         value: 500000000000000000n, // 0.5 ETH
         blockNumber: 12345678n,
-      } as any);
+      } as unknown as Transaction);
 
       const result = await transactionEffects.getTransactionStatus(hash);
 
@@ -226,7 +228,7 @@ describe("TransactionEffects", () => {
         to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         value: 0n,
         blockNumber: 12345678n,
-      } as any);
+      } as unknown as Transaction);
 
       const result = await transactionEffects.getTransactionStatus(hash);
 
@@ -256,22 +258,22 @@ describe("TransactionEffects", () => {
         gasUsed: 21000n,
         effectiveGasPrice: 20000000000n,
         logs: [{}, {}], // 2 logs
-      } as any);
+      } as unknown as TransactionReceipt);
 
       const result = await transactionEffects.getTransactionReceipt(hash);
 
       expect(result).not.toBeNull();
-      expect(result!.hash).toBe(hash);
-      expect(result!.status).toBe("success");
-      expect(result!.blockNumber).toBe(12345678n);
-      expect(result!.gasUsed).toBe(21000n);
-      expect(result!.effectiveGasPrice).toBe(20000000000n);
-      expect(result!.totalCost).toBe("0.00042");
-      expect(result!.from).toBe("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
-      expect(result!.to).toBe("0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
-      expect(result!.contractAddress).toBeNull();
-      expect(result!.logs).toBe(2);
-      expect(result!.symbol).toBe("ETH"); // Anvil's native currency
+      expect(result?.hash).toBe(hash);
+      expect(result?.status).toBe("success");
+      expect(result?.blockNumber).toBe(12345678n);
+      expect(result?.gasUsed).toBe(21000n);
+      expect(result?.effectiveGasPrice).toBe(20000000000n);
+      expect(result?.totalCost).toBe("0.00042");
+      expect(result?.from).toBe("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+      expect(result?.to).toBe("0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
+      expect(result?.contractAddress).toBeNull();
+      expect(result?.logs).toBe(2);
+      expect(result?.symbol).toBe("ETH"); // Anvil's native currency
     });
 
     it("returns formatted receipt for failed transaction", async () => {
@@ -286,13 +288,13 @@ describe("TransactionEffects", () => {
         gasUsed: 50000n,
         effectiveGasPrice: 30000000000n,
         logs: [],
-      } as any);
+      } as unknown as TransactionReceipt);
 
       const result = await transactionEffects.getTransactionReceipt(hash);
 
-      expect(result!.status).toBe("failed");
-      expect(result!.totalCost).toBe("0.0015");
-      expect(result!.logs).toBe(0);
+      expect(result?.status).toBe("failed");
+      expect(result?.totalCost).toBe("0.0015");
+      expect(result?.logs).toBe(0);
     });
 
     it("handles contract creation receipts", async () => {
@@ -307,13 +309,13 @@ describe("TransactionEffects", () => {
         gasUsed: 1000000n,
         effectiveGasPrice: 20000000000n,
         logs: [{}, {}, {}, {}, {}], // 5 logs
-      } as any);
+      } as unknown as TransactionReceipt);
 
       const result = await transactionEffects.getTransactionReceipt(hash);
 
-      expect(result!.to).toBeNull();
-      expect(result!.contractAddress).toBe("0xcontractAddress");
-      expect(result!.logs).toBe(5);
+      expect(result?.to).toBeNull();
+      expect(result?.contractAddress).toBe("0xcontractAddress");
+      expect(result?.logs).toBe(5);
     });
   });
 

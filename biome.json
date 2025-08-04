@@ -12,15 +12,15 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noExplicitAny": "warn"
+        "noExplicitAny": "error"
       },
       "style": {
-        "useTemplate": "warn",
-        "noNonNullAssertion": "warn"
+        "useTemplate": "error",
+        "noNonNullAssertion": "error"
       },
       "correctness": {
-        "noUnusedVariables": "warn",
-        "noUnusedFunctionParameters": "warn"
+        "noUnusedVariables": "error",
+        "noUnusedFunctionParameters": "error"
       }
     }
   },
