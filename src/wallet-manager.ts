@@ -1,0 +1,86 @@
+import { type Address, type Chain, createWalletClient, http } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import {
+	mockAccounts,
+	privateKeyWallets,
+	setCurrentWalletType,
+	currentWalletType as walletType,
+} from "./chains.js";
+
+export interface WalletInfo {
+	address: Address;
+	type: "mock" | "privateKey";
+}
+
+// Import a private key
+export function importPrivateKey(privateKey: `0x${string}`): Address {
+	// Validate private key format
+	if (!privateKey.startsWith("0x") || privateKey.length !== 66) {
+		throw new Error(
+			"Invalid private key format. Must be 0x followed by 64 hex characters",
+		);
+	}
+
+	try {
+		const account = privateKeyToAccount(privateKey);
+		privateKeyWallets.set(account.address, privateKey);
+		return account.address;
+	} catch (error) {
+		throw new Error(`Failed to import private key: ${error}`);
+	}
+}
+
+// Remove a private key
+export function removePrivateKey(address: Address): boolean {
+	return privateKeyWallets.delete(address);
+}
+
+// List all imported wallets
+export function listImportedWallets(): WalletInfo[] {
+	return Array.from(privateKeyWallets.keys()).map((address) => ({
+		address,
+		type: "privateKey" as const,
+	}));
+}
+
+// Create a wallet client for a private key
+export function createPrivateKeyWalletClient(address: Address, chain: Chain) {
+	const privateKey = privateKeyWallets.get(address);
+	if (!privateKey) {
+		throw new Error(`No private key found for address ${address}`);
+	}
+
+	const account = privateKeyToAccount(privateKey);
+	return createWalletClient({
+		account,
+		chain,
+		transport: http(chain.rpcUrls.default.http[0]),
+	});
+}
+
+// Get current wallet info
+export function getCurrentWalletInfo(): {
+	type: typeof walletType;
+	availableAddresses: Address[];
+} {
+	if (walletType === "privateKey") {
+		return {
+			type: walletType,
+			availableAddresses: Array.from(privateKeyWallets.keys()),
+		};
+	}
+
+	// Mock wallet
+	return {
+		type: "mock",
+		availableAddresses: [...mockAccounts],
+	};
+}
+
+// Set wallet type
+export function setWalletType(type: "mock" | "privateKey") {
+	if (type === "privateKey" && privateKeyWallets.size === 0) {
+		throw new Error("No private keys imported. Use import_private_key first.");
+	}
+	setCurrentWalletType(type);
+}

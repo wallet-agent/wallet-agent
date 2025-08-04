@@ -1,7 +1,12 @@
 import { connect, disconnect, getAccount, getBalance } from "@wagmi/core";
 import type { Address } from "viem";
 import { formatEther } from "viem";
-import { config, mockAccounts } from "./chains.js";
+import {
+	config,
+	currentWalletType,
+	mockAccounts,
+	privateKeyWallets,
+} from "./chains.js";
 
 // Server state
 export let connectedAddress: Address | undefined;
@@ -16,6 +21,21 @@ export function setCurrentChainId(chainId: number) {
 }
 
 export async function connectWallet(address: Address) {
+	if (currentWalletType === "privateKey") {
+		// For private key wallets, just verify the address exists
+		if (!privateKeyWallets.has(address)) {
+			throw new Error(
+				`Address ${address} is not in the list of imported wallets`,
+			);
+		}
+		setConnectedAddress(address);
+		return {
+			address,
+			chainId: currentChainId,
+		};
+	}
+
+	// Mock wallet logic
 	const isValidAccount = mockAccounts.some(
 		(account) => account.toLowerCase() === address.toLowerCase(),
 	);

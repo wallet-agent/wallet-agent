@@ -176,4 +176,64 @@ export const toolDefinitions: Tool[] = [
 			required: ["chainId", "name", "rpcUrl", "nativeCurrency"],
 		},
 	},
+	{
+		name: "import_private_key",
+		description: "Import a private key to use as a real wallet",
+		inputSchema: {
+			type: "object",
+			properties: {
+				privateKey: {
+					type: "string",
+					description:
+						"Private key starting with 0x (64 hex characters after 0x)",
+				},
+			},
+			required: ["privateKey"],
+		},
+	},
+	{
+		name: "list_imported_wallets",
+		description: "List all imported private key wallets",
+		inputSchema: {
+			type: "object",
+			properties: {},
+		},
+	},
+	{
+		name: "remove_private_key",
+		description: "Remove an imported private key",
+		inputSchema: {
+			type: "object",
+			properties: {
+				address: {
+					type: "string",
+					description: "Address of the wallet to remove",
+				},
+			},
+			required: ["address"],
+		},
+	},
+	{
+		name: "set_wallet_type",
+		description: "Switch between mock and private key wallets",
+		inputSchema: {
+			type: "object",
+			properties: {
+				type: {
+					type: "string",
+					enum: ["mock", "privateKey"],
+					description: "Wallet type to use",
+				},
+			},
+			required: ["type"],
+		},
+	},
+	{
+		name: "get_wallet_info",
+		description: "Get current wallet configuration info",
+		inputSchema: {
+			type: "object",
+			properties: {},
+		},
+	},
 ];

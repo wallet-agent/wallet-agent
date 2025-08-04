@@ -17,6 +17,18 @@ export const mockAccounts = [
 	"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
 ] as const satisfies readonly Address[];
 
+// Private key wallets storage
+export const privateKeyWallets = new Map<Address, `0x${string}`>();
+
+// Current wallet type
+export type WalletType = "mock" | "privateKey";
+export let currentWalletType: WalletType = "mock";
+
+// Set wallet type
+export function setCurrentWalletType(type: WalletType) {
+	currentWalletType = type;
+}
+
 // Helper to get all chains (built-in + custom)
 export function getAllChains(): Chain[] {
 	return [...builtInChains, ...customChains.values()];

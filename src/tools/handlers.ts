@@ -10,6 +10,13 @@ import {
 	getCurrentAccount,
 	getWalletBalance,
 } from "../wallet.js";
+import {
+	getCurrentWalletInfo,
+	importPrivateKey,
+	listImportedWallets,
+	removePrivateKey,
+	setWalletType,
+} from "../wallet-manager.js";
 
 export async function handleToolCall(request: CallToolRequest) {
 	const { name, arguments: args = {} } = request.params;
@@ -183,6 +190,95 @@ export async function handleToolCall(request: CallToolRequest) {
 						error instanceof Error ? error.message : String(error),
 					);
 				}
+			}
+
+			case "import_private_key": {
+				const privateKey = args.privateKey as `0x${string}`;
+				try {
+					const address = importPrivateKey(privateKey);
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Private key imported successfully\nAddress: ${address}\n\nUse 'set_wallet_type' with type "privateKey" to use this wallet.`,
+							},
+						],
+					};
+				} catch (error) {
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "list_imported_wallets": {
+				const wallets = listImportedWallets();
+				if (wallets.length === 0) {
+					return {
+						content: [
+							{
+								type: "text",
+								text: "No private key wallets imported.",
+							},
+						],
+					};
+				}
+				return {
+					content: [
+						{
+							type: "text",
+							text: `Imported wallets:\n${wallets.map((w) => `- ${w.address} (${w.type})`).join("\n")}`,
+						},
+					],
+				};
+			}
+
+			case "remove_private_key": {
+				const address = args.address as Address;
+				const removed = removePrivateKey(address);
+				return {
+					content: [
+						{
+							type: "text",
+							text: removed
+								? `Private key removed for address: ${address}`
+								: `No private key found for address: ${address}`,
+						},
+					],
+				};
+			}
+
+			case "set_wallet_type": {
+				const type = args.type as "mock" | "privateKey";
+				try {
+					setWalletType(type);
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Wallet type set to: ${type}`,
+							},
+						],
+					};
+				} catch (error) {
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "get_wallet_info": {
+				const info = getCurrentWalletInfo();
+				return {
+					content: [
+						{
+							type: "text",
+							text: `Current wallet configuration:\n- Type: ${info.type}\n- Available addresses: ${info.availableAddresses.length}\n${info.availableAddresses.map((addr) => `  - ${addr}`).join("\n")}`,
+						},
+					],
+				};
 			}
 
 			default:
