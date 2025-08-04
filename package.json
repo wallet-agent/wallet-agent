@@ -58,6 +58,7 @@
 		"@modelcontextprotocol/sdk": "^1.17.1",
 		"@wagmi/connectors": "^5.9.1",
 		"@wagmi/core": "^2.18.1",
-		"viem": "2.x"
+		"viem": "2.x",
+		"zod": "^4.0.14"
 	}
 }

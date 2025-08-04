@@ -6,6 +6,7 @@ import {
 	setCurrentWalletType,
 	currentWalletType as walletType,
 } from "./chains.js";
+import { PrivateKeySchema } from "./schemas.js";
 
 export interface WalletInfo {
 	address: Address;
@@ -14,16 +15,12 @@ export interface WalletInfo {
 
 // Import a private key
 export function importPrivateKey(privateKey: `0x${string}`): Address {
-	// Validate private key format
-	if (!privateKey.startsWith("0x") || privateKey.length !== 66) {
-		throw new Error(
-			"Invalid private key format. Must be 0x followed by 64 hex characters",
-		);
-	}
+	// Validate private key format using Zod
+	const validatedKey = PrivateKeySchema.parse(privateKey);
 
 	try {
-		const account = privateKeyToAccount(privateKey);
-		privateKeyWallets.set(account.address, privateKey);
+		const account = privateKeyToAccount(validatedKey);
+		privateKeyWallets.set(account.address, validatedKey);
 		return account.address;
 	} catch (error) {
 		throw new Error(`Failed to import private key: ${error}`);

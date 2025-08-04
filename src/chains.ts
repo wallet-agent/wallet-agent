@@ -3,6 +3,8 @@ import { createConfig } from "@wagmi/core";
 import type { Address } from "viem";
 import { type Chain, defineChain, http } from "viem";
 import { anvil, mainnet, polygon, sepolia } from "viem/chains";
+import { z } from "zod";
+import { ChainConfigSchema } from "./schemas.js";
 
 // Built-in chains (Anvil first as default)
 export const builtInChains = [anvil, mainnet, sepolia, polygon];
@@ -104,8 +106,8 @@ export function addCustomChain(
 		throw new Error(`Chain with ID ${chainId} already exists`);
 	}
 
-	// Create custom chain
-	const customChain = defineChain({
+	// Create the chain config object for validation
+	const chainConfig = {
 		id: chainId,
 		name,
 		nativeCurrency,
@@ -114,15 +116,30 @@ export function addCustomChain(
 				http: [rpcUrl],
 			},
 		},
-		blockExplorers: blockExplorerUrl
-			? {
-					default: {
-						name: `${name} Explorer`,
-						url: blockExplorerUrl,
-					},
-				}
-			: undefined,
-	});
+		...(blockExplorerUrl && {
+			blockExplorers: {
+				default: {
+					name: `${name} Explorer`,
+					url: blockExplorerUrl,
+				},
+			},
+		}),
+	};
+
+	// Validate chain config with Zod
+	try {
+		ChainConfigSchema.parse(chainConfig);
+	} catch (error) {
+		if (error instanceof z.ZodError) {
+			throw new Error(
+				`Invalid chain configuration: ${error.issues.map((e) => e.message).join(", ")}`,
+			);
+		}
+		throw error;
+	}
+
+	// Create custom chain
+	const customChain = defineChain(chainConfig);
 
 	// Store custom chain
 	customChains.set(chainId, customChain);

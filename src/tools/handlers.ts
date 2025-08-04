@@ -1,7 +1,19 @@
 import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js";
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
-import type { Address } from "viem";
+import { z } from "zod";
 import { addCustomChain, mockAccounts } from "../chains.js";
+import {
+	AddCustomChainArgsSchema,
+	ConnectWalletArgsSchema,
+	GetBalanceArgsSchema,
+	ImportPrivateKeyArgsSchema,
+	RemovePrivateKeyArgsSchema,
+	SendTransactionArgsSchema,
+	SetWalletTypeArgsSchema,
+	SignMessageArgsSchema,
+	SignTypedDataArgsSchema,
+	SwitchChainArgsSchema,
+} from "../schemas.js";
 import { signWalletMessage, signWalletTypedData } from "../signing.js";
 import { sendWalletTransaction, switchToChain } from "../transactions.js";
 import {
@@ -24,16 +36,26 @@ export async function handleToolCall(request: CallToolRequest) {
 	try {
 		switch (name) {
 			case "connect_wallet": {
-				const address = args.address as Address;
-				const result = await connectWallet(address);
-				return {
-					content: [
-						{
-							type: "text",
-							text: `Connected to wallet: ${result.address}\nChain: ${result.chainId}`,
-						},
-					],
-				};
+				try {
+					const { address } = ConnectWalletArgsSchema.parse(args);
+					const result = await connectWallet(address);
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Connected to wallet: ${result.address}\nChain: ${result.chainId}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw error;
+				}
 			}
 
 			case "disconnect_wallet": {
@@ -74,117 +96,154 @@ export async function handleToolCall(request: CallToolRequest) {
 			}
 
 			case "sign_message": {
-				const message = args.message as string;
-				const signature = await signWalletMessage(message);
-				return {
-					content: [
-						{
-							type: "text",
-							text: `Message signed successfully\nSignature: ${signature}`,
-						},
-					],
-				};
+				try {
+					const { message } = SignMessageArgsSchema.parse(args);
+					const signature = await signWalletMessage(message);
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Message signed successfully\nSignature: ${signature}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw error;
+				}
 			}
 
 			case "sign_typed_data": {
-				const signature = await signWalletTypedData({
-					domain: args.domain as Record<string, unknown>,
-					types: args.types as Record<string, unknown>,
-					primaryType: args.primaryType as string,
-					message: args.message as Record<string, unknown>,
-				});
+				try {
+					const validatedArgs = SignTypedDataArgsSchema.parse(args);
+					const signature = await signWalletTypedData(validatedArgs);
 
-				return {
-					content: [
-						{
-							type: "text",
-							text: `Typed data signed successfully\nSignature: ${signature}`,
-						},
-					],
-				};
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Typed data signed successfully\nSignature: ${signature}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw error;
+				}
 			}
 
 			case "send_transaction": {
-				const transactionParams: {
-					to: Address;
-					value: string;
-					data?: `0x${string}`;
-				} = {
-					to: args.to as Address,
-					value: args.value as string,
-				};
+				try {
+					const validatedArgs = SendTransactionArgsSchema.parse(args);
+					const transactionParams = {
+						to: validatedArgs.to,
+						value: validatedArgs.value,
+						...(validatedArgs.data !== undefined && {
+							data: validatedArgs.data,
+						}),
+					};
+					const hash = await sendWalletTransaction(transactionParams);
 
-				if (args.data) {
-					transactionParams.data = args.data as `0x${string}`;
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Transaction sent successfully\nHash: ${hash}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw error;
 				}
-
-				const hash = await sendWalletTransaction(transactionParams);
-
-				return {
-					content: [
-						{
-							type: "text",
-							text: `Transaction sent successfully\nHash: ${hash}`,
-						},
-					],
-				};
 			}
 
 			case "switch_chain": {
-				const chainId = args.chainId as number;
-				const result = await switchToChain(chainId);
-				return {
-					content: [
-						{
-							type: "text",
-							text: `Switched to ${result.chainName} (Chain ID: ${result.chainId})`,
-						},
-					],
-				};
+				try {
+					const { chainId } = SwitchChainArgsSchema.parse(args);
+					const result = await switchToChain(chainId);
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Switched to ${result.chainName} (Chain ID: ${result.chainId})`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw error;
+				}
 			}
 
 			case "get_balance": {
-				const result = await getWalletBalance(
-					args.address as Address | undefined,
-				);
-				return {
-					content: [
-						{
-							type: "text",
-							text: `Balance: ${result.balance} ${result.symbol}`,
-						},
-					],
-				};
+				try {
+					const { address } = GetBalanceArgsSchema.parse(args);
+					const result = await getWalletBalance(address);
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Balance: ${result.balance} ${result.symbol}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw error;
+				}
 			}
 
 			case "add_custom_chain": {
-				const chainId = args.chainId as number;
-				const name = args.name as string;
-				const rpcUrl = args.rpcUrl as string;
-				const nativeCurrency = args.nativeCurrency as {
-					name: string;
-					symbol: string;
-					decimals: number;
-				};
-				const blockExplorerUrl = args.blockExplorerUrl as string | undefined;
-
 				try {
+					const validatedArgs = AddCustomChainArgsSchema.parse(args);
 					addCustomChain(
-						chainId,
-						name,
-						rpcUrl,
-						nativeCurrency,
-						blockExplorerUrl,
+						validatedArgs.chainId,
+						validatedArgs.name,
+						validatedArgs.rpcUrl,
+						validatedArgs.nativeCurrency,
+						validatedArgs.blockExplorerUrl,
 					);
 					return {
 						content: [
 							{
 								type: "text",
-								text: `Custom chain added successfully:\n- Chain ID: ${chainId}\n- Name: ${name}\n- RPC URL: ${rpcUrl}\n- Native Currency: ${nativeCurrency.symbol}`,
+								text: `Custom chain added successfully:\n- Chain ID: ${validatedArgs.chainId}\n- Name: ${validatedArgs.name}\n- RPC URL: ${validatedArgs.rpcUrl}\n- Native Currency: ${validatedArgs.nativeCurrency.symbol}`,
 							},
 						],
 					};
 				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
 					throw new McpError(
 						ErrorCode.InvalidParams,
 						error instanceof Error ? error.message : String(error),
@@ -193,8 +252,8 @@ export async function handleToolCall(request: CallToolRequest) {
 			}
 
 			case "import_private_key": {
-				const privateKey = args.privateKey as `0x${string}`;
 				try {
+					const { privateKey } = ImportPrivateKeyArgsSchema.parse(args);
 					const address = importPrivateKey(privateKey);
 					return {
 						content: [
@@ -205,6 +264,12 @@ export async function handleToolCall(request: CallToolRequest) {
 						],
 					};
 				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
 					throw new McpError(
 						ErrorCode.InvalidParams,
 						error instanceof Error ? error.message : String(error),
@@ -235,23 +300,33 @@ export async function handleToolCall(request: CallToolRequest) {
 			}
 
 			case "remove_private_key": {
-				const address = args.address as Address;
-				const removed = removePrivateKey(address);
-				return {
-					content: [
-						{
-							type: "text",
-							text: removed
-								? `Private key removed for address: ${address}`
-								: `No private key found for address: ${address}`,
-						},
-					],
-				};
+				try {
+					const { address } = RemovePrivateKeyArgsSchema.parse(args);
+					const removed = removePrivateKey(address);
+					return {
+						content: [
+							{
+								type: "text",
+								text: removed
+									? `Private key removed for address: ${address}`
+									: `No private key found for address: ${address}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw error;
+				}
 			}
 
 			case "set_wallet_type": {
-				const type = args.type as "mock" | "privateKey";
 				try {
+					const { type } = SetWalletTypeArgsSchema.parse(args);
 					setWalletType(type);
 					return {
 						content: [
@@ -262,6 +337,12 @@ export async function handleToolCall(request: CallToolRequest) {
 						],
 					};
 				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
 					throw new McpError(
 						ErrorCode.InvalidParams,
 						error instanceof Error ? error.message : String(error),
