@@ -22,7 +22,7 @@ import {
 	switchChain,
 } from "@wagmi/core";
 import { type Address, formatEther, http, parseEther } from "viem";
-import { mainnet, polygon, sepolia } from "viem/chains";
+import { anvil, mainnet, polygon, sepolia } from "viem/chains";
 
 // Initialize mock accounts
 const mockAccounts = [
@@ -33,7 +33,7 @@ const mockAccounts = [
 
 // Create Wagmi config with mock connector
 const config = createConfig({
-	chains: [mainnet, sepolia, polygon],
+	chains: [mainnet, sepolia, polygon, anvil],
 	connectors: [
 		mock({
 			accounts: mockAccounts,
@@ -46,6 +46,7 @@ const config = createConfig({
 		[mainnet.id]: http(),
 		[sepolia.id]: http(),
 		[polygon.id]: http(),
+		[anvil.id]: http(),
 	},
 });
 
@@ -181,7 +182,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 						chainId: {
 							type: "number",
 							description:
-								"Chain ID to switch to (1 for mainnet, 11155111 for sepolia, 137 for polygon)",
+								"Chain ID to switch to (1 for mainnet, 11155111 for sepolia, 137 for polygon, 31337 for anvil)",
 						},
 					},
 					required: ["chainId"],
@@ -349,7 +350,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 			case "switch_chain": {
 				const chainId = args.chainId as number;
-				await switchChain(config, { chainId: chainId as 1 | 11155111 | 137 });
+				await switchChain(config, {
+					chainId: chainId as 1 | 11155111 | 137 | 31337,
+				});
 				currentChainId = chainId;
 
 				return {
@@ -373,7 +376,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 				const balance = await getBalance(config, {
 					address,
-					chainId: currentChainId as 1 | 11155111 | 137,
+					chainId: currentChainId as 1 | 11155111 | 137 | 31337,
 				});
 
 				return {
@@ -459,6 +462,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 									{ id: mainnet.id, name: mainnet.name },
 									{ id: sepolia.id, name: sepolia.name },
 									{ id: polygon.id, name: polygon.name },
+									{ id: anvil.id, name: anvil.name },
 								],
 							},
 							null,

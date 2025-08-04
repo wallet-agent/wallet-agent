@@ -8,7 +8,7 @@ An MCP (Model Context Protocol) server that enables AI coding tools like Claude 
 - **Account Management**: List available accounts and get current account info
 - **Message Signing**: Sign plain messages and EIP-712 typed data
 - **Transaction Handling**: Send transactions with ETH transfers and contract interactions
-- **Chain Management**: Switch between different networks (Mainnet, Sepolia, Polygon)
+- **Chain Management**: Switch between different networks (Mainnet, Sepolia, Polygon, Anvil)
 - **Balance Checking**: Query ETH balances for any address
 - **Resource Access**: Get wallet state and supported chains info
 
@@ -74,7 +74,7 @@ The server will be available immediately. You can verify it's running with the `
 - `sign_message`: Sign a plain text message
 - `sign_typed_data`: Sign EIP-712 typed data
 - `send_transaction`: Send ETH or interact with contracts
-- `switch_chain`: Change the active blockchain network
+- `switch_chain`: Change the active blockchain network (supports Mainnet, Sepolia, Polygon, and Anvil local testnet)
 - `get_balance`: Check ETH balance of an address
 
 ### Available Resources
