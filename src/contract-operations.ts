@@ -9,7 +9,7 @@ import {
 } from "viem";
 import { getAllChains } from "./chains.js";
 import { getContainer } from "./container.js";
-import { resolveContract } from "./contract-resolution.js";
+import { resolveContract } from "./core/contract-resolution.js";
 import {
 	createPrivateKeyWalletClient,
 	getCurrentWalletInfo,
@@ -63,7 +63,7 @@ export async function writeContract(params: ContractWriteParams): Promise<Hex> {
 	}
 
 	// Resolve contract
-	const resolved = await resolveContract(
+	const resolved = resolveContract(
 		params.contract,
 		params.address,
 		chainId,
@@ -120,7 +120,7 @@ export async function readContract(
 	}
 
 	// Resolve contract
-	const resolved = await resolveContract(
+	const resolved = resolveContract(
 		params.contract,
 		params.address,
 		chainId,

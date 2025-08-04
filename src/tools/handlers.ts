@@ -3,7 +3,7 @@ import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
 import type { Address } from "viem";
 import { z } from "zod";
 import { addCustomChain } from "../chains.js";
-import { mockAccounts } from "../container.js";
+import { getContainer, mockAccounts } from "../container.js";
 import {
 	listContracts,
 	loadWagmiConfig,
@@ -23,15 +23,6 @@ import {
 	SwitchChainArgsSchema,
 } from "../schemas.js";
 import { signWalletMessage, signWalletTypedData } from "../signing.js";
-import {
-	approveToken,
-	getNFTInfo,
-	getNFTOwner,
-	getTokenBalance,
-	getTokenInfo,
-	transferNFT,
-	transferToken,
-} from "../token-operations.js";
 import { sendWalletTransaction, switchToChain } from "../transactions.js";
 import {
 	connectWallet,
@@ -535,7 +526,8 @@ export async function handleToolCall(request: CallToolRequest) {
 						})
 						.parse(args);
 
-					const hash = await transferToken({
+					const container = getContainer();
+					const hash = await container.tokenEffects.transferToken({
 						token,
 						to: to as Address,
 						amount,
@@ -573,7 +565,8 @@ export async function handleToolCall(request: CallToolRequest) {
 						})
 						.parse(args);
 
-					const hash = await approveToken({
+					const container = getContainer();
+					const hash = await container.tokenEffects.approveToken({
 						token,
 						spender: spender as Address,
 						amount,
@@ -610,7 +603,8 @@ export async function handleToolCall(request: CallToolRequest) {
 						})
 						.parse(args);
 
-					const result = await getTokenBalance({
+					const container = getContainer();
+					const result = await container.tokenEffects.getTokenBalance({
 						token,
 						...(address && { address: address as Address }),
 					});
@@ -645,7 +639,8 @@ export async function handleToolCall(request: CallToolRequest) {
 						})
 						.parse(args);
 
-					const info = await getTokenInfo(token);
+					const container = getContainer();
+					const info = await container.tokenEffects.getTokenInfo(token);
 
 					return {
 						content: [
@@ -679,7 +674,8 @@ export async function handleToolCall(request: CallToolRequest) {
 						})
 						.parse(args);
 
-					const hash = await transferNFT({
+					const container = getContainer();
+					const hash = await container.tokenEffects.transferNFT({
 						nft,
 						to: to as Address,
 						tokenId,
@@ -716,7 +712,11 @@ export async function handleToolCall(request: CallToolRequest) {
 						})
 						.parse(args);
 
-					const owner = await getNFTOwner({ nft, tokenId });
+					const container = getContainer();
+					const owner = await container.tokenEffects.getNFTOwner({
+						nft,
+						tokenId,
+					});
 
 					return {
 						content: [
@@ -749,7 +749,8 @@ export async function handleToolCall(request: CallToolRequest) {
 						})
 						.parse(args);
 
-					const info = await getNFTInfo({
+					const container = getContainer();
+					const info = await container.tokenEffects.getNFTInfo({
 						nft,
 						...(tokenId && { tokenId }),
 					});

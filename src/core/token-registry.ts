@@ -90,12 +90,7 @@ export function resolveTokenAddress(
 	tokenOrAddress: string,
 	chainId: number,
 ): Address | undefined {
-	// If it looks like an address, return it
-	if (tokenOrAddress.startsWith("0x") && tokenOrAddress.length === 42) {
-		return tokenOrAddress as Address;
-	}
-
-	// Try to find in well-known tokens
+	// Only resolve known token symbols, not raw addresses
 	const tokenInfo = WELL_KNOWN_TOKENS[tokenOrAddress.toUpperCase()];
 	if (tokenInfo) {
 		return tokenInfo.addresses[chainId];
@@ -143,13 +138,56 @@ export function formatTokenAmount(amount: bigint, decimals: number): string {
 }
 
 /**
+ * Get token info by symbol and chain ID
+ * @param symbol - Token symbol (e.g., "USDC")
+ * @param chainId - Chain ID
+ * @returns Token info or undefined
+ */
+export function getTokenInfoBySymbol(
+	symbol: string,
+	chainId: number,
+): TokenInfo | undefined {
+	const upperSymbol = symbol.toUpperCase();
+	const tokenInfo = WELL_KNOWN_TOKENS[upperSymbol];
+	if (!tokenInfo) return undefined;
+
+	const chainInfo = tokenInfo.addresses[chainId];
+	if (!chainInfo) return undefined;
+
+	return {
+		...tokenInfo,
+		addresses: { [chainId]: chainInfo },
+	};
+}
+
+/**
  * Parse token amount to smallest unit
  * @param amount - Human-readable amount (e.g., "100.5")
  * @param decimals - Number of decimals
  * @returns Amount in smallest unit
  */
 export function parseTokenAmount(amount: string, decimals: number): bigint {
-	const [whole, fraction = ""] = amount.split(".");
+	// Handle negative amounts
+	if (amount.startsWith("-")) {
+		throw new Error("Negative amounts are not supported");
+	}
+
+	// Convert scientific notation to decimal
+	let normalizedAmount = amount;
+	if (amount.includes("e") || amount.includes("E")) {
+		const num = Number.parseFloat(amount);
+		// If the number is an integer after parsing, convert it directly
+		if (Number.isInteger(num)) {
+			normalizedAmount = num.toString();
+		} else {
+			// For decimals, use appropriate precision
+			const integerDigits = Math.floor(Math.abs(num)).toString().length;
+			const precision = Math.max(decimals, integerDigits + decimals);
+			normalizedAmount = num.toFixed(precision);
+		}
+	}
+
+	const [whole, fraction = ""] = normalizedAmount.split(".");
 	const paddedFraction = fraction.padEnd(decimals, "0").slice(0, decimals);
 	const combined = whole + paddedFraction;
 	return BigInt(combined);

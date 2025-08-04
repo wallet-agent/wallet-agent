@@ -1,8 +1,8 @@
 import type { Address } from "viem";
-import type { ContractAdapter } from "./adapters/contract-adapter.js";
-import { isBuiltinContract } from "./core/builtin-contracts.js";
-import type { ContractConfig } from "./core/contracts.js";
-import { resolveTokenAddress } from "./core/token-registry.js";
+import type { ContractAdapter } from "../adapters/contract-adapter.js";
+import { isBuiltinContract } from "./builtin-contracts.js";
+import type { ContractConfig } from "./contracts.js";
+import { resolveTokenAddress } from "./token-registry.js";
 
 export interface ResolvedContract {
 	name: string;
@@ -26,13 +26,13 @@ export interface ResolvedContract {
  * @param contractAdapter - Contract adapter instance
  * @param defaultBuiltin - Default built-in contract to use for addresses
  */
-export async function resolveContract(
+export function resolveContract(
 	contractOrToken: string,
 	address: Address | undefined,
 	chainId: number,
 	contractAdapter: ContractAdapter,
 	defaultBuiltin: "builtin:ERC20" | "builtin:ERC721" = "builtin:ERC20",
-): Promise<ResolvedContract> {
+): ResolvedContract {
 	// If explicit address provided, use it
 	if (address) {
 		// Try to get ABI from contract name

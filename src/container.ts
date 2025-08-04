@@ -1,18 +1,21 @@
 import { mock } from "@wagmi/connectors";
-import { createConfig } from "@wagmi/core";
+import { createConfig, getAccount } from "@wagmi/core";
 import type { Address, Chain } from "viem";
 import { http } from "viem";
 import { anvil, mainnet, polygon, sepolia } from "viem/chains";
 import type { ContractAdapter } from "./adapters/contract-adapter.js";
+import type { TokenAdapter } from "./adapters/token-adapter.js";
 import {
 	ChainAdapterImpl,
 	PrivateKeyWalletClientFactory,
 	WagmiWalletAdapter,
 } from "./adapters/wagmi-adapter.js";
 import type { ChainAdapter } from "./adapters/wallet-adapter.js";
+import { readContract, writeContract } from "./contract-operations.js";
 import { ContractEffects } from "./effects/contract-effects.js";
 import { InMemoryContractStore } from "./effects/contract-store.js";
 import { NodeFileReader } from "./effects/file-reader.js";
+import { TokenEffects } from "./effects/token-effects.js";
 import { WalletEffects } from "./effects/wallet-effects.js";
 
 // Mock accounts
@@ -38,6 +41,7 @@ export class Container {
 	public chainAdapter: ChainAdapter;
 	public walletEffects: WalletEffects;
 	public contractAdapter: ContractAdapter;
+	public tokenEffects: TokenAdapter;
 	public wagmiConfig: ReturnType<typeof createConfig>;
 
 	private constructor() {
@@ -68,6 +72,20 @@ export class Container {
 		const fileReader = new NodeFileReader();
 		const contractStore = new InMemoryContractStore();
 		this.contractAdapter = new ContractEffects(fileReader, contractStore);
+
+		// Initialize token effects
+		this.tokenEffects = new TokenEffects(
+			this.contractAdapter,
+			this.walletEffects,
+			readContract,
+			writeContract,
+			() => {
+				const account = getAccount(this.wagmiConfig);
+				return account.isConnected && account.address
+					? { address: account.address }
+					: undefined;
+			},
+		);
 	}
 
 	static getInstance(): Container {
