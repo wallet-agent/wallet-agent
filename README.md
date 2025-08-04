@@ -94,7 +94,3 @@ claude mcp add wallet-agent bun /path/to/wallet-agent/dist/index.ts
 - No network transmission of secrets
 - Use testnets for development
 - Audit code before mainnet use
-
-## License
-
-AGPL-3.0
