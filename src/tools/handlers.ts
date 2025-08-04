@@ -1,7 +1,8 @@
 import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js";
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import { addCustomChain, mockAccounts } from "../chains.js";
+import { addCustomChain } from "../chains.js";
+import { mockAccounts } from "../container.js";
 import {
 	AddCustomChainArgsSchema,
 	ConnectWalletArgsSchema,

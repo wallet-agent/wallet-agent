@@ -8,7 +8,8 @@ import {
 	ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { getAccount } from "@wagmi/core";
-import { config, customChains, getAllChains } from "./chains.js";
+import { getAllChains } from "./chains.js";
+import { customChains, getContainer } from "./container.js";
 import { toolDefinitions } from "./tools/definitions.js";
 import { handleToolCall } from "./tools/handlers.js";
 
@@ -62,7 +63,7 @@ export function createMcpServer() {
 
 		switch (uri) {
 			case "wallet://state": {
-				const account = getAccount(config);
+				const account = getAccount(getContainer().wagmiConfig);
 				return {
 					contents: [
 						{

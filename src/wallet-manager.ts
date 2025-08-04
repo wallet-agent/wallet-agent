@@ -1,11 +1,6 @@
 import { type Address, type Chain, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import {
-	mockAccounts,
-	privateKeyWallets,
-	setCurrentWalletType,
-	currentWalletType as walletType,
-} from "./chains.js";
+import { getContainer, mockAccounts, privateKeyWallets } from "./container.js";
 import { PrivateKeySchema } from "./schemas.js";
 
 export interface WalletInfo {
@@ -13,7 +8,6 @@ export interface WalletInfo {
 	type: "mock" | "privateKey";
 }
 
-// Import a private key
 export function importPrivateKey(privateKey: `0x${string}`): Address {
 	// Validate private key format using Zod
 	const validatedKey = PrivateKeySchema.parse(privateKey);
@@ -27,7 +21,6 @@ export function importPrivateKey(privateKey: `0x${string}`): Address {
 	}
 }
 
-// Remove a private key
 export function removePrivateKey(address: Address): boolean {
 	// Clear the private key from memory before deletion
 	if (privateKeyWallets.has(address)) {
@@ -41,7 +34,6 @@ export function removePrivateKey(address: Address): boolean {
 	return false;
 }
 
-// Clear all private keys (for security)
 export function clearAllPrivateKeys(): void {
 	// Overwrite all keys before clearing
 	for (const [address] of privateKeyWallets) {
@@ -53,7 +45,6 @@ export function clearAllPrivateKeys(): void {
 	privateKeyWallets.clear();
 }
 
-// List all imported wallets
 export function listImportedWallets(): WalletInfo[] {
 	return Array.from(privateKeyWallets.keys()).map((address) => ({
 		address,
@@ -61,7 +52,6 @@ export function listImportedWallets(): WalletInfo[] {
 	}));
 }
 
-// Create a wallet client for a private key
 export function createPrivateKeyWalletClient(address: Address, chain: Chain) {
 	const privateKey = privateKeyWallets.get(address);
 	if (!privateKey) {
@@ -76,11 +66,12 @@ export function createPrivateKeyWalletClient(address: Address, chain: Chain) {
 	});
 }
 
-// Get current wallet info
 export function getCurrentWalletInfo(): {
-	type: typeof walletType;
+	type: "mock" | "privateKey";
 	availableAddresses: Address[];
 } {
+	const walletType = getContainer().walletEffects.getCurrentWalletType();
+
 	if (walletType === "privateKey") {
 		return {
 			type: walletType,
@@ -95,10 +86,6 @@ export function getCurrentWalletInfo(): {
 	};
 }
 
-// Set wallet type
 export function setWalletType(type: "mock" | "privateKey") {
-	if (type === "privateKey" && privateKeyWallets.size === 0) {
-		throw new Error("No private keys imported. Use import_private_key first.");
-	}
-	setCurrentWalletType(type);
+	getContainer().walletEffects.setWalletType(type);
 }
