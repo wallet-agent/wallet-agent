@@ -29,12 +29,15 @@ export function resetTestTransportConfig(): void {
  * Create a transport for testing that can switch between mock and real network
  * @param config - Configuration for the transport
  */
-export function createTestTransport(config: TestTransportConfig = {}): Transport {
+export function createTestTransport(
+  config: TestTransportConfig = {},
+): Transport {
   // Merge with global config, local config takes precedence
   const mergedConfig = { ...globalTestConfig, ...config };
 
   // Check if we should use real network
-  const useReal = mergedConfig.useRealNetwork || process.env.USE_REAL_ANVIL === "true";
+  const useReal =
+    mergedConfig.useRealNetwork || process.env.USE_REAL_ANVIL === "true";
 
   if (useReal) {
     // Use real HTTP transport
@@ -49,6 +52,8 @@ export function createTestTransport(config: TestTransportConfig = {}): Transport
 /**
  * Helper to create a test transport with specific mock responses
  */
-export function createMockTestTransport(mockResponses?: MockResponses): Transport {
+export function createMockTestTransport(
+  mockResponses?: MockResponses,
+): Transport {
   return createTestTransport({ useRealNetwork: false, mockResponses });
 }

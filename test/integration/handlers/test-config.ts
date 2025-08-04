@@ -1,9 +1,9 @@
 import { beforeEach } from "bun:test";
-import {
-  setTestTransportConfig,
-  resetTestTransportConfig,
-} from "../../utils/test-transport.js";
 import { MockPresets } from "../../utils/mock-transport.js";
+import {
+  resetTestTransportConfig,
+  setTestTransportConfig,
+} from "../../utils/test-transport.js";
 
 /**
  * Configure test transport for token operations tests
@@ -32,7 +32,7 @@ export function setupTokenTestTransport() {
 export function setupNoWalletTransport() {
   beforeEach(() => {
     resetTestTransportConfig();
-    
+
     const mockResponses = new Map([
       ...MockPresets.noContract(),
       ["eth_accounts", []],

@@ -4,9 +4,9 @@ import { createPublicClient, http, parseEther } from "viem";
 import { anvil, mainnet } from "viem/chains";
 import type { ContractAdapter } from "../../src/adapters/contract-adapter.js";
 import type { ChainAdapter } from "../../src/adapters/wallet-adapter.js";
+import * as contractResolution from "../../src/core/contract-resolution.js";
 import { TransactionEffects } from "../../src/effects/transaction-effects.js";
 import type { WalletEffects } from "../../src/effects/wallet-effects.js";
-import * as contractResolution from "../../src/core/contract-resolution.js";
 
 describe("TransactionEffects", () => {
   let transactionEffects: TransactionEffects;
@@ -32,7 +32,10 @@ describe("TransactionEffects", () => {
     mockSimulateContract.mockClear();
 
     // Mock createPublicClient to return our mocked client
-    const createPublicClientSpy = spyOn(TransactionEffects.prototype as any, "createPublicClient");
+    const createPublicClientSpy = spyOn(
+      TransactionEffects.prototype as any,
+      "createPublicClient",
+    );
     createPublicClientSpy.mockReturnValue({
       estimateGas: mockEstimateGas,
       getGasPrice: mockGetGasPrice,
@@ -104,7 +107,7 @@ describe("TransactionEffects", () => {
 
     it("estimates gas with data", async () => {
       const data = "0x123abc" as `0x${string}`;
-      
+
       await transactionEffects.estimateGas(
         "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         undefined,
@@ -122,7 +125,7 @@ describe("TransactionEffects", () => {
 
     it("uses provided from address", async () => {
       const fromAddress = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
-      
+
       await transactionEffects.estimateGas(
         "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "0.5",
@@ -146,7 +149,7 @@ describe("TransactionEffects", () => {
         transactionEffects.estimateGas(
           "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
           "1.0",
-        )
+        ),
       ).rejects.toThrow("No wallet connected and no from address provided");
     });
 
@@ -158,7 +161,7 @@ describe("TransactionEffects", () => {
         transactionEffects.estimateGas(
           "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
           "1.0",
-        )
+        ),
       ).rejects.toThrow("Chain with ID 999 not found");
     });
   });
@@ -317,19 +320,21 @@ describe("TransactionEffects", () => {
   describe("resolveEnsName", () => {
     it("throws error when not on mainnet", async () => {
       await expect(
-        transactionEffects.resolveEnsName("vitalik.eth")
+        transactionEffects.resolveEnsName("vitalik.eth"),
       ).rejects.toThrow("ENS resolution only works on Ethereum mainnet");
     });
 
     it("resolves ENS name on mainnet", async () => {
       mockWalletEffects.getChainId = mock(() => mainnet.id);
-      mockGetEnsAddress.mockResolvedValueOnce("0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
+      mockGetEnsAddress.mockResolvedValueOnce(
+        "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      );
 
       const result = await transactionEffects.resolveEnsName("vitalik.eth");
 
       expect(result).toBe("0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045");
       expect(mockGetEnsAddress).toHaveBeenCalledWith({
-        name: "vitalik.eth"
+        name: "vitalik.eth",
       });
     });
 
@@ -347,7 +352,7 @@ describe("TransactionEffects", () => {
       mockChainAdapter.getChain = mock(() => undefined);
 
       await expect(
-        transactionEffects.resolveEnsName("vitalik.eth")
+        transactionEffects.resolveEnsName("vitalik.eth"),
       ).rejects.toThrow("Ethereum mainnet not found in chain list");
     });
   });
@@ -402,7 +407,10 @@ describe("TransactionEffects", () => {
         address: expect.any(String),
         abi: expect.any(Array),
         functionName: "transfer",
-        args: ["0x70997970C51812dc3A010C7d01b50e0d17dc79C8", 1000000000000000000n],
+        args: [
+          "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+          1000000000000000000n,
+        ],
         account: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         value: parseEther("0.1"),
       });
@@ -410,7 +418,7 @@ describe("TransactionEffects", () => {
 
     it("uses provided address", async () => {
       const customAddress = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
-      
+
       await transactionEffects.simulateTransaction(
         "builtin:ERC20",
         "transfer",
@@ -433,16 +441,14 @@ describe("TransactionEffects", () => {
       mockWalletEffects.getAddress = mock(() => undefined);
 
       await expect(
-        transactionEffects.simulateTransaction(
-          "builtin:ERC20",
-          "transfer",
-          [],
-        )
+        transactionEffects.simulateTransaction("builtin:ERC20", "transfer", []),
       ).rejects.toThrow("No wallet connected");
     });
 
     it("handles revert errors", async () => {
-      mockSimulateContract.mockRejectedValueOnce(new Error("execution reverted: Insufficient balance"));
+      mockSimulateContract.mockRejectedValueOnce(
+        new Error("execution reverted: Insufficient balance"),
+      );
 
       const result = await transactionEffects.simulateTransaction(
         "builtin:ERC20",
@@ -494,7 +500,9 @@ describe("TransactionEffects", () => {
       );
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain("Function transfer not found in contract ABI");
+      expect(result.error).toContain(
+        "Function transfer not found in contract ABI",
+      );
     });
   });
 });

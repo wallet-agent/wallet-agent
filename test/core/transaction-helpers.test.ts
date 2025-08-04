@@ -44,38 +44,28 @@ describe("Transaction Helpers", () => {
 
   describe("formatTransactionStatus", () => {
     it("formats not found status", () => {
-      const result = formatTransactionStatus(
-        "not_found",
-        "0x123abc",
-      );
+      const result = formatTransactionStatus("not_found", "0x123abc");
 
       expect(result).toBe(
-        "Transaction 0x123abc not found. It may not exist or hasn't been broadcasted yet."
+        "Transaction 0x123abc not found. It may not exist or hasn't been broadcasted yet.",
       );
     });
 
     it("formats pending status without details", () => {
-      const result = formatTransactionStatus(
-        "pending",
-        "0x123abc",
-      );
+      const result = formatTransactionStatus("pending", "0x123abc");
 
       expect(result).toBe(
-        "Transaction Status:\n- Hash: 0x123abc\n- Status: pending"
+        "Transaction Status:\n- Hash: 0x123abc\n- Status: pending",
       );
     });
 
     it("formats confirmed status with full details", () => {
-      const result = formatTransactionStatus(
-        "confirmed",
-        "0x123abc",
-        {
-          from: "0xfrom",
-          to: "0xto",
-          value: "1.5",
-          blockNumber: 12345678n,
-        }
-      );
+      const result = formatTransactionStatus("confirmed", "0x123abc", {
+        from: "0xfrom",
+        to: "0xto",
+        value: "1.5",
+        blockNumber: 12345678n,
+      });
 
       expect(result).toContain("Status: confirmed");
       expect(result).toContain("From: 0xfrom");
@@ -85,30 +75,22 @@ describe("Transaction Helpers", () => {
     });
 
     it("handles contract creation (null to address)", () => {
-      const result = formatTransactionStatus(
-        "confirmed",
-        "0x123abc",
-        {
-          from: "0xfrom",
-          to: null,
-          value: "0",
-          blockNumber: 12345678n,
-        }
-      );
+      const result = formatTransactionStatus("confirmed", "0x123abc", {
+        from: "0xfrom",
+        to: null,
+        value: "0",
+        blockNumber: 12345678n,
+      });
 
       expect(result).toContain("To: Contract Creation");
     });
 
     it("formats pending status with details but no block number", () => {
-      const result = formatTransactionStatus(
-        "pending",
-        "0x123abc",
-        {
-          from: "0xfrom",
-          to: "0xto",
-          value: "0.5",
-        }
-      );
+      const result = formatTransactionStatus("pending", "0x123abc", {
+        from: "0xfrom",
+        to: "0xto",
+        value: "0.5",
+      });
 
       expect(result).toContain("Status: pending");
       expect(result).toContain("From: 0xfrom");
@@ -201,7 +183,11 @@ describe("Transaction Helpers", () => {
     it("detects revert errors", () => {
       expect(isRevertError("execution reverted")).toBe(true);
       expect(isRevertError("Transaction reverted without a reason")).toBe(true);
-      expect(isRevertError("Error: VM Exception while processing transaction: revert")).toBe(true);
+      expect(
+        isRevertError(
+          "Error: VM Exception while processing transaction: revert",
+        ),
+      ).toBe(true);
     });
 
     it("detects non-revert errors", () => {
