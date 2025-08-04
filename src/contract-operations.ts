@@ -9,7 +9,6 @@ import {
 } from "viem";
 import { getAllChains } from "./chains.js";
 import { getContainer } from "./container.js";
-import { contractRegistry } from "./contracts.js";
 import {
 	createPrivateKeyWalletClient,
 	getCurrentWalletInfo,
@@ -34,14 +33,16 @@ export interface ContractReadParams {
  * Load contracts from Wagmi-generated file
  */
 export async function loadWagmiConfig(filePath: string): Promise<void> {
-	await contractRegistry.loadWagmiGenerated(filePath);
+	const container = getContainer();
+	await container.contractAdapter.loadFromFile(filePath);
 }
 
 /**
  * List all available contracts
  */
 export function listContracts() {
-	return contractRegistry.listContracts();
+	const container = getContainer();
+	return container.contractAdapter.listContracts();
 }
 
 /**
@@ -62,7 +63,10 @@ export async function writeContract(params: ContractWriteParams): Promise<Hex> {
 
 	// Get contract config
 	let contractAddress = params.address;
-	const contractConfig = contractRegistry.getContract(params.contract, chainId);
+	const contractConfig = container.contractAdapter.getContract(
+		params.contract,
+		chainId,
+	);
 
 	if (!contractAddress) {
 		if (!contractConfig?.address) {
@@ -73,7 +77,8 @@ export async function writeContract(params: ContractWriteParams): Promise<Hex> {
 		contractAddress = contractConfig.address;
 	}
 
-	const abi = contractConfig?.abi || contractRegistry.getAbi(params.contract);
+	const abi =
+		contractConfig?.abi || container.contractAdapter.getAbi(params.contract);
 	if (!abi) {
 		throw new Error(`ABI not found for contract ${params.contract}`);
 	}
@@ -127,7 +132,10 @@ export async function readContract(
 
 	// Get contract config
 	let contractAddress = params.address;
-	const contractConfig = contractRegistry.getContract(params.contract, chainId);
+	const contractConfig = container.contractAdapter.getContract(
+		params.contract,
+		chainId,
+	);
 
 	if (!contractAddress) {
 		if (!contractConfig?.address) {
@@ -138,7 +146,8 @@ export async function readContract(
 		contractAddress = contractConfig.address;
 	}
 
-	const abi = contractConfig?.abi || contractRegistry.getAbi(params.contract);
+	const abi =
+		contractConfig?.abi || container.contractAdapter.getAbi(params.contract);
 	if (!abi) {
 		throw new Error(`ABI not found for contract ${params.contract}`);
 	}

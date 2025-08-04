@@ -3,13 +3,17 @@ import { createConfig } from "@wagmi/core";
 import type { Address, Chain } from "viem";
 import { http } from "viem";
 import { anvil, mainnet, polygon, sepolia } from "viem/chains";
+import type { ContractAdapter } from "./adapters/contract-adapter.js";
 import {
 	ChainAdapterImpl,
 	PrivateKeyWalletClientFactory,
 	WagmiWalletAdapter,
-} from "./adapters/wagmi-adapter";
-import type { ChainAdapter } from "./adapters/wallet-adapter";
-import { WalletEffects } from "./effects/wallet-effects";
+} from "./adapters/wagmi-adapter.js";
+import type { ChainAdapter } from "./adapters/wallet-adapter.js";
+import { ContractEffects } from "./effects/contract-effects.js";
+import { InMemoryContractStore } from "./effects/contract-store.js";
+import { NodeFileReader } from "./effects/file-reader.js";
+import { WalletEffects } from "./effects/wallet-effects.js";
 
 // Mock accounts
 export const mockAccounts = [
@@ -33,6 +37,7 @@ export class Container {
 
 	public chainAdapter: ChainAdapter;
 	public walletEffects: WalletEffects;
+	public contractAdapter: ContractAdapter;
 	public wagmiConfig: ReturnType<typeof createConfig>;
 
 	private constructor() {
@@ -58,6 +63,11 @@ export class Container {
 			mockAccounts,
 			() => Array.from(privateKeyWallets.keys()),
 		);
+
+		// Initialize contract adapter
+		const fileReader = new NodeFileReader();
+		const contractStore = new InMemoryContractStore();
+		this.contractAdapter = new ContractEffects(fileReader, contractStore);
 	}
 
 	static getInstance(): Container {
