@@ -169,117 +169,103 @@ export class Container {
   }
 
   private createTransport(chain: Chain): ReturnType<typeof http> {
-    // In test environment, use test transport
-    if (process.env.NODE_ENV === "test") {
-      // Check if this is a custom chain with a fake URL
-      const rpcUrl = chain.rpcUrls.default.http[0];
-      if (rpcUrl && rpcUrl.includes("example.com")) {
-        // Simulate network error for fake URLs
-        return (() => ({
-          config: {
-            key: "mock",
-            name: "Mock Transport",
-            request: {} as any,
-            retryCount: 3,
-            timeout: 10000,
-            type: "http",
-          },
-          request: async () => {
-            throw new Error("HTTP request failed");
-          },
-        })) as ReturnType<typeof http>;
-      }
+    // Create a transport that checks NODE_ENV at request time, not creation time
+    return (() => ({
+      config: {
+        key: "dynamic",
+        name: "Dynamic Transport",
+        request: {} as any,
+        retryCount: 3,
+        timeout: 10000,
+        type: "http",
+      },
+      request: async (args: any) => {
+        // Check NODE_ENV at request time
+        if (process.env.NODE_ENV === "test") {
+          // Use mock transport logic
+          return this.handleMockRequest(chain, args);
+        }
+        // Use real HTTP transport
+        const realTransport = http(chain.rpcUrls.default.http[0]);
+        const client = realTransport({ chain });
+        return client.request(args);
+      },
+    })) as ReturnType<typeof http>;
+  }
 
-      // Create a simple mock transport inline for now
-      return (() => ({
-        config: {
-          key: "mock",
-          name: "Mock Transport",
-          request: {} as any,
-          retryCount: 3,
-          timeout: 10000,
-          type: "http",
-        },
-        request: async ({ method, params }: any) => {
-          // Basic mock responses
-          if (method === "eth_chainId") return `0x${chain.id.toString(16)}`;
-          if (method === "eth_blockNumber") return "0x0";
-          if (method === "eth_getCode") return "0x";
-          if (method === "eth_call")
-            throw new Error("execution reverted: returned no data");
-          if (method === "eth_estimateGas") return "0x5208";
-          if (method === "eth_gasPrice") return "0x4a817c800";
-          if (method === "eth_getBalance") return "0x0";
-          if (method === "eth_accounts") return [];
-          if (method === "net_version") return chain.id.toString();
-          if (method === "eth_sendTransaction") {
-            // Return a mock transaction hash
-            return "0x1234567890123456789012345678901234567890123456789012345678901234";
-          }
-          if (method === "eth_getTransactionByHash") {
-            // Return null for specific test hashes that expect no transaction
-            if (
-              params[0] ===
-              "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-            ) {
-              return null;
-            }
-            // Return a mock transaction for other hashes
-            return {
-              hash: params[0],
-              blockNumber: "0x1",
-              from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              value: "0x0",
-            };
-          }
-          if (method === "eth_getTransactionReceipt") {
-            // Return null for specific test hashes that expect no receipt
-            if (
-              params[0] ===
-              "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-            ) {
-              return null;
-            }
-            // Return a mock receipt for other hashes
-            return {
-              transactionHash: params[0],
-              blockNumber: "0x1",
-              status: "0x1",
-              gasUsed: "0x5208",
-              effectiveGasPrice: "0x4a817c800", // 20 gwei
-              from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              contractAddress: null,
-              logs: [],
-              type: "0x0",
-              cumulativeGasUsed: "0x5208",
-            };
-          }
-          if (method === "eth_signTypedData_v4") {
-            // Return a mock signature
-            return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-          }
-          if (method === "personal_sign") {
-            // Return a mock signature
-            return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-          }
-          if (method === "eth_getTransactionCount") return "0x0";
-          if (method === "eth_getBlockByNumber") {
-            return {
-              number: "0x0",
-              timestamp: "0x0",
-              baseFeePerGas: "0x3b9aca00",
-            };
-          }
-
-          throw new Error(`Mock transport: Unsupported method ${method}`);
-        },
-      })) as ReturnType<typeof http>;
+  private async handleMockRequest(chain: Chain, { method, params }: any) {
+    // Check if this is a custom chain with a fake URL
+    const rpcUrl = chain.rpcUrls.default.http[0];
+    if (rpcUrl && rpcUrl.includes("example.com")) {
+      throw new Error("HTTP request failed");
     }
 
-    // In production, use HTTP transport
-    return http(chain.rpcUrls.default.http[0]);
+    // Mock responses
+    if (method === "eth_chainId") return `0x${chain.id.toString(16)}`;
+    if (method === "eth_blockNumber") return "0x0";
+    if (method === "eth_getCode") return "0x";
+    if (method === "eth_call")
+      throw new Error("execution reverted: returned no data");
+    if (method === "eth_estimateGas") return "0x5208";
+    if (method === "eth_gasPrice") return "0x4a817c800";
+    if (method === "eth_getBalance") return "0x0";
+    if (method === "eth_accounts") return [];
+    if (method === "net_version") return chain.id.toString();
+    if (method === "eth_sendTransaction") {
+      return "0x1234567890123456789012345678901234567890123456789012345678901234";
+    }
+    if (method === "eth_getTransactionByHash") {
+      if (
+        params[0] ===
+        "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      ) {
+        return null;
+      }
+      return {
+        hash: params[0],
+        blockNumber: "0x1",
+        from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        value: "0x0",
+      };
+    }
+    if (method === "eth_getTransactionReceipt") {
+      if (
+        params[0] ===
+        "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      ) {
+        return null;
+      }
+      return {
+        transactionHash: params[0],
+        blockNumber: "0x1",
+        status: "0x1",
+        gasUsed: "0x5208",
+        effectiveGasPrice: "0x4a817c800",
+        from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        contractAddress: null,
+        logs: [],
+        type: "0x0",
+        cumulativeGasUsed: "0x5208",
+      };
+    }
+    if (method === "eth_signTypedData_v4") {
+      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    }
+    if (method === "personal_sign") {
+      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    }
+    if (method === "eth_getTransactionCount") return "0x0";
+    if (method === "eth_getBlockByNumber") {
+      return {
+        number: "0x0",
+        timestamp: "0x0",
+        baseFeePerGas: "0x3b9aca00",
+      };
+    }
+
+    throw new Error(`Mock transport: Unsupported method ${method}`);
   }
 }
 
