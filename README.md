@@ -85,6 +85,17 @@ The server will be available immediately. Verify it's running with `/mcp` in Cla
 - `write_contract` - Execute contract write functions
 - `read_contract` - Read contract state
 
+### ERC-20 Token Operations
+- `transfer_token` - Transfer tokens (supports symbols like "USDC")
+- `approve_token` - Approve token spending
+- `get_token_balance` - Check token balance
+- `get_token_info` - Get token name, symbol, decimals
+
+### ERC-721 NFT Operations
+- `transfer_nft` - Transfer NFTs
+- `get_nft_owner` - Check NFT ownership
+- `get_nft_info` - Get NFT metadata
+
 ### Available Resources
 - `wallet://state` - Current wallet connection state
 - `wallet://chains` - List of supported blockchain networks
@@ -163,7 +174,18 @@ await switch_chain({ chainId: 1337 });
 3. "Read contract MyToken function balanceOf args: ['0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266']"
 4. "Write contract MyToken function transfer args: ['0x70997970C51812dc3A010C7d01b50e0d17dc79C8', '1000000000000000000']"
 
-Works seamlessly with Wagmi CLI's generated code for type-safe contract interactions!
+### Token Operations (Built-in Support)
+1. "Transfer 100 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+2. "Get token balance USDC"
+3. "Approve token USDT spender 0xDEX_ADDRESS amount max"
+4. "Get token info DAI"
+
+### NFT Operations
+1. "Transfer NFT 0xNFT_ADDRESS to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 tokenId 123"
+2. "Get NFT owner 0xNFT_ADDRESS tokenId 123"
+3. "Get NFT info MyNFTContract tokenId 456"
+
+Works seamlessly with both Wagmi CLI's generated code and built-in contract support!
 
 ## Mock Accounts
 

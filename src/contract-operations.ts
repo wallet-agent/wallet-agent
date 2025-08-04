@@ -9,6 +9,7 @@ import {
 } from "viem";
 import { getAllChains } from "./chains.js";
 import { getContainer } from "./container.js";
+import { resolveContract } from "./contract-resolution.js";
 import {
 	createPrivateKeyWalletClient,
 	getCurrentWalletInfo,
@@ -61,27 +62,15 @@ export async function writeContract(params: ContractWriteParams): Promise<Hex> {
 		throw new Error("Current chain not found");
 	}
 
-	// Get contract config
-	let contractAddress = params.address;
-	const contractConfig = container.contractAdapter.getContract(
+	// Resolve contract
+	const resolved = await resolveContract(
 		params.contract,
+		params.address,
 		chainId,
+		container.contractAdapter,
 	);
 
-	if (!contractAddress) {
-		if (!contractConfig?.address) {
-			throw new Error(
-				`Contract ${params.contract} not found for chain ${chainId}. Please provide an address.`,
-			);
-		}
-		contractAddress = contractConfig.address;
-	}
-
-	const abi =
-		contractConfig?.abi || container.contractAdapter.getAbi(params.contract);
-	if (!abi) {
-		throw new Error(`ABI not found for contract ${params.contract}`);
-	}
+	const { address: contractAddress, abi } = resolved;
 
 	// Get wallet client
 	let walletClient: WalletClient;
@@ -130,27 +119,15 @@ export async function readContract(
 		throw new Error("Current chain not found");
 	}
 
-	// Get contract config
-	let contractAddress = params.address;
-	const contractConfig = container.contractAdapter.getContract(
+	// Resolve contract
+	const resolved = await resolveContract(
 		params.contract,
+		params.address,
 		chainId,
+		container.contractAdapter,
 	);
 
-	if (!contractAddress) {
-		if (!contractConfig?.address) {
-			throw new Error(
-				`Contract ${params.contract} not found for chain ${chainId}. Please provide an address.`,
-			);
-		}
-		contractAddress = contractConfig.address;
-	}
-
-	const abi =
-		contractConfig?.abi || container.contractAdapter.getAbi(params.contract);
-	if (!abi) {
-		throw new Error(`ABI not found for contract ${params.contract}`);
-	}
+	const { address: contractAddress, abi } = resolved;
 
 	// Get public client
 	const publicClient = getPublicClient(container.wagmiConfig, {

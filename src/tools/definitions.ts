@@ -319,4 +319,141 @@ export const toolDefinitions: Tool[] = [
 			required: ["contract", "function"],
 		},
 	},
+	{
+		name: "transfer_token",
+		description: "Transfer ERC-20 tokens to another address",
+		inputSchema: {
+			type: "object",
+			properties: {
+				token: {
+					type: "string",
+					description: "Token contract name, symbol (USDC), or address",
+				},
+				to: {
+					type: "string",
+					description: "Recipient address",
+				},
+				amount: {
+					type: "string",
+					description:
+						"Amount to transfer (in token units, e.g., '100' for 100 USDC)",
+				},
+			},
+			required: ["token", "to", "amount"],
+		},
+	},
+	{
+		name: "approve_token",
+		description: "Approve ERC-20 token spending",
+		inputSchema: {
+			type: "object",
+			properties: {
+				token: {
+					type: "string",
+					description: "Token contract name, symbol (USDC), or address",
+				},
+				spender: {
+					type: "string",
+					description: "Address to approve for spending",
+				},
+				amount: {
+					type: "string",
+					description:
+						"Amount to approve (in token units, or 'max' for unlimited)",
+				},
+			},
+			required: ["token", "spender", "amount"],
+		},
+	},
+	{
+		name: "get_token_balance",
+		description: "Get ERC-20 token balance",
+		inputSchema: {
+			type: "object",
+			properties: {
+				token: {
+					type: "string",
+					description: "Token contract name, symbol (USDC), or address",
+				},
+				address: {
+					type: "string",
+					description:
+						"Address to check balance for (defaults to connected wallet)",
+				},
+			},
+			required: ["token"],
+		},
+	},
+	{
+		name: "get_token_info",
+		description: "Get ERC-20 token information (name, symbol, decimals)",
+		inputSchema: {
+			type: "object",
+			properties: {
+				token: {
+					type: "string",
+					description: "Token contract name, symbol (USDC), or address",
+				},
+			},
+			required: ["token"],
+		},
+	},
+	{
+		name: "transfer_nft",
+		description: "Transfer an ERC-721 NFT to another address",
+		inputSchema: {
+			type: "object",
+			properties: {
+				nft: {
+					type: "string",
+					description: "NFT contract name or address",
+				},
+				to: {
+					type: "string",
+					description: "Recipient address",
+				},
+				tokenId: {
+					type: "string",
+					description: "Token ID to transfer",
+				},
+			},
+			required: ["nft", "to", "tokenId"],
+		},
+	},
+	{
+		name: "get_nft_owner",
+		description: "Get the owner of an ERC-721 NFT",
+		inputSchema: {
+			type: "object",
+			properties: {
+				nft: {
+					type: "string",
+					description: "NFT contract name or address",
+				},
+				tokenId: {
+					type: "string",
+					description: "Token ID to check",
+				},
+			},
+			required: ["nft", "tokenId"],
+		},
+	},
+	{
+		name: "get_nft_info",
+		description: "Get ERC-721 NFT information (name, symbol, tokenURI)",
+		inputSchema: {
+			type: "object",
+			properties: {
+				nft: {
+					type: "string",
+					description: "NFT contract name or address",
+				},
+				tokenId: {
+					type: "string",
+					description: "Token ID (optional for name/symbol)",
+				},
+			},
+			required: ["nft"],
+		},
+	},
 ];

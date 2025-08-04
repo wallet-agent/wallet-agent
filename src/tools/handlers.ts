@@ -23,6 +23,15 @@ import {
 	SwitchChainArgsSchema,
 } from "../schemas.js";
 import { signWalletMessage, signWalletTypedData } from "../signing.js";
+import {
+	approveToken,
+	getNFTInfo,
+	getNFTOwner,
+	getTokenBalance,
+	getTokenInfo,
+	transferNFT,
+	transferToken,
+} from "../token-operations.js";
 import { sendWalletTransaction, switchToChain } from "../transactions.js";
 import {
 	connectWallet,
@@ -499,6 +508,257 @@ export async function handleToolCall(request: CallToolRequest) {
 							{
 								type: "text",
 								text: `Contract read result: ${JSON.stringify(result, null, 2)}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "transfer_token": {
+				try {
+					const { token, to, amount } = z
+						.object({
+							token: z.string(),
+							to: z.string(),
+							amount: z.string(),
+						})
+						.parse(args);
+
+					const hash = await transferToken({
+						token,
+						to: to as Address,
+						amount,
+					});
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Token transfer successful!\nHash: ${hash}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "approve_token": {
+				try {
+					const { token, spender, amount } = z
+						.object({
+							token: z.string(),
+							spender: z.string(),
+							amount: z.string(),
+						})
+						.parse(args);
+
+					const hash = await approveToken({
+						token,
+						spender: spender as Address,
+						amount,
+					});
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Token approval successful!\nHash: ${hash}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "get_token_balance": {
+				try {
+					const { token, address } = z
+						.object({
+							token: z.string(),
+							address: z.string().optional(),
+						})
+						.parse(args);
+
+					const result = await getTokenBalance({
+						token,
+						...(address && { address: address as Address }),
+					});
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Token Balance: ${result.balance} ${result.symbol}\nDecimals: ${result.decimals}\nRaw: ${result.balanceRaw}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "get_token_info": {
+				try {
+					const { token } = z
+						.object({
+							token: z.string(),
+						})
+						.parse(args);
+
+					const info = await getTokenInfo(token);
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Token Information:\nName: ${info.name}\nSymbol: ${info.symbol}\nDecimals: ${info.decimals}\nAddress: ${info.address}\nWell-known: ${info.isWellKnown ? "Yes" : "No"}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "transfer_nft": {
+				try {
+					const { nft, to, tokenId } = z
+						.object({
+							nft: z.string(),
+							to: z.string(),
+							tokenId: z.string(),
+						})
+						.parse(args);
+
+					const hash = await transferNFT({
+						nft,
+						to: to as Address,
+						tokenId,
+					});
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `NFT transfer successful!\nHash: ${hash}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "get_nft_owner": {
+				try {
+					const { nft, tokenId } = z
+						.object({
+							nft: z.string(),
+							tokenId: z.string(),
+						})
+						.parse(args);
+
+					const owner = await getNFTOwner({ nft, tokenId });
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `NFT Owner: ${owner}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "get_nft_info": {
+				try {
+					const { nft, tokenId } = z
+						.object({
+							nft: z.string(),
+							tokenId: z.string().optional(),
+						})
+						.parse(args);
+
+					const info = await getNFTInfo({
+						nft,
+						...(tokenId && { tokenId }),
+					});
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `NFT Information:\nName: ${info.name}\nSymbol: ${info.symbol}${info.tokenURI ? `\nToken URI: ${info.tokenURI}` : ""}`,
 							},
 						],
 					};
