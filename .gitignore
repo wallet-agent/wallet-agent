@@ -32,4 +32,11 @@ yarn-error.log*
 # Testing
 coverage/
 .nyc_output/
-EOF < /dev/null
+
+# CI/CD
+.github/workflows/*.log
+
+# Temporary files
+*.tmp
+*.temp
+*~
