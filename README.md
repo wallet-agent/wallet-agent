@@ -19,26 +19,25 @@ An MCP (Model Context Protocol) server that enables AI coding tools like Claude 
 Run directly without installation:
 
 ```bash
-npx @shanev/wallet-agent
-# or
 bunx @shanev/wallet-agent
+# or
+npx @shanev/wallet-agent
 ```
 
 ## Installation
 
 ### For Claude Code
 
-#### Option 1: Using npx (Recommended)
+#### Option 1: Package Managers (Recommended)
 ```bash
+# Using bunx (recommended - faster)
+claude mcp add wallet-agent bunx @shanev/wallet-agent
+
+# Using npx (alternative)
 claude mcp add wallet-agent npx @shanev/wallet-agent
 ```
 
-#### Option 2: Using bunx
-```bash
-claude mcp add wallet-agent bunx @shanev/wallet-agent
-```
-
-#### Option 3: Local Installation
+#### Option 2: Local Installation
 1. Clone and build the project:
    ```bash
    git clone https://github.com/shanev/wallet-agent.git
@@ -53,6 +52,7 @@ claude mcp add wallet-agent bunx @shanev/wallet-agent
    ```
 
 The server will be available immediately. Verify it's running with `/mcp` in Claude Code.
+
 
 ## Available Tools
 
@@ -102,7 +102,7 @@ The server will be available immediately. Verify it's running with `/mcp` in Cla
 
 ## Using Real Wallets
 
-This server supports real wallet operations through private key import for **development and testing purposes**.
+This server supports real wallet operations through private key import for **development and testing purposes**. No environment variables are required by default - they're optional and only used for secure private key management.
 
 ### Security-First Approach for Claude Code
 
@@ -111,14 +111,23 @@ This server supports real wallet operations through private key import for **dev
 When using this tool with Claude Code, **NEVER** directly paste private keys into the chat. Instead:
 
 #### Option 1: Environment Variables (Recommended)
-1. Set your private key as an environment variable:
+
+**Setup Methods:**
+
+1. **When adding the MCP server** (Claude Code -e flag):
    ```bash
-   export WALLET_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+   claude mcp add wallet-agent bunx @shanev/wallet-agent -e WALLET_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
    ```
 
-2. Use natural language to request key import:
-   - "Import the private key from WALLET_PRIVATE_KEY environment variable"
-   - "Load my wallet from the environment"
+2. **In your shell environment** (for multiple wallets):
+   ```bash
+   export WALLET_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+   export WALLET_PRIVATE_KEY_2="0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+   ```
+
+**Then use natural language:**
+- "Import private key from WALLET_PRIVATE_KEY"
+- "Load my second wallet from WALLET_PRIVATE_KEY_2"
 
 #### Option 2: Secure File Approach
 1. Store your private key in a secure file outside your project:
