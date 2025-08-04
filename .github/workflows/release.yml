@@ -42,6 +42,8 @@ jobs:
 
     - name: Run tests
       run: bun test
+      env:
+        NODE_ENV: test
 
     - name: Build project
       run: bun run build
