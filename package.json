@@ -2,11 +2,23 @@
 	"name": "mcp-wallet",
 	"version": "0.1.0",
 	"description": "MCP server for Web3 wallet interactions using Wagmi mock connector",
+	"keywords": ["mcp", "model-context-protocol", "wallet", "web3", "wagmi", "ethereum"],
+	"author": "Shane Vitarana",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/shanev/mcp-wallet.git"
+	},
 	"main": "dist/index.js",
 	"type": "module",
 	"bin": {
 		"mcp-wallet": "./dist/index.js"
 	},
+	"files": [
+		"dist/**/*",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"build": "bun build src/index.ts --outdir dist --target node",
 		"dev": "bun run src/index.ts",
@@ -14,7 +26,8 @@
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
 		"format": "biome format --write .",
-		"check": "biome check --apply ."
+		"check": "biome check --apply .",
+		"prepublishOnly": "bun run build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.1.3",

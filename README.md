@@ -12,15 +12,22 @@ An MCP (Model Context Protocol) server that enables AI coding tools like Cursor 
 - **Balance Checking**: Query ETH balances for any address
 - **Resource Access**: Get wallet state and supported chains info
 
+## Quick Start
+
+Run directly without installation:
+
+```bash
+npx mcp-wallet
+# or
+bunx mcp-wallet
+```
+
 ## Installation
+
+For local development:
 
 ```bash
 bun install
-```
-
-## Building
-
-```bash
 bun run build
 ```
 
@@ -28,12 +35,31 @@ bun run build
 
 ### For Claude Desktop
 
-1. Build the project:
+#### Option 1: Using npx (Recommended)
+
+Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "mcp-wallet": {
+      "command": "npx",
+      "args": ["mcp-wallet"]
+    }
+  }
+}
+```
+
+#### Option 2: Local Installation
+
+1. Clone and build the project:
    ```bash
+   git clone https://github.com/shanev/mcp-wallet.git
+   cd mcp-wallet
+   bun install
    bun run build
    ```
 
-2. Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+2. Add to your Claude Desktop configuration:
    ```json
    {
      "mcpServers": {

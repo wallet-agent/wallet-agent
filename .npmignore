@@ -1,0 +1,13 @@
+src/
+examples/
+.claude/
+*.lock
+*.lockb
+tsconfig.json
+biome.json
+.gitignore
+claude_mcp_config.json
+.git/
+node_modules/
+*.log
+.DS_Store
