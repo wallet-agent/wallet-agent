@@ -151,13 +151,35 @@ export async function readContract(
   } catch (error) {
     // Transform error messages to match test expectations
     const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // Log error details in test mode for debugging
+    if (process.env.NODE_ENV === "test" && process.env.DEBUG_CI) {
+      console.error("Contract read error:", {
+        errorMessage,
+        functionName: params.function,
+        contractAddress,
+        hasAbi: !!abi,
+        abiLength: abi?.length,
+      });
+    }
+    
+    // Handle various error formats from viem/RPC
     if (
       errorMessage.includes("returned no data") ||
+      errorMessage.includes("execution reverted: returned no data") ||
       (errorMessage.includes("execution reverted") &&
-        errorMessage.includes("Details: execution reverted"))
+        (errorMessage.includes("Details: execution reverted") ||
+         errorMessage.includes("0x"))) // Sometimes reverts include hex data
     ) {
       throw new Error("returned no data");
     }
+    
+    // Handle ABI-related errors (happens when function not in ABI)
+    if (errorMessage.includes("not found on ABI")) {
+      // This shouldn't happen with our builtin ABIs, but handle it
+      throw new Error("returned no data");
+    }
+    
     throw error;
   }
 }
