@@ -60,3 +60,46 @@ jobs:
           exit 1
         fi
         echo "Build successful: dist/index.js found"
+
+  test-anvil:
+    name: Integration Tests (Anvil)
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      USE_REAL_ANVIL: true
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-bun-
+
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+
+    - name: Start Anvil via Docker
+      run: |
+        docker run -d --name anvil \
+          -p 8545:8545 \
+          -e ANVIL_IP_ADDR=0.0.0.0 \
+          ghcr.io/foundry-rs/foundry:latest \
+          anvil
+        sleep 2
+
+    - name: Run integration tests with Anvil
+      run: bun test test/integration/handlers/token.test.ts
+
+    - name: Stop Anvil
+      if: always()
+      run: docker stop anvil && docker rm anvil

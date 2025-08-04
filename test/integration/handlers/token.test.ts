@@ -1,4 +1,8 @@
-import { describe, it } from "bun:test";
+import { beforeAll, describe, it } from "bun:test";
+import {
+  deployTestContracts,
+  isAnvilRunning,
+} from "../../setup/deploy-contracts.js";
 import {
   expectToolExecutionError,
   expectToolSuccess,
@@ -18,6 +22,38 @@ describe("Token Operations Integration", () => {
   setupContainer();
   setupTokenTestTransport();
 
+  let testTokenAddress: string;
+  let testNFTAddress: string;
+  let useRealAnvil: boolean;
+
+  beforeAll(async () => {
+    useRealAnvil = process.env.USE_REAL_ANVIL === "true";
+
+    if (useRealAnvil) {
+      console.log("Using real Anvil blockchain for testing...");
+
+      // Check if Anvil is running
+      const anvilRunning = await isAnvilRunning();
+      if (!anvilRunning) {
+        throw new Error(
+          "Anvil is not running. Please start Anvil with: anvil --host 0.0.0.0 --port 8545",
+        );
+      }
+
+      console.log("Deploying test contracts to Anvil...");
+      const contracts = await deployTestContracts();
+      testTokenAddress = contracts.erc20;
+      testNFTAddress = contracts.erc721;
+      console.log(`Test ERC20 deployed at: ${testTokenAddress}`);
+      console.log(`Test ERC721 deployed at: ${testNFTAddress}`);
+    } else {
+      console.log("Using mock addresses for testing...");
+      // Use mock addresses for mock transport
+      testTokenAddress = MOCK_TOKEN_ADDRESS;
+      testNFTAddress = MOCK_NFT_ADDRESS;
+    }
+  });
+
   describe("transfer_token", () => {
     it("should validate required parameters", async () => {
       await expectToolValidationError("transfer_token", {
@@ -28,7 +64,7 @@ describe("Token Operations Integration", () => {
 
     it("should validate to address format", async () => {
       await expectToolValidationError("transfer_token", {
-        token: MOCK_TOKEN_ADDRESS,
+        token: testTokenAddress,
         to: "invalid-address",
         amount: "100",
       });
@@ -36,7 +72,7 @@ describe("Token Operations Integration", () => {
 
     it("should validate amount format", async () => {
       await expectToolValidationError("transfer_token", {
-        token: MOCK_TOKEN_ADDRESS,
+        token: testTokenAddress,
         to: TEST_ADDRESS_2,
         amount: "not-a-number",
       });
@@ -44,10 +80,11 @@ describe("Token Operations Integration", () => {
 
     it("should fail at contract level without wallet", async () => {
       // Without wallet connection, it still tries to read contract but fails
+      // Both mock and real Anvil return "returned no data" when no contract exists
       await expectToolExecutionError(
         "transfer_token",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
           to: TEST_ADDRESS_2,
           amount: "100",
         },
@@ -96,14 +133,14 @@ describe("Token Operations Integration", () => {
   describe("approve_token", () => {
     it("should validate required parameters", async () => {
       await expectToolValidationError("approve_token", {
-        token: MOCK_TOKEN_ADDRESS,
+        token: testTokenAddress,
         amount: "1000",
       });
     });
 
     it("should validate spender address", async () => {
       await expectToolValidationError("approve_token", {
-        token: MOCK_TOKEN_ADDRESS,
+        token: testTokenAddress,
         spender: "invalid-address",
         amount: "1000",
       });
@@ -111,10 +148,11 @@ describe("Token Operations Integration", () => {
 
     it("should fail at contract level without wallet", async () => {
       // Fails at contract interaction level before wallet check
+      // Both mock and real Anvil return "returned no data" when no contract exists
       await expectToolExecutionError(
         "approve_token",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
           spender: TEST_ADDRESS_2,
           amount: "1000",
         },
@@ -123,11 +161,11 @@ describe("Token Operations Integration", () => {
     });
 
     it("should accept max amount parsing", async () => {
-      // Test that "max" is properly parsed - fails at wallet check
+      // Test that "max" is properly parsed - fails at wallet check first
       await expectToolExecutionError(
         "approve_token",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
           spender: TEST_ADDRESS_2,
           amount: "max",
         },
@@ -139,7 +177,7 @@ describe("Token Operations Integration", () => {
   describe("get_token_balance", () => {
     it("should validate address format when provided", async () => {
       await expectToolValidationError("get_token_balance", {
-        token: MOCK_TOKEN_ADDRESS,
+        token: testTokenAddress,
         address: "invalid-address",
       });
     });
@@ -148,7 +186,7 @@ describe("Token Operations Integration", () => {
       await expectToolExecutionError(
         "get_token_balance",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
         },
         "No address provided and no wallet connected",
       );
@@ -160,10 +198,11 @@ describe("Token Operations Integration", () => {
       });
 
       // Will fail at contract level but validates the flow
+      // Both mock and real Anvil return "returned no data" when no contract exists
       await expectToolExecutionError(
         "get_token_balance",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
         },
         "returned no data",
       );
@@ -171,10 +210,11 @@ describe("Token Operations Integration", () => {
 
     it("should work with specific address", async () => {
       // Will fail at contract level but validates parameter handling
+      // Both mock and real Anvil return "returned no data" when no contract exists
       await expectToolExecutionError(
         "get_token_balance",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
           address: TEST_ADDRESS_2,
         },
         "returned no data",
@@ -189,10 +229,11 @@ describe("Token Operations Integration", () => {
 
     it("should handle raw addresses", async () => {
       // Will fail at contract level but validates address handling
+      // Both mock and real Anvil return "returned no data" when no contract exists
       await expectToolExecutionError(
         "get_token_info",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
         },
         "returned no data",
       );
@@ -213,14 +254,14 @@ describe("Token Operations Integration", () => {
   describe("transfer_nft", () => {
     it("should validate required parameters", async () => {
       await expectToolValidationError("transfer_nft", {
-        nft: MOCK_NFT_ADDRESS,
+        nft: testNFTAddress,
         to: TEST_ADDRESS_2,
       });
     });
 
     it("should validate tokenId format", async () => {
       await expectToolValidationError("transfer_nft", {
-        nft: MOCK_NFT_ADDRESS,
+        nft: testNFTAddress,
         to: TEST_ADDRESS_2,
         tokenId: "not-a-number",
       });
@@ -228,7 +269,7 @@ describe("Token Operations Integration", () => {
 
     it("should validate to address", async () => {
       await expectToolValidationError("transfer_nft", {
-        nft: MOCK_NFT_ADDRESS,
+        nft: testNFTAddress,
         to: "invalid-address",
         tokenId: "123",
       });
@@ -238,7 +279,7 @@ describe("Token Operations Integration", () => {
       await expectToolExecutionError(
         "transfer_nft",
         {
-          nft: MOCK_NFT_ADDRESS,
+          nft: testNFTAddress,
           to: TEST_ADDRESS_2,
           tokenId: "123",
         },
@@ -250,13 +291,13 @@ describe("Token Operations Integration", () => {
   describe("get_nft_owner", () => {
     it("should validate required parameters", async () => {
       await expectToolValidationError("get_nft_owner", {
-        nft: MOCK_NFT_ADDRESS,
+        nft: testNFTAddress,
       });
     });
 
     it("should validate tokenId format", async () => {
       await expectToolValidationError("get_nft_owner", {
-        nft: MOCK_NFT_ADDRESS,
+        nft: testNFTAddress,
         tokenId: "not-a-number",
       });
     });
@@ -282,7 +323,7 @@ describe("Token Operations Integration", () => {
 
     it("should validate tokenId when provided", async () => {
       await expectToolValidationError("get_nft_info", {
-        nft: MOCK_NFT_ADDRESS,
+        nft: testNFTAddress,
         tokenId: "not-a-number",
       });
     });
@@ -330,7 +371,7 @@ describe("Token Operations Integration", () => {
       await expectToolExecutionError(
         "get_token_info",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
         },
         "HTTP request failed", // Network error from fake RPC
       );
@@ -353,10 +394,11 @@ describe("Token Operations Integration", () => {
       });
 
       // Try token operation - should fail at contract level but validate the flow
+      // Both mock and real Anvil return "returned no data" when no contract exists
       await expectToolExecutionError(
         "transfer_token",
         {
-          token: MOCK_TOKEN_ADDRESS,
+          token: testTokenAddress,
           to: TEST_ADDRESS_2,
           amount: "25.75",
         },

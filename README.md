@@ -136,6 +136,40 @@ For local testing:
 claude mcp add wallet-agent bun /path/to/wallet-agent/dist/index.ts
 ```
 
+### Testing with Real Blockchain
+
+Run tests against real Anvil blockchain:
+
+```bash
+# Option 1: Start Anvil locally (requires Foundry installation)
+anvil --host 0.0.0.0 --port 8545
+
+# Option 2: Start Anvil via Docker (no Foundry installation needed)
+docker run -d --name anvil -p 8545:8545 -e ANVIL_IP_ADDR=0.0.0.0 ghcr.io/foundry-rs/foundry:latest anvil
+
+# In another terminal, run tests with real blockchain
+USE_REAL_ANVIL=true bun test
+
+# Or use npm script
+bun run test:anvil
+
+# Test specific handlers with Anvil
+bun run test:anvil:tokens
+
+# Clean up Docker container when done
+docker stop anvil && docker rm anvil
+```
+
+The integration tests support two modes:
+- **Mock Mode** (default): Uses Wagmi's mock connector for fast testing
+- **Anvil Mode** (`USE_REAL_ANVIL=true`): Tests against real Anvil blockchain
+
+Anvil testing provides:
+- Real blockchain transaction validation
+- Proper gas estimation testing
+- Contract interaction verification
+- Network error handling
+
 ## Security
 
 - Private keys stored in memory only
