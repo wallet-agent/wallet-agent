@@ -198,6 +198,11 @@ export class TransactionEffects {
       if (!receipt) {
         return null;
       }
+      
+      // Viem might return a receipt with null values instead of null itself
+      if (!receipt.blockNumber && !receipt.gasUsed) {
+        return null;
+      }
 
       const { totalEth } = calculateTransactionCost(
         receipt.gasUsed,
@@ -214,12 +219,13 @@ export class TransactionEffects {
         from: receipt.from,
         to: receipt.to || null,
         contractAddress: receipt.contractAddress || null,
-        logs: receipt.logs.length,
+        logs: receipt.logs?.length || 0,
         symbol: chain.nativeCurrency.symbol,
       };
     } catch (error: any) {
       // Handle viem's TransactionReceiptNotFoundError
-      if (error.name === "TransactionReceiptNotFoundError") {
+      if (error.name === "TransactionReceiptNotFoundError" || 
+          error.message?.includes("Transaction receipt not found")) {
         return null;
       }
       throw new Error(`Failed to get transaction receipt: ${error}`);

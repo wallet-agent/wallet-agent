@@ -940,6 +940,7 @@ export async function handleToolCall(request: CallToolRequest) {
           const container = getContainer();
           const receipt =
             await container.transactionEffects.getTransactionReceipt(hash);
+          
 
           if (!receipt) {
             return {

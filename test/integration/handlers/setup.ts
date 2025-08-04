@@ -6,6 +6,7 @@ import {
   privateKeyWallets,
 } from "../../../src/container.js";
 import { handleToolCall } from "../../../src/tools/handlers.js";
+import "../../setup-transport.js";
 
 // Test addresses
 export const TEST_ADDRESS_1 = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";

@@ -150,8 +150,11 @@ export async function readContract(
     return result;
   } catch (error: any) {
     // Transform error messages to match test expectations
-    if (error.message?.includes("returned no data") || 
-        (error.message?.includes("execution reverted") && error.message?.includes("Details: execution reverted"))) {
+    if (
+      error.message?.includes("returned no data") ||
+      (error.message?.includes("execution reverted") &&
+        error.message?.includes("Details: execution reverted"))
+    ) {
       throw new Error("returned no data");
     }
     throw error;
