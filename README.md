@@ -37,17 +37,18 @@ bun run build
 
 #### Option 1: Using npx (Recommended)
 
-Add to your Claude Code settings by running:
+Add the MCP server to Claude Code:
 ```bash
-claude code config add-mcp-server
+claude mcp add mcp-wallet npx mcp-wallet
 ```
 
-When prompted:
-- Server name: `mcp-wallet`
-- Command: `npx`
-- Arguments: `mcp-wallet`
+#### Option 2: Using bunx
 
-#### Option 2: Local Installation
+```bash
+claude mcp add mcp-wallet bunx mcp-wallet
+```
+
+#### Option 3: Local Installation
 
 1. Clone and build the project:
    ```bash
@@ -59,15 +60,10 @@ When prompted:
 
 2. Add to Claude Code:
    ```bash
-   claude code config add-mcp-server
+   claude mcp add mcp-wallet bun /path/to/mcp-wallet/dist/index.ts
    ```
-   
-   When prompted:
-   - Server name: `mcp-wallet`
-   - Command: `node`
-   - Arguments: `/path/to/mcp-wallet/dist/index.js`
 
-3. The server will be available in your next Claude Code session
+The server will be available immediately. You can verify it's running with the `/mcp` command in Claude Code.
 
 ### Available Tools
 
