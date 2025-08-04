@@ -1,6 +1,6 @@
 # MCP Wallet Server
 
-An MCP (Model Context Protocol) server that enables AI coding tools like Cursor and Claude Code to interact with Web3 wallets. Built using Wagmi's mock wallet connector for safe, deterministic wallet operations without requiring a real browser extension.
+An MCP (Model Context Protocol) server that enables AI coding tools like Claude Code and Cursor to interact with Web3 wallets. Built using Wagmi's mock wallet connector for safe, deterministic wallet operations without requiring a real browser extension.
 
 ## Features
 
@@ -33,21 +33,19 @@ bun run build
 
 ## Usage
 
-### For Claude Desktop
+### For Claude Code
 
 #### Option 1: Using npx (Recommended)
 
-Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json`):
-```json
-{
-  "mcpServers": {
-    "mcp-wallet": {
-      "command": "npx",
-      "args": ["mcp-wallet"]
-    }
-  }
-}
+Add to your Claude Code settings by running:
+```bash
+claude code config add-mcp-server
 ```
+
+When prompted:
+- Server name: `mcp-wallet`
+- Command: `npx`
+- Arguments: `mcp-wallet`
 
 #### Option 2: Local Installation
 
@@ -59,19 +57,17 @@ Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/
    bun run build
    ```
 
-2. Add to your Claude Desktop configuration:
-   ```json
-   {
-     "mcpServers": {
-       "mcp-wallet": {
-         "command": "node",
-         "args": ["/path/to/mcp-wallet/dist/index.js"]
-       }
-     }
-   }
+2. Add to Claude Code:
+   ```bash
+   claude code config add-mcp-server
    ```
+   
+   When prompted:
+   - Server name: `mcp-wallet`
+   - Command: `node`
+   - Arguments: `/path/to/mcp-wallet/dist/index.js`
 
-3. Restart Claude Desktop
+3. The server will be available in your next Claude Code session
 
 ### Available Tools
 
