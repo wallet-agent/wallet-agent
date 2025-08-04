@@ -12,6 +12,7 @@ An MCP (Model Context Protocol) server that enables AI coding tools like Claude 
 - **Balance Checking**: Query native token balances for any address
 - **Resource Access**: Get wallet state and supported chains info
 - **Real Wallet Support**: Import private keys for real blockchain interactions
+- **Custom Chain Support**: Add any EVM-compatible blockchain with custom RPC endpoints
 
 ## Quick Start
 
@@ -25,32 +26,19 @@ bunx mcp-wallet
 
 ## Installation
 
-For local development:
-
-```bash
-bun install
-bun run build
-```
-
-## Usage
-
 ### For Claude Code
 
 #### Option 1: Using npx (Recommended)
-
-Add the MCP server to Claude Code:
 ```bash
 claude mcp add mcp-wallet npx mcp-wallet
 ```
 
 #### Option 2: Using bunx
-
 ```bash
 claude mcp add mcp-wallet bunx mcp-wallet
 ```
 
 #### Option 3: Local Installation
-
 1. Clone and build the project:
    ```bash
    git clone https://github.com/shanev/mcp-wallet.git
@@ -64,37 +52,72 @@ claude mcp add mcp-wallet bunx mcp-wallet
    claude mcp add mcp-wallet bun /path/to/mcp-wallet/dist/index.ts
    ```
 
-The server will be available immediately. You can verify it's running with the `/mcp` command in Claude Code.
+The server will be available immediately. Verify it's running with `/mcp` in Claude Code.
 
-### Available Tools
+## Available Tools
 
-- `connect_wallet`: Connect to a wallet using a mock address
-- `disconnect_wallet`: Disconnect the current wallet
-- `get_accounts`: List all available mock accounts
-- `get_current_account`: Get current connection status
-- `sign_message`: Sign a plain text message
-- `sign_typed_data`: Sign EIP-712 typed data
-- `send_transaction`: Send ETH or interact with contracts
-- `switch_chain`: Change the active blockchain network (supports Mainnet, Sepolia, Polygon, and Anvil local testnet)
-- `get_balance`: Check ETH balance of an address
-- `add_custom_chain`: Add a custom blockchain network with RPC endpoint
+### Wallet Management
+- `connect_wallet` - Connect to a wallet address
+- `disconnect_wallet` - Disconnect the current wallet
+- `get_accounts` - List all available accounts (mock or imported)
+- `get_current_account` - Get current connection status
+- `get_wallet_info` - Show current wallet configuration
+
+### Real Wallet Support
+- `import_private_key` - Import a private key for real transactions
+- `list_imported_wallets` - Show all imported wallets
+- `remove_private_key` - Remove an imported wallet
+- `set_wallet_type` - Switch between mock and private key wallets
+
+### Signing & Transactions
+- `sign_message` - Sign a plain text message
+- `sign_typed_data` - Sign EIP-712 typed data
+- `send_transaction` - Send native tokens or interact with contracts
+- `get_balance` - Check native token balance of any address
+
+### Chain Management
+- `switch_chain` - Change the active blockchain network
+- `add_custom_chain` - Add a custom EVM-compatible blockchain
 
 ### Available Resources
+- `wallet://state` - Current wallet connection state
+- `wallet://chains` - List of supported blockchain networks
 
-- `wallet://state`: Current wallet connection state
-- `wallet://chains`: List of supported blockchain networks (including custom chains)
+## Using Real Wallets
+
+This server supports real wallet operations through private key import:
+
+### 1. Import a Private Key
+```bash
+import_private_key privateKey="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+```
+
+### 2. Switch to Private Key Mode
+```bash
+set_wallet_type type="privateKey"
+```
+
+### 3. Connect Your Wallet
+```bash
+connect_wallet address="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+```
+
+### 4. Use As Normal
+All operations now use your real wallet on any EVM chain!
+
+### Security Considerations
+
+⚠️ **CRITICAL SECURITY WARNINGS**
+- Never share or commit private keys
+- Use environment variables for production
+- Consider using a dedicated wallet for testing
+- Private keys are stored in memory only
 
 ## Custom Chains
 
-You can add custom blockchain networks using the `add_custom_chain` tool. This is useful for:
-- Private networks
-- Local test networks (other than Anvil)
-- EVM-compatible chains not included by default
-- Custom RPC endpoints for existing chains
+Add any EVM-compatible blockchain:
 
-Example:
 ```javascript
-// Add a custom network
 await add_custom_chain({
   chainId: 1337,
   name: "Local Network",
@@ -111,27 +134,94 @@ await add_custom_chain({
 await switch_chain({ chainId: 1337 });
 ```
 
+## Example Usage
+
+### Basic Flow
+1. "List the available accounts"
+2. "Connect to address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+3. "Check my current balance"
+4. "Sign the message 'Hello Web3!'"
+5. "Switch to Polygon network"
+6. "Send 0.5 MATIC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+
+### Real Wallet Flow
+1. "Import my private key" (provide key)
+2. "Set wallet type to privateKey"
+3. "Connect to my wallet address"
+4. "Check balance on mainnet"
+5. "Sign a message for authentication"
+
 ## Mock Accounts
 
-The server includes three pre-configured mock accounts:
+Three pre-configured accounts for testing:
 - `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`
 - `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`
 - `0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
 
-## Development
+## Architecture
 
-Run in development mode:
-```bash
-bun run dev
+### How It Works
+```
+MCP Server (Node.js)
+    ↓
+Wagmi Core + Viem
+    ↓
+Mock Connector / Private Key Wallet
+    ↓
+EVM RPC (HTTP)
+    ↓
+Blockchain
 ```
 
-## Why Not Dappwright / Synpress?
+### Why This Approach?
 
-While these are excellent for E2E testing with real MetaMask browser extensions, this MCP server takes a different approach:
+**Mock Wallets**: Perfect for development and testing
+- No browser required
+- Deterministic behavior
+- Instant transaction approval
 
-- **No Browser Required**: Uses Wagmi's mock connector for lightweight, headless operation
-- **MCP Native**: Built specifically for the Model Context Protocol
-- **Deterministic**: Mock wallets provide consistent, predictable behavior
-- **Fast**: No browser automation overhead
+**Private Key Wallets**: For real blockchain interactions
+- Works in Node.js environment
+- Full control over transactions
+- Compatible with all EVM chains
 
-This makes it ideal for AI-assisted development where you need quick, reliable wallet interactions without the complexity of browser automation.
+**Not Using Browser Wallets**: MetaMask and similar extensions require browser context which MCP servers don't have. Private key import provides a secure alternative.
+
+## Development
+
+```bash
+# Install dependencies
+bun install
+
+# Run in development
+bun run dev
+
+# Build for production
+bun run build
+
+# Type checking
+bun run typecheck
+
+# Linting
+bun run lint
+```
+
+## Troubleshooting
+
+### "No private keys imported"
+Run `import_private_key` first, then check with `list_imported_wallets`
+
+### "Invalid private key format"
+Private keys must start with "0x" and be 66 characters total
+
+### Transaction Failures
+- Check account balance
+- Verify you're on the correct network
+- Ensure sufficient gas for transactions
+
+### Chain Not Supported
+Use `add_custom_chain` to add any EVM-compatible network
+
+## License
+
+MIT
