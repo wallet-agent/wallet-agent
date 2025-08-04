@@ -236,4 +236,87 @@ export const toolDefinitions: Tool[] = [
 			properties: {},
 		},
 	},
+	{
+		name: "load_wagmi_config",
+		description: "Load contract ABIs from a Wagmi-generated file",
+		inputSchema: {
+			type: "object",
+			properties: {
+				filePath: {
+					type: "string",
+					description:
+						"Path to the Wagmi generated file (e.g., './src/generated.ts')",
+				},
+			},
+			required: ["filePath"],
+		},
+	},
+	{
+		name: "list_contracts",
+		description: "List all available contracts from Wagmi config",
+		inputSchema: {
+			type: "object",
+			properties: {},
+		},
+	},
+	{
+		name: "write_contract",
+		description: "Write to a smart contract using Wagmi-generated ABIs",
+		inputSchema: {
+			type: "object",
+			properties: {
+				contract: {
+					type: "string",
+					description: "Contract name from Wagmi config",
+				},
+				address: {
+					type: "string",
+					description:
+						"Contract address (optional if address is in Wagmi config for current chain)",
+				},
+				function: {
+					type: "string",
+					description: "Function name to call",
+				},
+				args: {
+					type: "array",
+					description: "Function arguments",
+					items: {},
+				},
+				value: {
+					type: "string",
+					description: "ETH value to send with transaction (optional)",
+				},
+			},
+			required: ["contract", "function"],
+		},
+	},
+	{
+		name: "read_contract",
+		description: "Read from a smart contract using Wagmi-generated ABIs",
+		inputSchema: {
+			type: "object",
+			properties: {
+				contract: {
+					type: "string",
+					description: "Contract name from Wagmi config",
+				},
+				address: {
+					type: "string",
+					description:
+						"Contract address (optional if address is in Wagmi config for current chain)",
+				},
+				function: {
+					type: "string",
+					description: "Function name to call",
+				},
+				args: {
+					type: "array",
+					description: "Function arguments",
+					items: {},
+				},
+			},
+			required: ["contract", "function"],
+		},
+	},
 ];

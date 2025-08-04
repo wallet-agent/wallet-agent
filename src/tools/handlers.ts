@@ -1,8 +1,15 @@
 import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js";
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
+import type { Address } from "viem";
 import { z } from "zod";
 import { addCustomChain } from "../chains.js";
 import { mockAccounts } from "../container.js";
+import {
+	listContracts,
+	loadWagmiConfig,
+	readContract,
+	writeContract,
+} from "../contract-operations.js";
 import {
 	AddCustomChainArgsSchema,
 	ConnectWalletArgsSchema,
@@ -361,6 +368,152 @@ export async function handleToolCall(request: CallToolRequest) {
 						},
 					],
 				};
+			}
+
+			case "load_wagmi_config": {
+				try {
+					const { filePath } = z
+						.object({
+							filePath: z.string(),
+						})
+						.parse(args);
+					await loadWagmiConfig(filePath);
+					const contracts = listContracts();
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Loaded ${contracts.length} contracts from ${filePath}:\n${contracts.map((c) => `- ${c.name} (chains: ${c.chains.join(", ")})`).join("\n")}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "list_contracts": {
+				const contracts = listContracts();
+				if (contracts.length === 0) {
+					return {
+						content: [
+							{
+								type: "text",
+								text: "No contracts loaded. Use 'load_wagmi_config' to load contracts from a Wagmi-generated file.",
+							},
+						],
+					};
+				}
+				return {
+					content: [
+						{
+							type: "text",
+							text: `Available contracts:\n${contracts.map((c) => `- ${c.name} (chains: ${c.chains.length > 0 ? c.chains.join(", ") : "no addresses configured"})`).join("\n")}`,
+						},
+					],
+				};
+			}
+
+			case "write_contract": {
+				try {
+					const {
+						contract,
+						address,
+						function: functionName,
+						args: functionArgs,
+						value,
+					} = z
+						.object({
+							contract: z.string(),
+							address: z.string().optional(),
+							function: z.string(),
+							args: z.array(z.unknown()).optional(),
+							value: z.string().optional(),
+						})
+						.parse(args);
+
+					const hash = await writeContract({
+						contract,
+						function: functionName,
+						...(address && { address: address as Address }),
+						...(functionArgs && { args: functionArgs }),
+						...(value && { value }),
+					});
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Transaction sent successfully!\nHash: ${hash}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
+			}
+
+			case "read_contract": {
+				try {
+					const {
+						contract,
+						address,
+						function: functionName,
+						args: functionArgs,
+					} = z
+						.object({
+							contract: z.string(),
+							address: z.string().optional(),
+							function: z.string(),
+							args: z.array(z.unknown()).optional(),
+						})
+						.parse(args);
+
+					const result = await readContract({
+						contract,
+						function: functionName,
+						...(address && { address: address as Address }),
+						...(functionArgs && { args: functionArgs }),
+					});
+
+					return {
+						content: [
+							{
+								type: "text",
+								text: `Contract read result: ${JSON.stringify(result, null, 2)}`,
+							},
+						],
+					};
+				} catch (error) {
+					if (error instanceof z.ZodError) {
+						throw new McpError(
+							ErrorCode.InvalidParams,
+							`Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+						);
+					}
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						error instanceof Error ? error.message : String(error),
+					);
+				}
 			}
 
 			default:

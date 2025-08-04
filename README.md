@@ -79,6 +79,12 @@ The server will be available immediately. Verify it's running with `/mcp` in Cla
 - `switch_chain` - Change the active blockchain network
 - `add_custom_chain` - Add a custom EVM-compatible blockchain
 
+### Smart Contract Interaction
+- `load_wagmi_config` - Load contract ABIs from Wagmi-generated files
+- `list_contracts` - List available contracts
+- `write_contract` - Execute contract write functions
+- `read_contract` - Read contract state
+
 ### Available Resources
 - `wallet://state` - Current wallet connection state
 - `wallet://chains` - List of supported blockchain networks
@@ -150,6 +156,14 @@ await switch_chain({ chainId: 1337 });
 3. "Connect to my wallet address"
 4. "Check balance on mainnet"
 5. "Sign a message for authentication"
+
+### Smart Contract Interaction
+1. "Load Wagmi config from ./src/generated.ts"
+2. "List available contracts"
+3. "Read contract MyToken function balanceOf args: ['0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266']"
+4. "Write contract MyToken function transfer args: ['0x70997970C51812dc3A010C7d01b50e0d17dc79C8', '1000000000000000000']"
+
+Works seamlessly with Wagmi CLI's generated code for type-safe contract interactions!
 
 ## Mock Accounts
 
