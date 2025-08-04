@@ -35,6 +35,10 @@ src/
 
 ## Development Standards
 
+When building:
+- Use bun instead of npm
+- Use bunx instead of npx
+
 ### Adding New Tools
 
 When adding new MCP tools:
