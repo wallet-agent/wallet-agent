@@ -25,11 +25,11 @@ import { type Address, formatEther, http, parseEther } from "viem";
 import { mainnet, polygon, sepolia } from "viem/chains";
 
 // Initialize mock accounts
-const mockAccounts: Address[] = [
+const mockAccounts = [
 	"0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
 	"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
 	"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-];
+] as const satisfies readonly Address[];
 
 // Create Wagmi config with mock connector
 const config = createConfig({
@@ -207,21 +207,28 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 // Handle tool execution
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-	const { name, arguments: args } = request.params;
+	const { name, arguments: args = {} } = request.params;
 
 	try {
 		switch (name) {
 			case "connect_wallet": {
 				const address = args.address as Address;
-				if (!mockAccounts.includes(address)) {
+				const isValidAccount = mockAccounts.some(
+					(account) => account.toLowerCase() === address.toLowerCase(),
+				);
+				if (!isValidAccount) {
 					throw new McpError(
 						ErrorCode.InvalidParams,
 						`Address ${address} is not in the list of mock accounts`,
 					);
 				}
 
+				const connector = config.connectors[0];
+				if (!connector) {
+					throw new McpError(ErrorCode.InternalError, "No connector available");
+				}
 				const result = await connect(config, {
-					connector: config.connectors[0],
+					connector,
 				});
 				connectedAddress = address;
 
@@ -261,7 +268,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 			}
 
 			case "get_current_account": {
-				const account = await getAccount(config);
+				const account = getAccount(config);
 
 				return {
 					content: [
@@ -342,7 +349,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 			case "switch_chain": {
 				const chainId = args.chainId as number;
-				await switchChain(config, { chainId });
+				await switchChain(config, { chainId: chainId as 1 | 11155111 | 137 });
 				currentChainId = chainId;
 
 				return {
@@ -366,14 +373,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 				const balance = await getBalance(config, {
 					address,
-					chainId: currentChainId,
+					chainId: currentChainId as 1 | 11155111 | 137,
 				});
 
 				return {
 					content: [
 						{
 							type: "text",
-							text: `Balance: ${formatEther(balance)} ETH`,
+							text: `Balance: ${formatEther(balance.value)} ETH`,
 						},
 					],
 				};
@@ -419,7 +426,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 
 	switch (uri) {
 		case "wallet://state": {
-			const account = await getAccount(config);
+			const account = getAccount(config);
 			return {
 				contents: [
 					{
