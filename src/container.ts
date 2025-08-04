@@ -49,9 +49,11 @@ export class Container {
   private constructor() {
     // Debug logging for CI
     if (process.env.CI === "true") {
-      console.log(`[CI Debug] Container constructor called with NODE_ENV=${process.env.NODE_ENV}`);
+      console.log(
+        `[CI Debug] Container constructor called with NODE_ENV=${process.env.NODE_ENV}`,
+      );
     }
-    
+
     // Initialize chain adapter
     this.chainAdapter = new ChainAdapterImpl(builtInChains, customChains);
 
@@ -187,21 +189,27 @@ export class Container {
       request: async (args: any) => {
         // Debug logging for CI
         if (process.env.CI === "true") {
-          console.log(`[CI Debug] NODE_ENV=${process.env.NODE_ENV}, method=${args.method}`);
+          console.log(
+            `[CI Debug] NODE_ENV=${process.env.NODE_ENV}, method=${args.method}`,
+          );
         }
-        
+
         // Check NODE_ENV at request time
         if (process.env.NODE_ENV === "test") {
           // Debug logging for CI
           if (process.env.CI === "true") {
-            console.log(`[CI Debug] Using mock transport for method=${args.method}`);
+            console.log(
+              `[CI Debug] Using mock transport for method=${args.method}`,
+            );
           }
           // Use mock transport logic
           return this.handleMockRequest(chain, args);
         }
         // Debug logging for CI
         if (process.env.CI === "true") {
-          console.log(`[CI Debug] Using real HTTP transport for method=${args.method}, rpcUrl=${chain.rpcUrls.default.http[0]}`);
+          console.log(
+            `[CI Debug] Using real HTTP transport for method=${args.method}, rpcUrl=${chain.rpcUrls.default.http[0]}`,
+          );
         }
         // Use real HTTP transport
         const realTransport = http(chain.rpcUrls.default.http[0]);

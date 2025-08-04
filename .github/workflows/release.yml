@@ -13,6 +13,8 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
     
     steps:
     - name: Checkout code
@@ -42,8 +44,6 @@ jobs:
 
     - name: Run tests
       run: bun test
-      env:
-        NODE_ENV: test
 
     - name: Build project
       run: bun run build
