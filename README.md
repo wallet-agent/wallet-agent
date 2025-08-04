@@ -12,12 +12,58 @@ claude mcp add wallet-agent bunx @shanev/wallet-agent
 
 Verify with `/mcp` in Claude Code.
 
-## Core Features
+## Available Tools
 
-- **Wallets**: Connect, sign messages, send transactions
-- **Chains**: Switch networks, add custom EVMs  
-- **Tokens**: Transfer ERC-20/721, check balances
-- **Contracts**: Read/write via Wagmi or built-in ABIs
+### Wallet Management
+- `connect_wallet` - Connect to a wallet using the specified address
+- `disconnect_wallet` - Disconnect the currently connected wallet
+- `get_accounts` - Get the list of available mock accounts
+- `get_current_account` - Get the currently connected account information
+- `get_wallet_info` - Get current wallet configuration info
+- `get_balance` - Get the balance of an address
+
+### Transaction Operations
+- `send_transaction` - Send a transaction
+- `estimate_gas` - Estimate gas for a transaction before sending
+- `get_transaction_status` - Get the status of a transaction by its hash
+- `get_transaction_receipt` - Get detailed receipt of a mined transaction
+- `simulate_transaction` - Simulate a contract transaction before sending
+
+### Signing
+- `sign_message` - Sign a message with the connected wallet
+- `sign_typed_data` - Sign EIP-712 typed data
+
+### Chain Management
+- `switch_chain` - Switch to a different chain
+- `add_custom_chain` - Add a custom EVM-compatible blockchain network
+- `update_custom_chain` - Update an existing custom chain's configuration
+- `remove_custom_chain` - Remove a previously added custom chain
+
+### Token Operations (ERC-20)
+- `transfer_token` - Transfer ERC-20 tokens to another address
+- `approve_token` - Approve ERC-20 token spending
+- `get_token_balance` - Get ERC-20 token balance
+- `get_token_info` - Get ERC-20 token information (name, symbol, decimals)
+
+### NFT Operations (ERC-721)
+- `transfer_nft` - Transfer an ERC-721 NFT to another address
+- `get_nft_owner` - Get the owner of an ERC-721 NFT
+- `get_nft_info` - Get ERC-721 NFT information (name, symbol, tokenURI)
+
+### Contract Operations
+- `load_wagmi_config` - Load contract ABIs from a Wagmi-generated file
+- `list_contracts` - List all available contracts from Wagmi config
+- `read_contract` - Read from a smart contract using Wagmi-generated ABIs
+- `write_contract` - Write to a smart contract using Wagmi-generated ABIs
+
+### Private Key Management
+- `import_private_key` - Import a private key from environment variable or file
+- `list_imported_wallets` - List all imported private key wallets
+- `remove_private_key` - Remove an imported private key
+- `set_wallet_type` - Switch between mock and private key wallets
+
+### ENS
+- `resolve_ens_name` - Resolve an ENS name to an Ethereum address (mainnet only)
 
 ## Usage Examples
 
