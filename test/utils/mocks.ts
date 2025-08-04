@@ -1,5 +1,5 @@
 import { mock } from "bun:test";
-import type { Address, Chain } from "viem";
+import type { Address, Chain, WalletClient } from "viem";
 import type {
 	ChainAdapter,
 	WalletAdapter,
@@ -36,15 +36,24 @@ export function createMockWalletAdapter(): WalletAdapter {
  */
 export function createMockWalletClientFactory(): WalletClientFactory {
 	return {
-		createWalletClient: mock(() => ({
-			account: {
-				address: testAddresses.privateKey1,
-				type: "local",
-			},
-			signMessage: mock(async () => "0xprivatekey-signature"),
-			signTypedData: mock(async () => "0xprivatekey-typedsignature"),
-			sendTransaction: mock(async () => "0xprivatekey-txhash" as `0x${string}`),
-		})) as any,
+		createWalletClient: mock(() => {
+			const mockClient = {
+				account: {
+					address: testAddresses.privateKey1,
+					type: "local" as const,
+				},
+				signMessage: mock(
+					async () => "0xprivatekey-signature" as `0x${string}`,
+				),
+				signTypedData: mock(
+					async () => "0xprivatekey-typedsignature" as `0x${string}`,
+				),
+				sendTransaction: mock(
+					async () => "0xprivatekey-txhash" as `0x${string}`,
+				),
+			};
+			return mockClient as unknown as WalletClient;
+		}),
 	};
 }
 

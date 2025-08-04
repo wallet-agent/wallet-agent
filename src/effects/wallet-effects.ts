@@ -143,7 +143,8 @@ export class WalletEffects {
 				this.connectedAddress,
 				chain,
 			);
-			return await (walletClient as any).signMessage({ message });
+			// @ts-expect-error - Viem types are complex, wallet client has signMessage
+			return await walletClient.signMessage({ message });
 		}
 
 		return await this.mockWalletAdapter.signMessage(message);
@@ -167,12 +168,13 @@ export class WalletEffects {
 				this.connectedAddress,
 				chain,
 			);
-			return await walletClient.signTypedData({
+			const typedDataParams = {
 				domain: params.domain,
 				types: params.types,
 				primaryType: params.primaryType,
 				message: params.message,
-			} as any);
+			} as Parameters<typeof walletClient.signTypedData>[0];
+			return await walletClient.signTypedData(typedDataParams);
 		}
 
 		return await this.mockWalletAdapter.signTypedData(params);
@@ -195,7 +197,8 @@ export class WalletEffects {
 				this.connectedAddress,
 				chain,
 			);
-			return await (walletClient as any).sendTransaction(params);
+			// @ts-expect-error - Viem types are complex, wallet client has sendTransaction
+			return await walletClient.sendTransaction(params);
 		}
 
 		return await this.mockWalletAdapter.sendTransaction(params);

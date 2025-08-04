@@ -4,15 +4,11 @@ import {
 	AddressSchema,
 	ChainConfigSchema,
 	ConnectWalletArgsSchema,
-	GetBalanceArgsSchema,
 	HexStringSchema,
-	ImportPrivateKeyArgsSchema,
 	PrivateKeySchema,
-	RemovePrivateKeyArgsSchema,
 	SendTransactionArgsSchema,
 	SetWalletTypeArgsSchema,
 	SignMessageArgsSchema,
-	SignTypedDataArgsSchema,
 	SwitchChainArgsSchema,
 } from "../src/schemas";
 

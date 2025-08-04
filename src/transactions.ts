@@ -1,5 +1,4 @@
 import type { Address } from "viem";
-import { parseEther } from "viem";
 import { getContainer } from "./container.js";
 
 export async function sendWalletTransaction(params: {
@@ -7,7 +6,8 @@ export async function sendWalletTransaction(params: {
 	value: string;
 	data?: `0x${string}`;
 }) {
-	const value = parseEther(params.value);
+	// Value is already in wei (as a string)
+	const value = BigInt(params.value);
 	return getContainer().walletEffects.sendTransaction({
 		to: params.to,
 		value,
