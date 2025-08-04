@@ -1,5 +1,5 @@
 {
-	"name": "wallet-agent",
+	"name": "@shanev/wallet-agent",
 	"version": "0.1.0",
 	"description": "MCP server for Web3 wallet interactions on EVM-compatible chains using Wagmi",
 	"keywords": [

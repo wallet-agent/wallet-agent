@@ -19,9 +19,9 @@ An MCP (Model Context Protocol) server that enables AI coding tools like Claude 
 Run directly without installation:
 
 ```bash
-npx wallet-agent
+npx @shanev/wallet-agent
 # or
-bunx wallet-agent
+bunx @shanev/wallet-agent
 ```
 
 ## Installation
@@ -30,12 +30,12 @@ bunx wallet-agent
 
 #### Option 1: Using npx (Recommended)
 ```bash
-claude mcp add wallet-agent npx wallet-agent
+claude mcp add wallet-agent npx @shanev/wallet-agent
 ```
 
 #### Option 2: Using bunx
 ```bash
-claude mcp add wallet-agent bunx wallet-agent
+claude mcp add wallet-agent bunx @shanev/wallet-agent
 ```
 
 #### Option 3: Local Installation
