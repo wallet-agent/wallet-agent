@@ -26,8 +26,8 @@ describe("Private Key Management Tools Integration", () => {
 		test("should validate private key format", async () => {
 			await expectToolValidationError(
 				"import_private_key",
-				{ privateKey: "not-a-private-key" },
-				"Private key must be 32 bytes",
+				{ privateKey: "0xnotavalidprivatekey" },
+				"Private key must be 32 bytes (64 hex characters) prefixed with 0x",
 			);
 		});
 
@@ -35,7 +35,7 @@ describe("Private Key Management Tools Integration", () => {
 			await expectToolValidationError(
 				"import_private_key",
 				{ privateKey: "0x1234" },
-				"Private key must be 32 bytes",
+				"Private key must be 32 bytes (64 hex characters) prefixed with 0x",
 			);
 		});
 
@@ -46,7 +46,7 @@ describe("Private Key Management Tools Integration", () => {
 					privateKey:
 						"ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
 				},
-				"Private key must be 32 bytes",
+				"Environment variable ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 is not set",
 			);
 		});
 
