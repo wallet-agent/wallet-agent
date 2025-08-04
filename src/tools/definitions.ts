@@ -177,6 +177,51 @@ export const toolDefinitions: Tool[] = [
     },
   },
   {
+    name: "update_custom_chain",
+    description: "Update an existing custom chain's configuration",
+    inputSchema: {
+      type: "object",
+      properties: {
+        chainId: {
+          type: "number",
+          description: "Chain ID of the custom chain to update",
+        },
+        name: {
+          type: "string",
+          description: "New name for the blockchain network (optional)",
+        },
+        rpcUrl: {
+          type: "string",
+          description: "New RPC endpoint URL (optional)",
+        },
+        nativeCurrency: {
+          type: "object",
+          description: "New native currency configuration (optional)",
+          properties: {
+            name: {
+              type: "string",
+              description: "Currency name (e.g., 'Ether')",
+            },
+            symbol: {
+              type: "string",
+              description: "Currency symbol (e.g., 'ETH')",
+            },
+            decimals: {
+              type: "number",
+              description: "Number of decimals (usually 18)",
+            },
+          },
+          required: ["name", "symbol", "decimals"],
+        },
+        blockExplorerUrl: {
+          type: "string",
+          description: "New block explorer URL (optional)",
+        },
+      },
+      required: ["chainId"],
+    },
+  },
+  {
     name: "import_private_key",
     description:
       "Import a private key to use as a real wallet (supports environment variables and file paths for security)",

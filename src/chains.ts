@@ -67,3 +67,47 @@ export function addCustomChain(
 
   return customChain;
 }
+
+export function updateCustomChain(
+  chainId: number,
+  updates: {
+    name?: string;
+    rpcUrl?: string;
+    nativeCurrency?: {
+      name: string;
+      symbol: string;
+      decimals: number;
+    };
+    blockExplorerUrl?: string;
+  },
+): void {
+  // Validate updates if provided
+  if (updates.rpcUrl && !updates.rpcUrl.startsWith("http")) {
+    throw new Error("RPC URL must start with http:// or https://");
+  }
+
+  if (updates.nativeCurrency) {
+    const currencySchema = z.object({
+      name: z.string().min(1),
+      symbol: z.string().min(1),
+      decimals: z.number().int().positive(),
+    });
+
+    try {
+      currencySchema.parse(updates.nativeCurrency);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw new Error(
+          `Invalid native currency: ${error.issues.map((e) => e.message).join(", ")}`,
+        );
+      }
+      throw error;
+    }
+  }
+
+  // Update the chain
+  getContainer().chainAdapter.updateCustomChain(chainId, updates);
+
+  // Recreate config with updated chain
+  getContainer().updateWagmiConfig();
+}

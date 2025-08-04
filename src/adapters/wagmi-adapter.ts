@@ -137,4 +137,47 @@ export class ChainAdapterImpl implements ChainAdapter {
     }
     this.customChains.set(chain.id, chain);
   }
+
+  updateCustomChain(
+    chainId: number,
+    updates: Partial<{
+      name: string;
+      rpcUrl: string;
+      nativeCurrency: {
+        name: string;
+        symbol: string;
+        decimals: number;
+      };
+      blockExplorerUrl?: string;
+    }>,
+  ): void {
+    const chain = this.customChains.get(chainId);
+    if (!chain) {
+      throw new Error(`Custom chain with ID ${chainId} not found`);
+    }
+
+    // Create updated chain with new properties
+    const updatedChain: Chain = {
+      ...chain,
+      ...(updates.name && { name: updates.name }),
+      ...(updates.nativeCurrency && { nativeCurrency: updates.nativeCurrency }),
+      ...(updates.rpcUrl && {
+        rpcUrls: {
+          default: {
+            http: [updates.rpcUrl],
+          },
+        },
+      }),
+      ...(updates.blockExplorerUrl && {
+        blockExplorers: {
+          default: {
+            name: `${updates.name || chain.name} Explorer`,
+            url: updates.blockExplorerUrl,
+          },
+        },
+      }),
+    };
+
+    this.customChains.set(chainId, updatedChain);
+  }
 }

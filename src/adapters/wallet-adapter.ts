@@ -45,4 +45,17 @@ export interface ChainAdapter {
   getAllChains(): Chain[];
   getChain(chainId: number): Chain | undefined;
   addCustomChain(chain: Chain): void;
+  updateCustomChain(
+    chainId: number,
+    updates: Partial<{
+      name: string;
+      rpcUrl: string;
+      nativeCurrency: {
+        name: string;
+        symbol: string;
+        decimals: number;
+      };
+      blockExplorerUrl?: string;
+    }>,
+  ): void;
 }

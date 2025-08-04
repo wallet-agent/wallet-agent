@@ -2,7 +2,7 @@ import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js";
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
 import type { Address } from "viem";
 import { z } from "zod";
-import { addCustomChain } from "../chains.js";
+import { addCustomChain, updateCustomChain } from "../chains.js";
 import { getContainer, mockAccounts } from "../container.js";
 import {
   listContracts,
@@ -21,6 +21,7 @@ import {
   SignMessageArgsSchema,
   SignTypedDataArgsSchema,
   SwitchChainArgsSchema,
+  UpdateCustomChainArgsSchema,
 } from "../schemas.js";
 import { signWalletMessage, signWalletTypedData } from "../signing.js";
 import { sendWalletTransaction, switchToChain } from "../transactions.js";
@@ -242,6 +243,52 @@ export async function handleToolCall(request: CallToolRequest) {
               {
                 type: "text",
                 text: `Custom chain added successfully:\n- Chain ID: ${validatedArgs.chainId}\n- Name: ${validatedArgs.name}\n- RPC URL: ${validatedArgs.rpcUrl}\n- Native Currency: ${validatedArgs.nativeCurrency.symbol}`,
+              },
+            ],
+          };
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            throw new McpError(
+              ErrorCode.InvalidParams,
+              `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+            );
+          }
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      }
+
+      case "update_custom_chain": {
+        try {
+          const validatedArgs = UpdateCustomChainArgsSchema.parse(args);
+          const updates: Parameters<typeof updateCustomChain>[1] = {};
+
+          if (validatedArgs.name) updates.name = validatedArgs.name;
+          if (validatedArgs.rpcUrl) updates.rpcUrl = validatedArgs.rpcUrl;
+          if (validatedArgs.nativeCurrency)
+            updates.nativeCurrency = validatedArgs.nativeCurrency;
+          if (validatedArgs.blockExplorerUrl)
+            updates.blockExplorerUrl = validatedArgs.blockExplorerUrl;
+
+          updateCustomChain(validatedArgs.chainId, updates);
+
+          const updatesList = [];
+          if (updates.name) updatesList.push(`Name: ${updates.name}`);
+          if (updates.rpcUrl) updatesList.push(`RPC URL: ${updates.rpcUrl}`);
+          if (updates.nativeCurrency)
+            updatesList.push(
+              `Native Currency: ${updates.nativeCurrency.symbol}`,
+            );
+          if (updates.blockExplorerUrl)
+            updatesList.push(`Block Explorer: ${updates.blockExplorerUrl}`);
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Custom chain ${validatedArgs.chainId} updated successfully:\n${updatesList.map((item) => `- ${item}`).join("\n")}`,
               },
             ],
           };

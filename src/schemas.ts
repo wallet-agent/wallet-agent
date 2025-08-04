@@ -68,6 +68,24 @@ export const AddCustomChainArgsSchema = z.object({
   blockExplorerUrl: z.string().url("Invalid block explorer URL").optional(),
 });
 
+export const UpdateCustomChainArgsSchema = z.object({
+  chainId: z.number().int().positive("Chain ID must be a positive integer"),
+  name: z.string().min(1, "Chain name is required").optional(),
+  rpcUrl: z.string().url("Invalid RPC URL").optional(),
+  nativeCurrency: z
+    .object({
+      name: z.string().min(1, "Currency name is required"),
+      symbol: z.string().min(1, "Currency symbol is required"),
+      decimals: z
+        .number()
+        .int()
+        .min(0)
+        .max(18, "Decimals must be between 0 and 18"),
+    })
+    .optional(),
+  blockExplorerUrl: z.string().url("Invalid block explorer URL").optional(),
+});
+
 export const ImportPrivateKeyArgsSchema = z.object({
   privateKey: z.string().min(1, "Private key input is required"),
 });
