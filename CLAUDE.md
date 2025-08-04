@@ -1,111 +1,140 @@
 ---
-description: Use Bun instead of Node.js, npm, pnpm, or vite.
-globs: "*.ts, *.tsx, *.html, *.css, *.js, *.jsx, package.json"
-alwaysApply: false
+description: MCP Wallet Server development guidelines and architecture notes
+globs: "src/**/*.ts, *.json, *.md"
+alwaysApply: true
 ---
 
-Default to using Bun instead of Node.js.
+# MCP Wallet Server Development Guidelines
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Bun automatically loads .env, so don't use dotenv.
+This document contains project-specific guidelines for AI assistants working on the MCP Wallet Server codebase. For general usage and features, see @README.md.
 
-## APIs
+## Architecture Overview
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+The codebase follows a modular architecture:
 
-## Testing
-
-Use `bun test` to run tests.
-
-```ts#index.test.ts
-import { test, expect } from "bun:test";
-
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+```
+src/
+├── index.ts          # Entry point - minimal orchestration only
+├── server.ts         # MCP server setup and request handlers
+├── chains.ts         # Chain configuration and Wagmi config management
+├── wallet.ts         # Wallet connection and account operations
+├── wallet-manager.ts # Private key wallet management
+├── signing.ts        # Message and typed data signing
+├── transactions.ts   # Transaction sending and chain switching
+└── tools/
+    ├── definitions.ts # Tool schemas for MCP
+    └── handlers.ts    # Tool implementation handlers
 ```
 
-## Frontend
+## Key Design Principles
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+1. **Separation of Concerns**: Each module has a single responsibility
+2. **Type Safety**: Leverage TypeScript's strict mode and Viem's type system
+3. **Security First**: Private keys are never logged or exposed
+4. **Multi-Chain Support**: All operations should work across any EVM chain
 
-Server:
+## Development Standards
 
-```ts#index.ts
-import index from "./index.html"
+### Adding New Tools
 
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
+When adding new MCP tools:
+1. Define the tool schema in `src/tools/definitions.ts`
+2. Implement the handler in `src/tools/handlers.ts`
+3. Keep handlers thin - delegate business logic to appropriate modules
+4. Always validate input parameters
+5. Return consistent error messages using `McpError`
+
+### Chain Support
+
+When working with chains:
+- Use `getAllChains()` to get both built-in and custom chains
+- Always check if a chain exists before operations
+- Use the chain's native currency symbol in user-facing messages
+- Support custom RPC endpoints for any chain
+
+### Wallet Operations
+
+Two wallet modes are supported:
+- **Mock Mode**: Uses Wagmi's mock connector for testing
+- **Private Key Mode**: Uses imported private keys for real transactions
+
+Always check `currentWalletType` before performing wallet operations.
+
+### Error Handling
+
+Use MCP-specific error codes:
+- `ErrorCode.InvalidParams` - Bad input parameters
+- `ErrorCode.InvalidRequest` - Missing prerequisites (e.g., no wallet connected)
+- `ErrorCode.MethodNotFound` - Unknown tool name
+- `ErrorCode.InternalError` - Unexpected errors
+
+## Testing Guidelines
+
+When testing changes:
+1. Test with both mock and private key wallets
+2. Test on multiple chains (at least Anvil and one testnet)
+3. Verify error messages are helpful and specific
+4. Check that native currency symbols display correctly
+
+## Security Considerations
+
+1. **Never** log private keys or sensitive data
+2. **Always** validate private key format before use
+3. **Store** private keys in memory only (no persistence)
+4. **Clear** sensitive data when disconnecting wallets
+
+## Code Style
+
+- Use Bun for all operations (not npm/yarn/pnpm)
+- Run `bun run typecheck` before committing
+- Run `bun run lint:fix` to format code
+- Keep functions small and focused
+- Use descriptive variable names
+
+## Common Patterns
+
+### Adding a New Chain Operation
+```typescript
+// Always get current chain
+const currentChain = getAllChains().find(c => c.id === currentChainId);
+if (!currentChain) throw new Error("Chain not found");
+
+// Use chain-specific properties
+const symbol = currentChain.nativeCurrency.symbol;
 ```
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
-
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
-
-With the following `frontend.tsx`:
-
-```tsx#frontend.tsx
-import React from "react";
-
-// import .css files directly and it works
-import './index.css';
-
-import { createRoot } from "react-dom/client";
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
+### Handling Wallet Types
+```typescript
+if (currentWalletType === "privateKey") {
+  // Private key specific logic
+  const walletClient = createPrivateKeyWalletClient(address, chain);
+  // ...
+} else {
+  // Mock wallet logic
+  // ...
 }
-
-root.render(<Frontend />);
 ```
 
-Then, run index.ts
+## Performance Considerations
 
-```sh
-bun --hot ./index.ts
-```
+- Reuse wallet clients when possible
+- Batch RPC calls where appropriate
+- Keep the main thread responsive during async operations
 
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+## Future Enhancements
+
+Areas for potential improvement:
+- WalletConnect integration for QR code connections
+- Hardware wallet support via WebUSB
+- Transaction simulation before sending
+- Gas estimation and optimization
+- Multi-signature wallet support
+
+## Debugging Tips
+
+1. Check wallet connection state with `get_wallet_info`
+2. Verify chain configuration with `wallet://chains` resource
+3. Use `get_current_account` to debug connection issues
+4. Enable verbose logging in development mode
+
+Remember: This is an MCP server designed for AI assistants. Keep the interface simple, operations deterministic, and error messages helpful.
