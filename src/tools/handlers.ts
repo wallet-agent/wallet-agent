@@ -940,7 +940,6 @@ export async function handleToolCall(request: CallToolRequest) {
           const container = getContainer();
           const receipt =
             await container.transactionEffects.getTransactionReceipt(hash);
-          
 
           if (!receipt) {
             return {
@@ -1033,7 +1032,7 @@ export async function handleToolCall(request: CallToolRequest) {
           } = args as {
             contract: string;
             function: string;
-            args?: any[];
+            args?: unknown[];
             value?: string;
             address?: string;
           };

@@ -38,7 +38,7 @@ export interface GasEstimateResult {
 
 export interface TransactionSimulationResult {
   success: boolean;
-  result?: any;
+  result?: unknown;
   error?: string;
   willRevert: boolean;
 }
@@ -171,15 +171,17 @@ export class TransactionEffects {
           ? (Number(transaction.value) / 1e18).toString()
           : "0",
       };
-    } catch (error: any) {
+    } catch (error) {
       // Handle viem's TransactionNotFoundError
-      if (error.name === "TransactionNotFoundError") {
+      if (error instanceof Error && error.name === "TransactionNotFoundError") {
         return {
           status: "not_found",
           hash,
         };
       }
-      throw new Error(`Failed to get transaction status: ${error}`);
+      throw new Error(
+        `Failed to get transaction status: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -198,7 +200,7 @@ export class TransactionEffects {
       if (!receipt) {
         return null;
       }
-      
+
       // Viem might return a receipt with null values instead of null itself
       if (!receipt.blockNumber && !receipt.gasUsed) {
         return null;
@@ -222,13 +224,19 @@ export class TransactionEffects {
         logs: receipt.logs?.length || 0,
         symbol: chain.nativeCurrency.symbol,
       };
-    } catch (error: any) {
+    } catch (error) {
       // Handle viem's TransactionReceiptNotFoundError
-      if (error.name === "TransactionReceiptNotFoundError" || 
-          error.message?.includes("Transaction receipt not found")) {
+      if (
+        (error instanceof Error &&
+          error.name === "TransactionReceiptNotFoundError") ||
+        (error instanceof Error &&
+          error.message?.includes("Transaction receipt not found"))
+      ) {
         return null;
       }
-      throw new Error(`Failed to get transaction receipt: ${error}`);
+      throw new Error(
+        `Failed to get transaction receipt: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -265,7 +273,7 @@ export class TransactionEffects {
   async simulateTransaction(
     contract: string,
     functionName: string,
-    args?: any[],
+    args?: unknown[],
     value?: string,
     address?: Address,
   ): Promise<TransactionSimulationResult> {
@@ -294,7 +302,7 @@ export class TransactionEffects {
 
       // Find the function in the ABI
       const func = contractInfo.abi.find(
-        (item: any) => item.type === "function" && item.name === functionName,
+        (item) => item.type === "function" && item.name === functionName,
       );
 
       if (!func) {
@@ -316,15 +324,17 @@ export class TransactionEffects {
         result: result.result,
         willRevert: false,
       };
-    } catch (error: any) {
+    } catch (error) {
       // Check if it's a revert error
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const isRevert =
-        error.message?.includes("revert") ||
-        error.message?.includes("execution reverted");
+        errorMessage.includes("revert") ||
+        errorMessage.includes("execution reverted");
 
       return {
         success: false,
-        error: error.message || "Simulation failed",
+        error: errorMessage || "Simulation failed",
         willRevert: isRevert,
       };
     }

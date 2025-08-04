@@ -109,7 +109,8 @@ export class Container {
    */
   static resetInstance(): void {
     if (process.env.NODE_ENV === "test") {
-      Container.instance = null as any;
+      // @ts-expect-error - Resetting singleton for tests
+      Container.instance = null;
       customChains.clear();
       privateKeyWallets.clear();
     }
@@ -170,18 +171,17 @@ export class Container {
 
   private createTransport(chain: Chain): ReturnType<typeof http> {
     // Check if test transport is available via global
-    if (process.env.NODE_ENV === "test" && (global as any).__testTransport) {
+    if (
+      process.env.NODE_ENV === "test" &&
+      (global as { __testTransport?: unknown }).__testTransport
+    ) {
       // For custom chains with example.com, create a failing transport
       const rpcUrl = chain.rpcUrls.default.http[0];
       if (rpcUrl?.includes("example.com")) {
-        return (() => ({
-          config: {} as any,
-          request: async () => {
-            throw new Error("HTTP request failed");
-          },
-        })) as ReturnType<typeof http>;
+        return http(); // Return a default http transport that will fail
       }
-      return (global as any).__testTransport;
+      return (global as { __testTransport?: ReturnType<typeof http> })
+        .__testTransport as ReturnType<typeof http>;
     }
 
     // Use regular HTTP transport

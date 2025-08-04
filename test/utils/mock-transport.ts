@@ -1,11 +1,15 @@
 import type { Transport } from "viem";
 
 export interface MockResponse {
-  result?: any;
+  result?: unknown;
   error?: string;
 }
 
-export type MockResponses = Map<string, MockResponse | any>;
+type MockResponseFunction = (params?: unknown[]) => unknown;
+export type MockResponses = Map<
+  string,
+  MockResponse | MockResponseFunction | unknown
+>;
 
 /**
  * Create a mock transport for testing
@@ -44,12 +48,23 @@ export function createMockTransport(
 
   // Return a transport function
   return () => ({
-    request: async ({ method, params }: { method: string; params?: any[] }) => {
+    request: async ({
+      method,
+      params,
+    }: {
+      method: string;
+      params?: unknown[];
+    }) => {
       // Check if we have a response for this method
       const response = allResponses.get(method);
 
       if (response === undefined) {
         throw new Error(`Mock transport: Unsupported method ${method}`);
+      }
+
+      // Handle function responses
+      if (typeof response === "function") {
+        return response(params);
       }
 
       // Handle error responses
@@ -70,11 +85,11 @@ export function mockContractCall(
   contractAddress: string,
   functionSelector: string,
   returnValue: string | { error: string },
-): [string, (params: any[]) => string] {
+): [string, (params: unknown[]) => string] {
   return [
     "eth_call",
-    (params: any[]) => {
-      const [callData] = params;
+    (params: unknown[]) => {
+      const [callData] = params as [{ to?: string; data?: string }];
       if (
         (contractAddress === "*" ||
           callData.to?.toLowerCase() === contractAddress.toLowerCase()) &&
@@ -102,12 +117,12 @@ export const MockPresets = {
     ]),
 
   // Mock responses for an address with no contract that properly handles calls
-  noContractWithProperError: (address?: string): MockResponses =>
+  noContractWithProperError: (_address?: string): MockResponses =>
     new Map([
       ["eth_getCode", "0x"],
       [
         "eth_call",
-        (params: any[]) => {
+        (_params: unknown[]) => {
           // Return error that indicates no data returned
           throw new Error("execution reverted: returned no data");
         },
@@ -123,9 +138,9 @@ export const MockPresets = {
         "0x313ce567",
         `0x${decimals.toString(16).padStart(64, "0")}`,
       ), // decimals()
-      mockContractCall("*", "0x06fdde03", "0x" + "0".repeat(64)), // name()
-      mockContractCall("*", "0x95d89b41", "0x" + "0".repeat(64)), // symbol()
-      mockContractCall("*", "0x70a08231", "0x" + "0".repeat(64)), // balanceOf()
+      mockContractCall("*", "0x06fdde03", `0x${"0".repeat(64)}`), // name()
+      mockContractCall("*", "0x95d89b41", `0x${"0".repeat(64)}`), // symbol()
+      mockContractCall("*", "0x70a08231", `0x${"0".repeat(64)}`), // balanceOf()
     ]),
 
   // Mock responses for transaction operations

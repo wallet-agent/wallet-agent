@@ -148,12 +148,13 @@ export async function readContract(
     });
 
     return result;
-  } catch (error: any) {
+  } catch (error) {
     // Transform error messages to match test expectations
+    const errorMessage = error instanceof Error ? error.message : String(error);
     if (
-      error.message?.includes("returned no data") ||
-      (error.message?.includes("execution reverted") &&
-        error.message?.includes("Details: execution reverted"))
+      errorMessage.includes("returned no data") ||
+      (errorMessage.includes("execution reverted") &&
+        errorMessage.includes("Details: execution reverted"))
     ) {
       throw new Error("returned no data");
     }
