@@ -44,11 +44,16 @@ jobs:
     - name: Run linter
       run: bun run lint
 
-    - name: Run unit tests
-      run: bun test test/core test/effects test/schemas.test.ts
+    - name: Run tests with coverage
+      run: bun test --coverage --coverage-reporter=lcov --coverage-reporter=text
     
-    - name: Run integration tests
-      run: bun test test/integration
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage/lcov.info
+        fail_ci_if_error: false
+        verbose: true
 
     - name: Build project
       run: bun run build

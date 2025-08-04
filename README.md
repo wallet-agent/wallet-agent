@@ -1,6 +1,7 @@
 # Wallet Agent
 
 [![CI](https://github.com/shanev/wallet-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/shanev/wallet-agent/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/shanev/wallet-agent/graph/badge.svg)](https://codecov.io/gh/shanev/wallet-agent)
 
 MCP server for Web3 wallet interactions in AI assistants like Claude Code and Cursor. Supports mock wallets for testing and real wallets via private key import.
 

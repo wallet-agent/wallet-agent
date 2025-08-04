@@ -1,0 +1,23 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 5%
+    patch:
+      default:
+        target: 80%
+        threshold: 5%
+
+ignore:
+  - "test/**/*"
+  - "dist/**/*"
+  - "*.config.js"
+  - "*.config.ts"
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+
+comment:
+  layout: "reach,diff,flags,files,footer"
+  behavior: default
+  require_changes: false
