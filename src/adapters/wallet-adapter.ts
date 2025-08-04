@@ -58,4 +58,5 @@ export interface ChainAdapter {
       blockExplorerUrl?: string;
     }>,
   ): void;
+  removeCustomChain(chainId: number): void;
 }

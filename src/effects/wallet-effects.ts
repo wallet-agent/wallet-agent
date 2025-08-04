@@ -37,6 +37,29 @@ export class WalletEffects {
     return this.currentWalletType;
   }
 
+  getAddress(): Address | undefined {
+    return this.connectedAddress;
+  }
+
+  getChainId(): number {
+    return this.currentChainId;
+  }
+
+  getPublicClient() {
+    const chain = this.chainAdapter.getChain(this.currentChainId);
+    if (!chain) return undefined;
+
+    // For now, we'll return the wallet client which can act as a public client
+    if (this.currentWalletType === "privateKey" && this.connectedAddress) {
+      return this.privateKeyClientFactory.createWalletClient(
+        this.connectedAddress,
+        chain,
+      );
+    }
+    // Mock adapter doesn't provide public client directly
+    return undefined;
+  }
+
   // Setters
   setCurrentChainId(chainId: number): void {
     this.currentChainId = chainId;

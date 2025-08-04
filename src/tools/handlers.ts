@@ -2,7 +2,11 @@ import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js";
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
 import type { Address } from "viem";
 import { z } from "zod";
-import { addCustomChain, updateCustomChain } from "../chains.js";
+import {
+  addCustomChain,
+  removeCustomChain,
+  updateCustomChain,
+} from "../chains.js";
 import { getContainer, mockAccounts } from "../container.js";
 import {
   listContracts,
@@ -11,16 +15,24 @@ import {
   writeContract,
 } from "../contract-operations.js";
 import {
+  formatTransactionReceipt,
+  formatTransactionStatus,
+} from "../core/transaction-helpers.js";
+import {
   AddCustomChainArgsSchema,
   ConnectWalletArgsSchema,
+  EnsNameSchema,
+  EstimateGasArgsSchema,
   GetBalanceArgsSchema,
   ImportPrivateKeyArgsSchema,
+  RemoveCustomChainArgsSchema,
   RemovePrivateKeyArgsSchema,
   SendTransactionArgsSchema,
   SetWalletTypeArgsSchema,
   SignMessageArgsSchema,
   SignTypedDataArgsSchema,
   SwitchChainArgsSchema,
+  TransactionHashSchema,
   UpdateCustomChainArgsSchema,
 } from "../schemas.js";
 import { signWalletMessage, signWalletTypedData } from "../signing.js";
@@ -818,6 +830,278 @@ export async function handleToolCall(request: CallToolRequest) {
               {
                 type: "text",
                 text: `NFT Information:\nName: ${info.name}\nSymbol: ${info.symbol}${info.tokenURI ? `\nToken URI: ${info.tokenURI}` : ""}`,
+              },
+            ],
+          };
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            throw new McpError(
+              ErrorCode.InvalidParams,
+              `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+            );
+          }
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      }
+
+      case "estimate_gas": {
+        try {
+          const validatedArgs = EstimateGasArgsSchema.parse(args);
+          const container = getContainer();
+          const result = await container.transactionEffects.estimateGas(
+            validatedArgs.to,
+            validatedArgs.value,
+            validatedArgs.data,
+            validatedArgs.from,
+          );
+
+          const chainId = container.walletEffects.getChainId();
+          const chain = chainId
+            ? container.chainAdapter.getChain(chainId)
+            : undefined;
+          const symbol = chain?.nativeCurrency.symbol || "ETH";
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Gas Estimation:
+- Estimated Gas: ${result.gasEstimate.toString()} units
+- Gas Price: ${(Number(result.gasPrice) / 1e9).toFixed(2)} Gwei
+- Estimated Cost: ${result.estimatedCost} ${symbol}
+- Estimated Cost (Wei): ${result.estimatedCostWei.toString()}`,
+              },
+            ],
+          };
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            throw new McpError(
+              ErrorCode.InvalidParams,
+              `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+            );
+          }
+          throw new McpError(
+            ErrorCode.InternalError,
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      }
+
+      case "get_transaction_status": {
+        try {
+          const { hash } = TransactionHashSchema.parse(args);
+          const container = getContainer();
+          const status =
+            await container.transactionEffects.getTransactionStatus(hash);
+
+          const formattedStatus = formatTransactionStatus(
+            status.status,
+            status.hash,
+            status.status !== "not_found" && status.from
+              ? {
+                  ...(status.from && { from: status.from }),
+                  ...(status.to !== undefined && { to: status.to }),
+                  ...(status.value && { value: status.value }),
+                  ...(status.blockNumber && {
+                    blockNumber: status.blockNumber,
+                  }),
+                }
+              : undefined,
+          );
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: formattedStatus,
+              },
+            ],
+          };
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            throw new McpError(
+              ErrorCode.InvalidParams,
+              `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+            );
+          }
+          throw new McpError(
+            ErrorCode.InternalError,
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      }
+
+      case "get_transaction_receipt": {
+        try {
+          const { hash } = TransactionHashSchema.parse(args);
+          const container = getContainer();
+          const receipt =
+            await container.transactionEffects.getTransactionReceipt(hash);
+
+          if (!receipt) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `No receipt found for transaction ${hash}. The transaction may be pending or not exist.`,
+                },
+              ],
+            };
+          }
+
+          const formattedReceipt = formatTransactionReceipt(
+            receipt,
+            receipt.symbol,
+          );
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: formattedReceipt,
+              },
+            ],
+          };
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            throw new McpError(
+              ErrorCode.InvalidParams,
+              `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+            );
+          }
+          throw new McpError(
+            ErrorCode.InternalError,
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      }
+
+      case "resolve_ens_name": {
+        try {
+          const { name } = EnsNameSchema.parse(args);
+          const container = getContainer();
+          const address =
+            await container.transactionEffects.resolveEnsName(name);
+
+          if (!address) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Could not resolve ENS name "${name}". The name may not exist or may not have an address set.`,
+                },
+              ],
+            };
+          }
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `ENS Resolution:
+- Name: ${name}
+- Address: ${address}`,
+              },
+            ],
+          };
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            throw new McpError(
+              ErrorCode.InvalidParams,
+              `Invalid arguments: ${error.issues.map((e) => e.message).join(", ")}`,
+            );
+          }
+          throw new McpError(
+            ErrorCode.InternalError,
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      }
+
+      case "simulate_transaction": {
+        try {
+          const {
+            contract,
+            function: functionName,
+            args: functionArgs,
+            value,
+            address,
+          } = args as {
+            contract: string;
+            function: string;
+            args?: any[];
+            value?: string;
+            address?: string;
+          };
+
+          if (!contract || !functionName) {
+            throw new McpError(
+              ErrorCode.InvalidParams,
+              "Contract and function are required",
+            );
+          }
+
+          const container = getContainer();
+          const result = await container.transactionEffects.simulateTransaction(
+            contract,
+            functionName,
+            functionArgs,
+            value,
+            address as Address | undefined,
+          );
+
+          if (result.success) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Transaction Simulation Successful:
+- Contract: ${contract}
+- Function: ${functionName}
+- Result: ${JSON.stringify(result.result, null, 2)}
+- Will Revert: No
+
+The transaction should execute successfully.`,
+                },
+              ],
+            };
+          } else {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Transaction Simulation Failed:
+- Contract: ${contract}
+- Function: ${functionName}
+- Error: ${result.error}
+- Will Revert: ${result.willRevert ? "Yes" : "Unknown"}
+
+${result.willRevert ? "The transaction will revert if executed." : "The transaction may fail if executed."}`,
+                },
+              ],
+            };
+          }
+        } catch (error) {
+          throw new McpError(
+            ErrorCode.InternalError,
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      }
+
+      case "remove_custom_chain": {
+        try {
+          const { chainId } = RemoveCustomChainArgsSchema.parse(args);
+          removeCustomChain(chainId);
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Custom chain ${chainId} removed successfully.`,
               },
             ],
           };

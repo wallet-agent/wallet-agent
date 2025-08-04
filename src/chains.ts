@@ -111,3 +111,22 @@ export function updateCustomChain(
   // Recreate config with updated chain
   getContainer().updateWagmiConfig();
 }
+
+export function removeCustomChain(chainId: number): void {
+  const container = getContainer();
+  const effects = container.walletEffects;
+
+  // Check if we're currently connected to the chain being removed
+  const currentChainId = effects.getChainId();
+  if (currentChainId === chainId) {
+    throw new Error(
+      "Cannot remove the currently connected chain. Please switch to another chain first.",
+    );
+  }
+
+  // Remove the chain
+  container.chainAdapter.removeCustomChain(chainId);
+
+  // Recreate config without the removed chain
+  container.updateWagmiConfig();
+}

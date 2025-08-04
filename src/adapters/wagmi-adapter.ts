@@ -180,4 +180,21 @@ export class ChainAdapterImpl implements ChainAdapter {
 
     this.customChains.set(chainId, updatedChain);
   }
+
+  removeCustomChain(chainId: number): void {
+    // Check if it's a custom chain
+    if (!this.customChains.has(chainId)) {
+      // Check if it's a built-in chain
+      const isBuiltIn = this.builtInChains.some(
+        (chain) => chain.id === chainId,
+      );
+      if (isBuiltIn) {
+        throw new Error(`Cannot remove built-in chain with ID ${chainId}`);
+      }
+      throw new Error(`Custom chain with ID ${chainId} not found`);
+    }
+
+    // Remove the custom chain
+    this.customChains.delete(chainId);
+  }
 }

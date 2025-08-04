@@ -16,6 +16,7 @@ import { ContractEffects } from "./effects/contract-effects.js";
 import { InMemoryContractStore } from "./effects/contract-store.js";
 import { NodeFileReader } from "./effects/file-reader.js";
 import { TokenEffects } from "./effects/token-effects.js";
+import { TransactionEffects } from "./effects/transaction-effects.js";
 import { WalletEffects } from "./effects/wallet-effects.js";
 
 // Mock accounts
@@ -42,6 +43,7 @@ export class Container {
   public walletEffects: WalletEffects;
   public contractAdapter: ContractAdapter;
   public tokenEffects: TokenAdapter;
+  public transactionEffects: TransactionEffects;
   public wagmiConfig: ReturnType<typeof createConfig>;
 
   private constructor() {
@@ -85,6 +87,13 @@ export class Container {
           ? { address: account.address }
           : undefined;
       },
+    );
+
+    // Initialize transaction effects
+    this.transactionEffects = new TransactionEffects(
+      this.walletEffects,
+      this.chainAdapter,
+      this.contractAdapter,
     );
   }
 

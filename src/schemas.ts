@@ -98,6 +98,25 @@ export const SetWalletTypeArgsSchema = z.object({
   type: z.enum(["mock", "privateKey"]),
 });
 
+export const EstimateGasArgsSchema = z.object({
+  to: AddressSchema,
+  value: z.string().optional(),
+  data: HexStringSchema.optional(),
+  from: AddressSchema.optional(),
+});
+
+export const TransactionHashSchema = z.object({
+  hash: HexStringSchema,
+});
+
+export const EnsNameSchema = z.object({
+  name: z.string().min(1, "ENS name is required"),
+});
+
+export const RemoveCustomChainArgsSchema = z.object({
+  chainId: z.number().int().positive("Chain ID must be a positive integer"),
+});
+
 // Chain configuration schema for validation
 export const ChainConfigSchema = z.object({
   id: z.number().int().positive(),

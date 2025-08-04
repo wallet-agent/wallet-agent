@@ -502,4 +502,119 @@ export const toolDefinitions: Tool[] = [
       required: ["nft"],
     },
   },
+  {
+    name: "estimate_gas",
+    description: "Estimate gas for a transaction before sending",
+    inputSchema: {
+      type: "object",
+      properties: {
+        to: {
+          type: "string",
+          description: "Recipient address",
+        },
+        value: {
+          type: "string",
+          description: "Value to send in ETH (optional)",
+        },
+        data: {
+          type: "string",
+          description: "Transaction data (optional)",
+        },
+        from: {
+          type: "string",
+          description: "From address (defaults to connected wallet)",
+        },
+      },
+      required: ["to"],
+    },
+  },
+  {
+    name: "get_transaction_status",
+    description: "Get the status of a transaction by its hash",
+    inputSchema: {
+      type: "object",
+      properties: {
+        hash: {
+          type: "string",
+          description: "Transaction hash (0x...)",
+        },
+      },
+      required: ["hash"],
+    },
+  },
+  {
+    name: "get_transaction_receipt",
+    description: "Get detailed receipt of a mined transaction",
+    inputSchema: {
+      type: "object",
+      properties: {
+        hash: {
+          type: "string",
+          description: "Transaction hash (0x...)",
+        },
+      },
+      required: ["hash"],
+    },
+  },
+  {
+    name: "resolve_ens_name",
+    description: "Resolve an ENS name to an Ethereum address (mainnet only)",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "ENS name to resolve (e.g., vitalik.eth)",
+        },
+      },
+      required: ["name"],
+    },
+  },
+  {
+    name: "simulate_transaction",
+    description:
+      "Simulate a contract transaction before executing to check if it will succeed",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config or address",
+        },
+        function: {
+          type: "string",
+          description: "Function name to simulate",
+        },
+        args: {
+          type: "array",
+          description: "Function arguments",
+          items: {},
+        },
+        value: {
+          type: "string",
+          description: "ETH value to send with transaction (optional)",
+        },
+        address: {
+          type: "string",
+          description:
+            "Address to simulate from (defaults to connected wallet)",
+        },
+      },
+      required: ["contract", "function"],
+    },
+  },
+  {
+    name: "remove_custom_chain",
+    description: "Remove a previously added custom chain",
+    inputSchema: {
+      type: "object",
+      properties: {
+        chainId: {
+          type: "number",
+          description: "Chain ID of the custom chain to remove",
+        },
+      },
+      required: ["chainId"],
+    },
+  },
 ];
