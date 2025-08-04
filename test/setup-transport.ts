@@ -4,9 +4,12 @@ import { createTestTransport } from "./utils/test-transport.js";
 if (process.env.NODE_ENV === "test") {
   // Log setup in CI
   if (process.env.CI) {
-    console.log("[Test Setup] Initializing mock transport, NODE_ENV:", process.env.NODE_ENV);
+    console.log(
+      "[Test Setup] Initializing mock transport, NODE_ENV:",
+      process.env.NODE_ENV,
+    );
   }
-  
+
   // Add mock responses for transaction queries
   const mockResponses = new Map([
     // Mock transaction that doesn't exist
@@ -76,11 +79,14 @@ if (process.env.NODE_ENV === "test") {
 
   (global as { __testTransport?: unknown }).__testTransport =
     createTestTransport({ mockResponses });
-    
+
   // Log completion in CI
   if (process.env.CI) {
     console.log("[Test Setup] Mock transport initialized and set on global");
   }
 } else if (process.env.CI) {
-  console.log("[Test Setup] WARNING: NODE_ENV is not 'test', mock transport NOT initialized. NODE_ENV:", process.env.NODE_ENV);
+  console.log(
+    "[Test Setup] WARNING: NODE_ENV is not 'test', mock transport NOT initialized. NODE_ENV:",
+    process.env.NODE_ENV,
+  );
 }

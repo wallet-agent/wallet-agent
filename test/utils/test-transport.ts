@@ -47,7 +47,7 @@ export function createTestTransport(
 
   // Use mock transport
   const mockTransport = createMockTransport(mergedConfig.mockResponses);
-  
+
   // Wrap the transport to log calls in CI
   if (process.env.CI) {
     return (() => ({
@@ -57,7 +57,7 @@ export function createTestTransport(
       },
     })) as Transport;
   }
-  
+
   return mockTransport;
 }
 
