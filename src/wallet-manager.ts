@@ -23,14 +23,16 @@ function resolvePrivateKey(input: string): `0x${string}` {
 	if (input.includes("/") || input.startsWith("~")) {
 		try {
 			// Expand ~ to home directory
-			const filePath = input.startsWith("~") 
-				? input.replace("~", homedir()) 
+			const filePath = input.startsWith("~")
+				? input.replace("~", homedir())
 				: input;
-			
+
 			const fileContent = readFileSync(filePath, "utf8").trim();
 			return PrivateKeySchema.parse(fileContent);
 		} catch (error) {
-			throw new Error(`Failed to read private key from file ${input}: ${error}`);
+			throw new Error(
+				`Failed to read private key from file ${input}: ${error}`,
+			);
 		}
 	}
 
@@ -44,7 +46,9 @@ function resolvePrivateKey(input: string): `0x${string}` {
 	}
 
 	// If we get here, it's an invalid format
-	throw new Error("Invalid private key input format. Expected: 0x-prefixed private key, environment variable name, or file path");
+	throw new Error(
+		"Invalid private key input format. Expected: 0x-prefixed private key, environment variable name, or file path",
+	);
 }
 
 export function importPrivateKey(privateKeyInput: string): Address {

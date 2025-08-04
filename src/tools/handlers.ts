@@ -263,7 +263,7 @@ export async function handleToolCall(request: CallToolRequest) {
 				try {
 					const { privateKey } = ImportPrivateKeyArgsSchema.parse(args);
 					const address = importPrivateKey(privateKey);
-					
+
 					// Provide feedback about how the key was loaded
 					let sourceInfo = "";
 					if (privateKey.startsWith("0x")) {
@@ -273,7 +273,7 @@ export async function handleToolCall(request: CallToolRequest) {
 					} else {
 						sourceInfo = `Environment variable: ${privateKey}`;
 					}
-					
+
 					return {
 						content: [
 							{

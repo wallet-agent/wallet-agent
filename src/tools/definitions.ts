@@ -178,7 +178,8 @@ export const toolDefinitions: Tool[] = [
 	},
 	{
 		name: "import_private_key",
-		description: "Import a private key to use as a real wallet (supports environment variables and file paths for security)",
+		description:
+			"Import a private key to use as a real wallet (supports environment variables and file paths for security)",
 		inputSchema: {
 			type: "object",
 			properties: {
