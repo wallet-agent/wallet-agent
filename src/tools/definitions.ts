@@ -178,14 +178,14 @@ export const toolDefinitions: Tool[] = [
 	},
 	{
 		name: "import_private_key",
-		description: "Import a private key to use as a real wallet",
+		description: "Import a private key to use as a real wallet (supports environment variables and file paths for security)",
 		inputSchema: {
 			type: "object",
 			properties: {
 				privateKey: {
 					type: "string",
 					description:
-						"Private key starting with 0x (64 hex characters after 0x)",
+						"Private key starting with 0x, OR environment variable name (e.g., 'WALLET_PRIVATE_KEY'), OR file path (e.g., '~/.wallet-private-key')",
 				},
 			},
 			required: ["privateKey"],

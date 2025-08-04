@@ -102,33 +102,84 @@ The server will be available immediately. Verify it's running with `/mcp` in Cla
 
 ## Using Real Wallets
 
-This server supports real wallet operations through private key import:
+This server supports real wallet operations through private key import for **development and testing purposes**.
 
-### 1. Import a Private Key
-```bash
-import_private_key privateKey="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-```
+### Security-First Approach for Claude Code
 
-### 2. Switch to Private Key Mode
-```bash
-set_wallet_type type="privateKey"
-```
+⚠️ **CRITICAL SECURITY CONSIDERATIONS**
 
-### 3. Connect Your Wallet
-```bash
-connect_wallet address="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-```
+When using this tool with Claude Code, **NEVER** directly paste private keys into the chat. Instead:
 
-### 4. Use As Normal
-All operations now use your real wallet on any EVM chain!
+#### Option 1: Environment Variables (Recommended)
+1. Set your private key as an environment variable:
+   ```bash
+   export WALLET_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+   ```
 
-### Security Considerations
+2. Use natural language to request key import:
+   - "Import the private key from WALLET_PRIVATE_KEY environment variable"
+   - "Load my wallet from the environment"
+
+#### Option 2: Secure File Approach
+1. Store your private key in a secure file outside your project:
+   ```bash
+   echo "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" > ~/.wallet-private-key
+   chmod 600 ~/.wallet-private-key
+   ```
+
+2. Request import via natural language:
+   - "Import private key from ~/.wallet-private-key"
+   - "Load my wallet key from the secure file"
+
+#### Option 3: Interactive Prompt (Future Enhancement)
+The tool should be enhanced to support secure private key entry through masked input prompts, avoiding exposure in Claude Code conversations entirely.
+
+### Basic Workflow
+
+Once your private key is securely loaded:
+
+1. **Switch to Private Key Mode**
+   - "Switch to private key wallet mode"
+
+2. **Connect Your Wallet**  
+   - "Connect to my wallet address"
+
+3. **Use As Normal**
+   - All operations now use your real wallet on any EVM chain!
+
+### What Gets Logged vs. What Doesn't
+
+✅ **Safe to appear in Claude Code chat:**
+- Wallet addresses (public)
+- Transaction hashes (public)
+- Network information
+- Tool execution results
+
+❌ **NEVER should appear in chat:**
+- Private keys
+- Seed phrases
+- Any secret cryptographic material
+
+### Security Warnings
 
 ⚠️ **CRITICAL SECURITY WARNINGS**
-- Never share or commit private keys
-- Use environment variables for production
-- Consider using a dedicated wallet for testing
-- Private keys are stored in memory only
+- **NEVER** share or commit private keys
+- **NEVER** paste private keys directly into Claude Code conversations  
+- Use **dedicated test wallets** with minimal funds for development
+- Private keys are stored **in memory only** and cleared on exit
+- Monitor your wallet activity and revoke access if compromised
+- Consider using testnets (Sepolia, Anvil) for development
+
+### MCP Security Context
+
+As noted in the [Claude Code MCP documentation](https://docs.anthropic.com/en/docs/claude-code/mcp), users should "use third party MCP servers at your own risk." This tool:
+
+- Runs locally on your machine (not a remote server)
+- Stores private keys only in memory
+- Never sends private keys over the network
+- Logs only public transaction data
+
+However, **you are responsible** for secure key management and should audit the code before using with valuable assets.
 
 ## Custom Chains
 
@@ -161,9 +212,9 @@ await switch_chain({ chainId: 1337 });
 5. "Switch to Polygon network"
 6. "Send 0.5 MATIC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
 
-### Real Wallet Flow
-1. "Import my private key" (provide key)
-2. "Set wallet type to privateKey"
+### Real Wallet Flow (Secure)
+1. "Import private key from environment variable WALLET_PRIVATE_KEY"
+2. "Set wallet type to privateKey"  
 3. "Connect to my wallet address"
 4. "Check balance on mainnet"
 5. "Sign a message for authentication"

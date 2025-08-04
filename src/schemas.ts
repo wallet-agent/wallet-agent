@@ -69,7 +69,7 @@ export const AddCustomChainArgsSchema = z.object({
 });
 
 export const ImportPrivateKeyArgsSchema = z.object({
-	privateKey: PrivateKeySchema,
+	privateKey: z.string().min(1, "Private key input is required"),
 });
 
 export const RemovePrivateKeyArgsSchema = z.object({

@@ -263,11 +263,22 @@ export async function handleToolCall(request: CallToolRequest) {
 				try {
 					const { privateKey } = ImportPrivateKeyArgsSchema.parse(args);
 					const address = importPrivateKey(privateKey);
+					
+					// Provide feedback about how the key was loaded
+					let sourceInfo = "";
+					if (privateKey.startsWith("0x")) {
+						sourceInfo = "Direct private key";
+					} else if (privateKey.includes("/") || privateKey.startsWith("~")) {
+						sourceInfo = `File: ${privateKey}`;
+					} else {
+						sourceInfo = `Environment variable: ${privateKey}`;
+					}
+					
 					return {
 						content: [
 							{
 								type: "text",
-								text: `Private key imported successfully\nAddress: ${address}\n\nUse 'set_wallet_type' with type "privateKey" to use this wallet.`,
+								text: `✅ Private key imported successfully!\n\nSource: ${sourceInfo}\nAddress: ${address}\n\n🔐 Private key is stored securely in memory only.\n\nNext steps:\n1. Use 'set_wallet_type' with type "privateKey" \n2. Connect to this address to start using your wallet`,
 							},
 						],
 					};
