@@ -46,7 +46,19 @@ export function createTestTransport(
   }
 
   // Use mock transport
-  return createMockTransport(mergedConfig.mockResponses);
+  const mockTransport = createMockTransport(mergedConfig.mockResponses);
+  
+  // Wrap the transport to log calls in CI
+  if (process.env.CI) {
+    return (() => ({
+      request: async (args: { method: string; params?: unknown[] }) => {
+        console.log(`[Mock Transport] RPC call: ${args.method}`);
+        return mockTransport().request(args);
+      },
+    })) as Transport;
+  }
+  
+  return mockTransport;
 }
 
 /**

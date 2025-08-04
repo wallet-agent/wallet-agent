@@ -175,13 +175,32 @@ export class Container {
       process.env.NODE_ENV === "test" &&
       (global as { __testTransport?: unknown }).__testTransport
     ) {
+      // Log transport usage in CI for debugging
+      if (process.env.CI) {
+        console.log(
+          `[Container] Using test transport for chain ${chain.id} (${chain.name})`,
+        );
+      }
+
       // For custom chains with example.com, create a failing transport
       const rpcUrl = chain.rpcUrls.default.http[0];
       if (rpcUrl?.includes("example.com")) {
+        if (process.env.CI) {
+          console.log(
+            `[Container] Chain ${chain.id} has example.com URL, using default http transport`,
+          );
+        }
         return http(); // Return a default http transport that will fail
       }
       return (global as { __testTransport?: ReturnType<typeof http> })
         .__testTransport as ReturnType<typeof http>;
+    }
+
+    // Log when NOT using test transport in test environment
+    if (process.env.NODE_ENV === "test" && process.env.CI) {
+      console.log(
+        `[Container] WARNING: Test transport not available for chain ${chain.id}, using HTTP transport`,
+      );
     }
 
     // Use regular HTTP transport
