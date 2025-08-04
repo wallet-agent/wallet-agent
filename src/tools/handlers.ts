@@ -98,11 +98,20 @@ export async function handleToolCall(request: CallToolRequest) {
 			}
 
 			case "send_transaction": {
-				const hash = await sendWalletTransaction({
+				const transactionParams: {
+					to: Address;
+					value: string;
+					data?: `0x${string}`;
+				} = {
 					to: args.to as Address,
 					value: args.value as string,
-					data: args.data as `0x${string}` | undefined,
-				});
+				};
+
+				if (args.data) {
+					transactionParams.data = args.data as `0x${string}`;
+				}
+
+				const hash = await sendWalletTransaction(transactionParams);
 
 				return {
 					content: [
