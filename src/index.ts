@@ -21,12 +21,7 @@ import {
 	signTypedData,
 	switchChain,
 } from "@wagmi/core";
-import {
-	type Address,
-	formatEther,
-	http,
-	parseEther,
-} from "viem";
+import { type Address, formatEther, http, parseEther } from "viem";
 import { mainnet, polygon, sepolia } from "viem/chains";
 
 // Initialize mock accounts

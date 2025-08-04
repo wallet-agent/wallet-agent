@@ -7,11 +7,13 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"experimentalScannerIgnores": [
-			"node_modules/**",
-			"dist/**",
-			"*.lock",
-			"*.lockb"
+		"includes": [
+			"**",
+			"!**/dist/**",
+			"!**/node_modules/**",
+			"!**/*.lock",
+			"!**/*.lockb",
+			"!**/.claude/**"
 		]
 	},
 	"formatter": {
