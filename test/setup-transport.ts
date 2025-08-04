@@ -52,6 +52,21 @@ if (process.env.NODE_ENV === "test") {
         };
       },
     ],
+    // Mock eth_call to handle contract interactions
+    [
+      "eth_call",
+      (params: unknown[]) => {
+        const [callData] = params as [{ to?: string; data?: string }];
+        // Check if it's a contract call
+        if (callData.to && callData.data) {
+          // Return error that indicates no data returned (no contract at address)
+          throw new Error("execution reverted: returned no data");
+        }
+        throw new Error("execution reverted");
+      },
+    ],
+    // Mock eth_getCode to return no code for all addresses (no contracts deployed)
+    ["eth_getCode", "0x"],
   ]);
 
   (global as { __testTransport?: unknown }).__testTransport =
