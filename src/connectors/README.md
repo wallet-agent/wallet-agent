@@ -17,7 +17,7 @@ MCP servers run in Node.js, while wallets like MetaMask are browser extensions. 
 ### 2. **Private Key Import** (Recommended for MCP)
 - Import wallet's private key
 - Full control in Node.js environment
-- Works with any Ethereum account
+- Works with any EVM account across all supported chains
 - ⚠️ Security: Private keys should be stored securely
 
 ### 3. **WalletConnect** (Future Enhancement)
@@ -35,13 +35,13 @@ MCP servers run in Node.js, while wallets like MetaMask are browser extensions. 
 
 We support:
 1. **Mock Wallet** - For testing with predefined accounts
-2. **Private Key Wallet** - For using real Ethereum accounts
+2. **Private Key Wallet** - For using real EVM accounts on any supported chain
 
 To use a real wallet with this MCP server:
 1. Export your wallet's private key
 2. Set it as an environment variable
 3. Use the `import_private_key` tool
-4. All subsequent operations use this wallet
+4. All subsequent operations use this wallet on any EVM chain
 
 ## Security Considerations
 

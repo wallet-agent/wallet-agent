@@ -133,7 +133,7 @@ export const toolDefinitions: Tool[] = [
 	},
 	{
 		name: "add_custom_chain",
-		description: "Add a custom blockchain network",
+		description: "Add a custom EVM-compatible blockchain network",
 		inputSchema: {
 			type: "object",
 			properties: {

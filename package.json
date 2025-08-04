@@ -1,14 +1,17 @@
 {
 	"name": "mcp-wallet",
 	"version": "0.1.0",
-	"description": "MCP server for Web3 wallet interactions using Wagmi mock connector",
+	"description": "MCP server for Web3 wallet interactions on EVM-compatible chains using Wagmi",
 	"keywords": [
 		"mcp",
 		"model-context-protocol",
 		"wallet",
 		"web3",
 		"wagmi",
-		"ethereum"
+		"evm",
+		"ethereum",
+		"polygon",
+		"blockchain"
 	],
 	"author": "Shane Vitarana",
 	"license": "MIT",

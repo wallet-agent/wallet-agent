@@ -151,7 +151,7 @@ export async function handleToolCall(request: CallToolRequest) {
 					content: [
 						{
 							type: "text",
-							text: `Balance: ${result.balance} ETH`,
+							text: `Balance: ${result.balance} native tokens`,
 						},
 					],
 				};

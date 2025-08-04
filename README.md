@@ -1,16 +1,17 @@
 # MCP Wallet Server
 
-An MCP (Model Context Protocol) server that enables AI coding tools like Claude Code and Cursor to interact with Web3 wallets. Built using Wagmi's mock wallet connector for safe, deterministic wallet operations without requiring a real browser extension.
+An MCP (Model Context Protocol) server that enables AI coding tools like Claude Code and Cursor to interact with Web3 wallets on any EVM-compatible blockchain. Supports both mock wallets for testing and real wallets via private key import.
 
 ## Features
 
-- **Wallet Connection**: Connect and disconnect mock wallets
+- **Wallet Connection**: Connect and disconnect mock or real wallets
 - **Account Management**: List available accounts and get current account info
 - **Message Signing**: Sign plain messages and EIP-712 typed data
-- **Transaction Handling**: Send transactions with ETH transfers and contract interactions
-- **Chain Management**: Switch between different networks (Mainnet, Sepolia, Polygon, Anvil)
-- **Balance Checking**: Query ETH balances for any address
+- **Transaction Handling**: Send transactions with native token transfers and contract interactions
+- **Chain Management**: Switch between different EVM networks (Mainnet, Sepolia, Polygon, Anvil, and custom chains)
+- **Balance Checking**: Query native token balances for any address
 - **Resource Access**: Get wallet state and supported chains info
+- **Real Wallet Support**: Import private keys for real blockchain interactions
 
 ## Quick Start
 

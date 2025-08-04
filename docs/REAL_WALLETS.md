@@ -2,10 +2,10 @@
 
 ## Overview
 
-This MCP server now supports real Ethereum wallets through private key import. This allows you to:
+This MCP server now supports real EVM wallets through private key import. This allows you to:
 - Sign real transactions
-- Interact with mainnet and testnets
-- Use your existing Ethereum accounts
+- Interact with any EVM-compatible chain
+- Use your existing EVM accounts
 
 ## How It Works
 
@@ -19,7 +19,7 @@ We've implemented private key wallet support that works natively in Node.js:
 
 1. **Import your private key** using the `import_private_key` tool
 2. **Switch to private key mode** with `set_wallet_type`
-3. **Use normally** - all operations work with your real wallet
+3. **Use normally** - all operations work with your real wallet on any EVM chain
 
 ## Usage Guide
 
@@ -103,17 +103,17 @@ MCP Server (Node.js)
     ↓
 Private Key Wallet (Viem)
     ↓
-Ethereum RPC (HTTP)
+EVM RPC (HTTP)
     ↓
-Blockchain
+EVM Blockchain
 ```
 
 ### Key Components
 
 1. **wallet-manager.ts** - Manages private keys and wallet clients
-2. **chains.ts** - Extended to support wallet types
+2. **chains.ts** - Extended to support wallet types and multiple EVM chains
 3. **signing.ts** - Updated to use private key wallets
-4. **transactions.ts** - Works with both mock and real wallets
+4. **transactions.ts** - Works with both mock and real wallets on any EVM chain
 
 ## Limitations
 
