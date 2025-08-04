@@ -8,6 +8,7 @@ import {
 	TEST_ADDRESS_2,
 	TEST_PRIVATE_KEY,
 } from "./setup.js";
+import { setupTokenTestTransport } from "./test-config.js";
 
 // Mock token/NFT addresses for testing (will be deployed to Anvil later)
 const MOCK_TOKEN_ADDRESS = "0x1234567890123456789012345678901234567890";
@@ -15,6 +16,7 @@ const MOCK_NFT_ADDRESS = "0x2345678901234567890123456789012345678901";
 
 describe("Token Operations Integration", () => {
 	setupContainer();
+	setupTokenTestTransport();
 
 	describe("transfer_token", () => {
 		it("should validate required parameters", async () => {

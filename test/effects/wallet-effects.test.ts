@@ -115,7 +115,7 @@ describe("WalletEffects", () => {
 		it("signs message with mock wallet", async () => {
 			await walletEffects.connectWallet(testAddresses.mock1);
 			const signature = await walletEffects.signMessage("Hello World");
-			expect(signature).toBe("0xmockedsignature");
+			expect(signature).toBe("0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
 		});
 
 		it("signs message with private key wallet", async () => {

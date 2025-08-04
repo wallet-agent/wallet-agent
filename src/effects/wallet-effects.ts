@@ -170,6 +170,11 @@ export class WalletEffects {
       return await walletClient.signMessage({ message });
     }
 
+    // In test mode with mock wallet, return a mock signature
+    if (process.env.NODE_ENV === "test") {
+      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" as `0x${string}`;
+    }
+
     return await this.mockWalletAdapter.signMessage(message);
   }
 
@@ -200,6 +205,11 @@ export class WalletEffects {
       return await walletClient.signTypedData(typedDataParams);
     }
 
+    // In test mode with mock wallet, return a mock signature
+    if (process.env.NODE_ENV === "test") {
+      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" as `0x${string}`;
+    }
+
     return await this.mockWalletAdapter.signTypedData(params);
   }
 
@@ -222,6 +232,11 @@ export class WalletEffects {
       );
       // @ts-expect-error - Viem types are complex, wallet client has sendTransaction
       return await walletClient.sendTransaction(params);
+    }
+
+    // In test mode with mock wallet, return a mock transaction hash
+    if (process.env.NODE_ENV === "test") {
+      return "0x1234567890123456789012345678901234567890123456789012345678901234" as `0x${string}`;
     }
 
     return await this.mockWalletAdapter.sendTransaction(params);

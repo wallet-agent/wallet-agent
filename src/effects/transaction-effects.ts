@@ -57,6 +57,21 @@ export class TransactionEffects {
    * Create a public client for the current or specified chain
    */
   private createPublicClient(chain: Chain): PublicClient {
+    // In test mode, use the container's configured transport
+    if (process.env.NODE_ENV === "test") {
+      // Import container here to avoid circular dependency
+      const { getContainer } = require("../container.js");
+      const container = getContainer();
+      const transportFactory =
+        container.wagmiConfig._internal.transports[chain.id];
+      if (transportFactory) {
+        return createPublicClient({
+          chain,
+          transport: transportFactory,
+        });
+      }
+    }
+
     return createPublicClient({
       chain,
       transport: http(chain.rpcUrls.default.http[0]),

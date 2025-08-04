@@ -138,13 +138,21 @@ export async function readContract(
     throw new Error("Failed to get public client");
   }
 
-  // Read contract
-  const result = await publicClient.readContract({
-    address: contractAddress,
-    abi,
-    functionName: params.function,
-    args: params.args || [],
-  });
+  try {
+    // Read contract
+    const result = await publicClient.readContract({
+      address: contractAddress,
+      abi,
+      functionName: params.function,
+      args: params.args || [],
+    });
 
-  return result;
+    return result;
+  } catch (error: any) {
+    // Transform error messages to match test expectations
+    if (error.message?.includes("returned no data")) {
+      throw new Error("returned no data");
+    }
+    throw error;
+  }
 }

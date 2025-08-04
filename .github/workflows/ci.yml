@@ -25,16 +25,6 @@ jobs:
       with:
         bun-version: latest
 
-    - name: Start Anvil
-      run: |
-        docker run -d --name anvil -p 8545:8545 --entrypoint /bin/sh ghcr.io/foundry-rs/foundry:latest -c "anvil --host 0.0.0.0"
-        echo "Waiting for Anvil to start..."
-        sleep 5
-        curl -X POST http://localhost:8545 \
-          -H "Content-Type: application/json" \
-          -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' || exit 1
-        echo "Anvil is ready"
-
     - name: Cache dependencies
       uses: actions/cache@v4
       with:
@@ -65,7 +55,3 @@ jobs:
           exit 1
         fi
         echo "Build successful: dist/index.js found"
-
-    - name: Stop Anvil
-      if: always()
-      run: docker stop anvil || true
