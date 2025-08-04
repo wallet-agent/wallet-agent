@@ -76,11 +76,39 @@ The server will be available immediately. You can verify it's running with the `
 - `send_transaction`: Send ETH or interact with contracts
 - `switch_chain`: Change the active blockchain network (supports Mainnet, Sepolia, Polygon, and Anvil local testnet)
 - `get_balance`: Check ETH balance of an address
+- `add_custom_chain`: Add a custom blockchain network with RPC endpoint
 
 ### Available Resources
 
 - `wallet://state`: Current wallet connection state
-- `wallet://chains`: List of supported blockchain networks
+- `wallet://chains`: List of supported blockchain networks (including custom chains)
+
+## Custom Chains
+
+You can add custom blockchain networks using the `add_custom_chain` tool. This is useful for:
+- Private networks
+- Local test networks (other than Anvil)
+- EVM-compatible chains not included by default
+- Custom RPC endpoints for existing chains
+
+Example:
+```javascript
+// Add a custom network
+await add_custom_chain({
+  chainId: 1337,
+  name: "Local Network",
+  rpcUrl: "http://localhost:8545",
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18
+  },
+  blockExplorerUrl: "http://localhost:4000" // optional
+});
+
+// Switch to the custom network
+await switch_chain({ chainId: 1337 });
+```
 
 ## Mock Accounts
 

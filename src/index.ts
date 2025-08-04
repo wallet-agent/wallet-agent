@@ -21,7 +21,14 @@ import {
 	signTypedData,
 	switchChain,
 } from "@wagmi/core";
-import { type Address, formatEther, http, parseEther } from "viem";
+import {
+	type Address,
+	type Chain,
+	defineChain,
+	formatEther,
+	http,
+	parseEther,
+} from "viem";
 import { anvil, mainnet, polygon, sepolia } from "viem/chains";
 
 // Initialize mock accounts
@@ -30,6 +37,17 @@ const mockAccounts = [
 	"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
 	"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
 ] as const satisfies readonly Address[];
+
+// Built-in chains
+const builtInChains = [mainnet, sepolia, polygon, anvil];
+
+// Custom chains storage
+const customChains = new Map<number, Chain>();
+
+// Helper to get all chains (built-in + custom)
+function getAllChains(): Chain[] {
+	return [...builtInChains, ...customChains.values()];
+}
 
 // Create Wagmi config with mock connector
 const config = createConfig({
@@ -202,6 +220,51 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 					},
 				},
 			},
+			{
+				name: "add_custom_chain",
+				description: "Add a custom blockchain network",
+				inputSchema: {
+					type: "object",
+					properties: {
+						chainId: {
+							type: "number",
+							description: "Unique chain ID for the network",
+						},
+						name: {
+							type: "string",
+							description: "Name of the blockchain network",
+						},
+						rpcUrl: {
+							type: "string",
+							description: "RPC endpoint URL (e.g., https://rpc.example.com)",
+						},
+						nativeCurrency: {
+							type: "object",
+							description: "Native currency configuration",
+							properties: {
+								name: {
+									type: "string",
+									description: "Currency name (e.g., 'Ether')",
+								},
+								symbol: {
+									type: "string",
+									description: "Currency symbol (e.g., 'ETH')",
+								},
+								decimals: {
+									type: "number",
+									description: "Number of decimals (usually 18)",
+								},
+							},
+							required: ["name", "symbol", "decimals"],
+						},
+						blockExplorerUrl: {
+							type: "string",
+							description: "Block explorer URL (optional)",
+						},
+					},
+					required: ["chainId", "name", "rpcUrl", "nativeCurrency"],
+				},
+			},
 		],
 	};
 });
@@ -350,8 +413,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 			case "switch_chain": {
 				const chainId = args.chainId as number;
+
+				// Check if chain is supported
+				const allChains = getAllChains();
+				const chain = allChains.find((c) => c.id === chainId);
+				if (!chain) {
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						`Chain ID ${chainId} is not supported. Add it first using add_custom_chain.`,
+					);
+				}
+
 				await switchChain(config, {
-					chainId: chainId as 1 | 11155111 | 137 | 31337,
+					chainId: chainId as (typeof config.chains)[number]["id"],
 				});
 				currentChainId = chainId;
 
@@ -359,7 +433,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 					content: [
 						{
 							type: "text",
-							text: `Switched to chain ID: ${chainId}`,
+							text: `Switched to ${chain.name} (Chain ID: ${chainId})`,
 						},
 					],
 				};
@@ -376,7 +450,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 				const balance = await getBalance(config, {
 					address,
-					chainId: currentChainId as 1 | 11155111 | 137 | 31337,
+					chainId: currentChainId as (typeof config.chains)[number]["id"],
 				});
 
 				return {
@@ -384,6 +458,61 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 						{
 							type: "text",
 							text: `Balance: ${formatEther(balance.value)} ETH`,
+						},
+					],
+				};
+			}
+
+			case "add_custom_chain": {
+				const chainId = args.chainId as number;
+				const name = args.name as string;
+				const rpcUrl = args.rpcUrl as string;
+				const nativeCurrency = args.nativeCurrency as {
+					name: string;
+					symbol: string;
+					decimals: number;
+				};
+				const blockExplorerUrl = args.blockExplorerUrl as string | undefined;
+
+				// Check if chain already exists
+				if (
+					builtInChains.some((chain) => chain.id === chainId) ||
+					customChains.has(chainId)
+				) {
+					throw new McpError(
+						ErrorCode.InvalidParams,
+						`Chain with ID ${chainId} already exists`,
+					);
+				}
+
+				// Create custom chain
+				const customChain = defineChain({
+					id: chainId,
+					name,
+					nativeCurrency,
+					rpcUrls: {
+						default: {
+							http: [rpcUrl],
+						},
+					},
+					blockExplorers: blockExplorerUrl
+						? {
+								default: {
+									name: `${name} Explorer`,
+									url: blockExplorerUrl,
+								},
+							}
+						: undefined,
+				});
+
+				// Store custom chain
+				customChains.set(chainId, customChain);
+
+				return {
+					content: [
+						{
+							type: "text",
+							text: `Custom chain added successfully:\n- Chain ID: ${chainId}\n- Name: ${name}\n- RPC URL: ${rpcUrl}\n- Native Currency: ${nativeCurrency.symbol}`,
 						},
 					],
 				};
@@ -458,12 +587,11 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 						mimeType: "application/json",
 						text: JSON.stringify(
 							{
-								chains: [
-									{ id: mainnet.id, name: mainnet.name },
-									{ id: sepolia.id, name: sepolia.name },
-									{ id: polygon.id, name: polygon.name },
-									{ id: anvil.id, name: anvil.name },
-								],
+								chains: getAllChains().map((chain) => ({
+									id: chain.id,
+									name: chain.name,
+									isCustom: customChains.has(chain.id),
+								})),
 							},
 							null,
 							2,
