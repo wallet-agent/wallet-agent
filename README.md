@@ -183,24 +183,40 @@ However, **you are responsible** for secure key management and should audit the 
 
 ## Custom Chains
 
-Add any EVM-compatible blockchain:
+Add any EVM-compatible blockchain using natural language with Claude Code:
 
-```javascript
-await add_custom_chain({
-  chainId: 1337,
-  name: "Local Network",
-  rpcUrl: "http://localhost:8545",
-  nativeCurrency: {
-    name: "Ether",
-    symbol: "ETH",
-    decimals: 18
-  },
-  blockExplorerUrl: "http://localhost:4000" // optional
-});
+**Popular Networks:**
+- "Add Base mainnet to my supported chains"
+- "Add Arbitrum One with chain ID 42161"
+- "Add Polygon network for DeFi development"
 
-// Switch to the custom network
-await switch_chain({ chainId: 1337 });
+**Layer 2 & Testnets:**
+- "Add Optimism mainnet with proper explorer"
+- "Add Sepolia testnet for contract testing"
+- "Add Mumbai testnet for Polygon development"
+
+**Local Development:**
+- "Add my local Hardhat network on localhost:8545"
+- "Add Anvil chain with chain ID 31337"
+- "Add my custom testnet at https://my-rpc.example.com"
+
+**Example Response:**
 ```
+✅ Custom chain added successfully!
+
+Chain ID: 8453
+Name: Base
+RPC URL: https://mainnet.base.org
+Native Currency: ETH (18 decimals)
+Block Explorer: https://basescan.org
+
+The chain is now available for use. You can switch to it with 'switch_chain'.
+```
+
+**Then switch and use immediately:**
+- "Switch to Base network"
+- "Check my balance on Base"
+- "Send 0.1 ETH to 0x... on Base"
 
 ## Example Usage
 
