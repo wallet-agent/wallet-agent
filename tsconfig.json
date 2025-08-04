@@ -8,11 +8,11 @@
 		"jsx": "react-jsx",
 		"allowJs": true,
 
-		// Bundler mode
+		// Bun compatibility - for IDE type checking only
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
+		"noEmit": true, // Bun handles emit, not tsc
 
 		// Strict type checking
 		"strict": true,
