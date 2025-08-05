@@ -13,6 +13,41 @@ claude mcp add wallet-agent bunx wallet-agent
 
 Verify with `/mcp` in Claude Code.
 
+## Usage Examples
+
+### Basic Flow
+```
+"Connect to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+"Check my balance"
+"Send 0.1 ETH to shanev.eth"
+"Switch to Polygon"
+```
+
+### Token Operations
+```
+"Transfer 100 USDC to 0x..."
+"Get my DOGE balance"
+"Approve USDC spending for 0xDEX..."
+```
+
+## Supported Chains
+
+### Built-in Chains
+Wallet Agent includes the following chains by default:
+- **Anvil** (Local, Chain ID: 31337) - Default chain for local development
+- **Ethereum Mainnet** (Chain ID: 1) - Using public RPC
+- **Sepolia** (Chain ID: 11155111) - Ethereum testnet
+- **Polygon** (Chain ID: 137) - Polygon PoS mainnet
+
+⚠️ **Note**: Built-in chains use public RPC endpoints which may have rate limits. For production use, consider adding custom chains with your own RPC endpoints.
+
+### Custom Chain Support
+Add any EVM-compatible chain with the `add_custom_chain` tool:
+- Local development networks (Anvil, Hardhat, Ganache)
+- Layer 2 networks (Base, Arbitrum, Optimism)
+- Alternative L1s (BNB Chain, Avalanche)
+- Private/enterprise networks
+
 ## Available Tools
 
 ### Wallet Management
@@ -65,30 +100,6 @@ Verify with `/mcp` in Claude Code.
 
 ### ENS
 - `resolve_ens_name` - Resolve an ENS name to an Ethereum address (mainnet only)
-
-## Usage Examples
-
-### Basic Flow
-```
-"Connect to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-"Check my balance"
-"Send 0.1 ETH to shanev.eth"
-"Switch to HyperEVM"
-```
-
-### Token Operations
-```
-"Transfer 100 USDC to 0x..."
-"Get my DOGE balance"
-"Approve USDC spending for 0xDEX..."
-```
-
-### Custom Chains
-```
-"Add Base mainnet"
-"Add local Anvil chain"
-"Switch to Base"
-```
 
 ## Real Wallets (Development Only)
 
