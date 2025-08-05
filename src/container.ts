@@ -172,33 +172,13 @@ export class Container {
   private createTransport(chain: Chain): ReturnType<typeof http> {
     // FIRST: Check for example.com chains - these should ALWAYS use failing transport
     const rpcUrl = chain.rpcUrls.default.http[0];
-    console.log(
-      `[Container] DEBUG: Chain ${chain.id} (${chain.name}) RPC URL: ${rpcUrl}`,
-    );
     if (rpcUrl?.includes("example.com")) {
-      console.log(
-        `[Container] Chain ${chain.id} has example.com URL, creating failing HTTP transport (bypassing test transport)`,
-      );
-      // Create a transport that will fail with the expected error message
-      const failingTransport = () => ({
-        config: {
-          key: "http-failing",
-          name: "Failing HTTP Transport",
-          request: {},
-          retryCount: 0,
-          retryDelay: 0,
-          timeout: 1000,
-          type: "http",
-        },
-        request: async (...args: unknown[]) => {
-          console.log(
-            `[FailingTransport] Called for chain ${chain.id} with args:`,
-            args,
-          );
-          throw new Error("HTTP request failed");
-        },
-      });
-      return failingTransport as unknown as ReturnType<typeof http>;
+      if (process.env.CI) {
+        console.log(
+          `[Container] Chain ${chain.id} has example.com URL, using default http transport`,
+        );
+      }
+      return http(); // Return a default http transport that will fail
     }
 
     // SECOND: Check if test transport is available via global for other chains
