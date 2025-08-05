@@ -172,12 +172,11 @@ export class Container {
   private createTransport(chain: Chain): ReturnType<typeof http> {
     // FIRST: Check for example.com chains - these should ALWAYS use failing transport
     const rpcUrl = chain.rpcUrls.default.http[0];
+    console.log(`[Container] DEBUG: Chain ${chain.id} (${chain.name}) RPC URL: ${rpcUrl}`);
     if (rpcUrl?.includes("example.com")) {
-      if (process.env.CI) {
-        console.log(
-          `[Container] Chain ${chain.id} has example.com URL, creating failing HTTP transport (bypassing test transport)`,
-        );
-      }
+      console.log(
+        `[Container] Chain ${chain.id} has example.com URL, creating failing HTTP transport (bypassing test transport)`,
+      );
       // Create a transport that will fail with the expected error message
       const failingTransport = () => ({
         config: {
@@ -189,7 +188,8 @@ export class Container {
           timeout: 1000,
           type: "http",
         },
-        request: async () => {
+        request: async (...args: unknown[]) => {
+          console.log(`[FailingTransport] Called for chain ${chain.id} with args:`, args);
           throw new Error("HTTP request failed");
         },
       });
