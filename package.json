@@ -14,7 +14,7 @@
     "blockchain"
   ],
   "author": "Shane Vitarana",
-  "license": "AGPL-3.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/wallet-agent/wallet-agent.git"
