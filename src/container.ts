@@ -182,15 +182,30 @@ export class Container {
         );
       }
 
-      // For custom chains with example.com, create a failing transport
+      // For custom chains with example.com, create a transport that will fail with HTTP error
       const rpcUrl = chain.rpcUrls.default.http[0];
       if (rpcUrl?.includes("example.com")) {
         if (process.env.CI) {
           console.log(
-            `[Container] Chain ${chain.id} has example.com URL, using default http transport`,
+            `[Container] Chain ${chain.id} has example.com URL, creating failing HTTP transport`,
           );
         }
-        return http(); // Return a default http transport that will fail
+        // Create a transport that will fail with the expected error message
+        const failingTransport = () => ({
+          config: {
+            key: "http-failing",
+            name: "Failing HTTP Transport",
+            request: {},
+            retryCount: 0,
+            retryDelay: 0,
+            timeout: 1000,
+            type: "http",
+          },
+          request: async () => {
+            throw new Error("HTTP request failed");
+          },
+        });
+        return failingTransport as unknown as ReturnType<typeof http>;
       }
       return (global as { __testTransport?: ReturnType<typeof http> })
         .__testTransport as ReturnType<typeof http>;
