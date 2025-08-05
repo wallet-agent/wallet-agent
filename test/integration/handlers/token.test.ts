@@ -99,15 +99,16 @@ describe("Token Operations Integration", () => {
       });
 
       // Try to use an unknown token symbol - should fail with some error
-      // Error message depends on environment but should indicate token not found
+      console.log("[DEBUG] Testing UNKNOWN_TOKEN transfer, NODE_ENV:", process.env.NODE_ENV);
       try {
-        await expectToolSuccess("transfer_token", {
+        const result = await expectToolSuccess("transfer_token", {
           token: "UNKNOWN_TOKEN",
           to: TEST_ADDRESS_2,
           amount: "100",
         });
+        console.log("[DEBUG] UNEXPECTED SUCCESS with UNKNOWN_TOKEN:", JSON.stringify(result, null, 2));
         throw new Error("Expected this to fail but it succeeded");
-      } catch (_error) {
+      } catch (error) {
         const errorMsg = (error as Error).message || "";
         // Should either be contract resolution error or contract call failure
         expect(
@@ -133,7 +134,7 @@ describe("Token Operations Integration", () => {
           amount: "100",
         });
         throw new Error("Expected this to fail but it succeeded");
-      } catch (_error) {
+      } catch (error) {
         const errorMsg = (error as Error).message || "";
         // Should indicate USDC not found on this chain or contract call failure
         expect(
@@ -286,7 +287,7 @@ describe("Token Operations Integration", () => {
           token: "USDC",
         });
         throw new Error("Expected this to fail but it succeeded");
-      } catch (_error) {
+      } catch (error) {
         const errorMsg = (error as Error).message || "";
         // Should indicate USDC not found on this chain or contract call failure
         expect(
@@ -422,7 +423,7 @@ describe("Token Operations Integration", () => {
           amount: "100",
         });
         throw new Error("Expected this to fail but it succeeded");
-      } catch (_error) {
+      } catch (error) {
         const errorMsg = (error as Error).message || "";
         // Should indicate token not found or contract call failure
         expect(
@@ -491,7 +492,7 @@ describe("Token Operations Integration", () => {
             to: TEST_ADDRESS_2,
             amount: "0.01", // Small amount to avoid balance issues
           });
-        } catch (_error) {
+        } catch (error) {
           // If it fails, it should be due to balance issues, not contract existence
           const errorMsg = (error as Error).message || "";
           // Should NOT contain "returned no data" - that would mean contract doesn't exist
