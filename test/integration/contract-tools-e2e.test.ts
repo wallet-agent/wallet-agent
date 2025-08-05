@@ -193,7 +193,9 @@ describe.skipIf(!useRealAnvil)(
           functionName: "symbol",
           args: [],
         });
-        const symbolMatch = symbolResult.text.match(/Contract read result: (.+)/);
+        const symbolMatch = symbolResult.text.match(
+          /Contract read result: (.+)/,
+        );
         expect(symbolMatch).toBeDefined();
         const symbol = symbolMatch ? JSON.parse(symbolMatch[1]) : null;
         expect(symbol).toBe("TEST");
@@ -206,7 +208,9 @@ describe.skipIf(!useRealAnvil)(
           functionName: "balanceOf",
           args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
         });
-        const balanceMatch = balanceResult.text.match(/Contract read result: (.+)/);
+        const balanceMatch = balanceResult.text.match(
+          /Contract read result: (.+)/,
+        );
         expect(balanceMatch).toBeDefined();
         const balance = balanceMatch ? JSON.parse(balanceMatch[1]) : null;
         expect(balance).toBe("10000000000000000000000");
@@ -241,14 +245,15 @@ describe.skipIf(!useRealAnvil)(
           args: [recipient],
         });
 
-        const balanceMatch = balanceResult.text.match(/Contract read result: (.+)/);
-        expect(balanceMatch).toBeDefined();
-        const recipientBalance = balanceMatch ? JSON.parse(balanceMatch[1]) : null;
-        expect(recipientBalance).toBe(amount);
-        console.log(
-          "✓ Recipient received tokens:",
-          recipientBalance,
+        const balanceMatch = balanceResult.text.match(
+          /Contract read result: (.+)/,
         );
+        expect(balanceMatch).toBeDefined();
+        const recipientBalance = balanceMatch
+          ? JSON.parse(balanceMatch[1])
+          : null;
+        expect(recipientBalance).toBe(amount);
+        console.log("✓ Recipient received tokens:", recipientBalance);
       });
 
       it("should read from ERC721 NFT contract", async () => {
@@ -262,9 +267,7 @@ describe.skipIf(!useRealAnvil)(
         const ownerMatch = ownerResult.text.match(/Contract read result: (.+)/);
         expect(ownerMatch).toBeDefined();
         const owner = ownerMatch ? JSON.parse(ownerMatch[1]) : null;
-        expect(owner).toBe(
-          "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        );
+        expect(owner).toBe("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
         console.log("✓ NFT owner:", owner);
 
         // Get NFT name
@@ -309,7 +312,9 @@ describe.skipIf(!useRealAnvil)(
           args: [tokenId],
         });
 
-        const approvedMatch = approvedResult.text.match(/Contract read result: (.+)/);
+        const approvedMatch = approvedResult.text.match(
+          /Contract read result: (.+)/,
+        );
         expect(approvedMatch).toBeDefined();
         const approved = approvedMatch ? JSON.parse(approvedMatch[1]) : null;
         expect(approved).toBe(spender);
