@@ -170,7 +170,33 @@ export class Container {
   }
 
   private createTransport(chain: Chain): ReturnType<typeof http> {
-    // Check if test transport is available via global
+    // FIRST: Check for example.com chains - these should ALWAYS use failing transport
+    const rpcUrl = chain.rpcUrls.default.http[0];
+    if (rpcUrl?.includes("example.com")) {
+      if (process.env.CI) {
+        console.log(
+          `[Container] Chain ${chain.id} has example.com URL, creating failing HTTP transport (bypassing test transport)`,
+        );
+      }
+      // Create a transport that will fail with the expected error message
+      const failingTransport = () => ({
+        config: {
+          key: "http-failing",
+          name: "Failing HTTP Transport",
+          request: {},
+          retryCount: 0,
+          retryDelay: 0,
+          timeout: 1000,
+          type: "http",
+        },
+        request: async () => {
+          throw new Error("HTTP request failed");
+        },
+      });
+      return failingTransport as unknown as ReturnType<typeof http>;
+    }
+
+    // SECOND: Check if test transport is available via global for other chains
     if (
       process.env.NODE_ENV === "test" &&
       (global as { __testTransport?: unknown }).__testTransport
@@ -182,31 +208,6 @@ export class Container {
         );
       }
 
-      // For custom chains with example.com, create a transport that will fail with HTTP error
-      const rpcUrl = chain.rpcUrls.default.http[0];
-      if (rpcUrl?.includes("example.com")) {
-        if (process.env.CI) {
-          console.log(
-            `[Container] Chain ${chain.id} has example.com URL, creating failing HTTP transport`,
-          );
-        }
-        // Create a transport that will fail with the expected error message
-        const failingTransport = () => ({
-          config: {
-            key: "http-failing",
-            name: "Failing HTTP Transport",
-            request: {},
-            retryCount: 0,
-            retryDelay: 0,
-            timeout: 1000,
-            type: "http",
-          },
-          request: async () => {
-            throw new Error("HTTP request failed");
-          },
-        });
-        return failingTransport as unknown as ReturnType<typeof http>;
-      }
       return (global as { __testTransport?: ReturnType<typeof http> })
         .__testTransport as ReturnType<typeof http>;
     }
