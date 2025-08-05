@@ -99,14 +99,20 @@ describe("Token Operations Integration", () => {
       });
 
       // Try to use an unknown token symbol - should fail with some error
-      console.log("[DEBUG] Testing UNKNOWN_TOKEN transfer, NODE_ENV:", process.env.NODE_ENV);
+      console.log(
+        "[DEBUG] Testing UNKNOWN_TOKEN transfer, NODE_ENV:",
+        process.env.NODE_ENV,
+      );
       try {
         const result = await expectToolSuccess("transfer_token", {
           token: "UNKNOWN_TOKEN",
           to: TEST_ADDRESS_2,
           amount: "100",
         });
-        console.log("[DEBUG] UNEXPECTED SUCCESS with UNKNOWN_TOKEN:", JSON.stringify(result, null, 2));
+        console.log(
+          "[DEBUG] UNEXPECTED SUCCESS with UNKNOWN_TOKEN:",
+          JSON.stringify(result, null, 2),
+        );
         throw new Error("Expected this to fail but it succeeded");
       } catch (error) {
         const errorMsg = (error as Error).message || "";
