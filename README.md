@@ -1,14 +1,14 @@
 # Wallet Agent
 
-[![CI](https://github.com/shanev/wallet-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/shanev/wallet-agent/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/shanev/wallet-agent/graph/badge.svg)](https://codecov.io/gh/shanev/wallet-agent)
+[![CI](https://github.com/wallet-agent/wallet-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/wallet-agent/wallet-agent/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/wallet-agent/wallet-agent/graph/badge.svg)](https://codecov.io/gh/wallet-agent/wallet-agent)
 
 MCP server for Web3 wallet interactions in AI assistants like Claude Code and Cursor. Supports mock wallets for testing and real wallets via private key import.
 
 ## Quick Start
 
 ```bash
-claude mcp add wallet-agent bunx @shanev/wallet-agent
+claude mcp add wallet-agent bunx wallet-agent
 ```
 
 Verify with `/mcp` in Claude Code.
@@ -97,7 +97,7 @@ Verify with `/mcp` in Claude Code.
 ### Option 1: Environment Variable
 ```bash
 # When adding server
-claude mcp add wallet-agent bunx @shanev/wallet-agent -e WALLET_PRIVATE_KEY=0x...
+claude mcp add wallet-agent bunx wallet-agent -e WALLET_PRIVATE_KEY=0x...
 
 # Or in shell
 export WALLET_PRIVATE_KEY="0x..."
@@ -126,7 +126,7 @@ Pre-configured for testing:
 ## Development
 
 ```bash
-git clone https://github.com/shanev/wallet-agent.git
+git clone https://github.com/wallet-agent/wallet-agent.git
 cd wallet-agent
 bun install
 bun run dev

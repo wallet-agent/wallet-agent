@@ -155,4 +155,4 @@ DEBUG=true bun test -t "specific test name"
 
 ---
 
-For issues, please [open an issue](https://github.com/shanev/wallet-agent/issues).
+For issues, please [open an issue](https://github.com/wallet-agent/wallet-agent/issues).
