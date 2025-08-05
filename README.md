@@ -151,11 +151,13 @@ docker run -d --name anvil -p 8545:8545 -e ANVIL_IP_ADDR=0.0.0.0 ghcr.io/foundry
 # In another terminal, run tests with real blockchain
 USE_REAL_ANVIL=true bun test
 
-# Or use npm script
-bun run test:anvil
+# Or use npm scripts
+bun run test:anvil                    # Run all tests with real Anvil
+bun run test:anvil:tokens              # Test token handlers with Anvil
 
-# Test specific handlers with Anvil
-bun run test:anvil:tokens
+# CI Testing Scripts
+bun run test:ci                        # Start Anvil in Docker and run all tests
+bun run test:ci:separate               # Run tests with existing Anvil instance
 
 # Clean up Docker container when done
 docker stop anvil && docker rm anvil

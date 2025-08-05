@@ -119,6 +119,204 @@ describe.skipIf(!useRealAnvil)(
       });
     });
 
+    describe("Contract Read/Write Operations", () => {
+      it("should read from Storage contract", async () => {
+        const { text } = await expectToolSuccess("read_contract", {
+          address: deployedContracts.storage,
+          contractName: "Storage",
+          functionName: "retrieve",
+          args: [],
+        });
+
+        expect(text).toContain("Contract read result:");
+        // Parse the result from the JSON in the text
+        const resultMatch = text.match(/Contract read result: (.+)/);
+        expect(resultMatch).toBeDefined();
+        const parsedResult = resultMatch ? JSON.parse(resultMatch[1]) : null;
+        expect(parsedResult).not.toBeNull();
+        console.log("✓ Storage initial value:", parsedResult);
+      });
+
+      it("should write to Storage contract", async () => {
+        const testValue = "42";
+        const { text } = await expectToolSuccess("write_contract", {
+          address: deployedContracts.storage,
+          contractName: "Storage",
+          functionName: "store",
+          args: [testValue],
+        });
+
+        expect(text).toContain("Transaction sent successfully!");
+        // Extract hash from the text
+        const hashMatch = text.match(/Hash: (0x[a-fA-F0-9]{64})/);
+        expect(hashMatch).toBeDefined();
+        const hash = hashMatch ? hashMatch[1] : "";
+        expect(hash).toMatch(/^0x[a-fA-F0-9]{64}$/);
+        console.log("✓ Write transaction hash:", hash);
+
+        // Wait for transaction to be mined
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Verify the value was written
+        const readResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.storage,
+          contractName: "Storage",
+          functionName: "retrieve",
+          args: [],
+        });
+
+        const resultMatch = readResult.text.match(/Contract read result: (.+)/);
+        expect(resultMatch).toBeDefined();
+        const parsedResult = resultMatch ? JSON.parse(resultMatch[1]) : null;
+        expect(parsedResult).toBe(testValue);
+        console.log("✓ Verified stored value:", parsedResult);
+      });
+
+      it("should read from ERC20 token contract", async () => {
+        // Get token name
+        const nameResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.erc20,
+          contractName: "ERC20",
+          functionName: "name",
+          args: [],
+        });
+        const nameMatch = nameResult.text.match(/Contract read result: (.+)/);
+        expect(nameMatch).toBeDefined();
+        const name = nameMatch ? JSON.parse(nameMatch[1]) : null;
+        expect(name).toBe("Test Token");
+        console.log("✓ Token name:", name);
+
+        // Get token symbol
+        const symbolResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.erc20,
+          contractName: "ERC20",
+          functionName: "symbol",
+          args: [],
+        });
+        const symbolMatch = symbolResult.text.match(/Contract read result: (.+)/);
+        expect(symbolMatch).toBeDefined();
+        const symbol = symbolMatch ? JSON.parse(symbolMatch[1]) : null;
+        expect(symbol).toBe("TEST");
+        console.log("✓ Token symbol:", symbol);
+
+        // Get deployer balance
+        const balanceResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.erc20,
+          contractName: "ERC20",
+          functionName: "balanceOf",
+          args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
+        });
+        const balanceMatch = balanceResult.text.match(/Contract read result: (.+)/);
+        expect(balanceMatch).toBeDefined();
+        const balance = balanceMatch ? JSON.parse(balanceMatch[1]) : null;
+        expect(balance).toBe("10000000000000000000000");
+        console.log("✓ Token balance:", balance);
+      });
+
+      it("should write to ERC20 token contract", async () => {
+        const recipient = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
+        const amount = "1000000000000000000"; // 1 token
+
+        const { text } = await expectToolSuccess("write_contract", {
+          address: deployedContracts.erc20,
+          contractName: "ERC20",
+          functionName: "transfer",
+          args: [recipient, amount],
+        });
+
+        expect(text).toContain("Transaction sent successfully!");
+        const hashMatch = text.match(/Hash: (0x[a-fA-F0-9]{64})/);
+        expect(hashMatch).toBeDefined();
+        if (hashMatch) {
+          console.log("✓ Transfer transaction hash:", hashMatch[1]);
+        }
+
+        // Wait and verify
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const balanceResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.erc20,
+          contractName: "ERC20",
+          functionName: "balanceOf",
+          args: [recipient],
+        });
+
+        const balanceMatch = balanceResult.text.match(/Contract read result: (.+)/);
+        expect(balanceMatch).toBeDefined();
+        const recipientBalance = balanceMatch ? JSON.parse(balanceMatch[1]) : null;
+        expect(recipientBalance).toBe(amount);
+        console.log(
+          "✓ Recipient received tokens:",
+          recipientBalance,
+        );
+      });
+
+      it("should read from ERC721 NFT contract", async () => {
+        // Get NFT owner
+        const ownerResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.erc721,
+          contractName: "ERC721",
+          functionName: "ownerOf",
+          args: ["1"],
+        });
+        const ownerMatch = ownerResult.text.match(/Contract read result: (.+)/);
+        expect(ownerMatch).toBeDefined();
+        const owner = ownerMatch ? JSON.parse(ownerMatch[1]) : null;
+        expect(owner).toBe(
+          "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        );
+        console.log("✓ NFT owner:", owner);
+
+        // Get NFT name
+        const nameResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.erc721,
+          contractName: "ERC721",
+          functionName: "name",
+          args: [],
+        });
+        const nameMatch = nameResult.text.match(/Contract read result: (.+)/);
+        expect(nameMatch).toBeDefined();
+        const nftName = nameMatch ? JSON.parse(nameMatch[1]) : null;
+        expect(nftName).toBe("TestNFT");
+        console.log("✓ NFT collection name:", nftName);
+      });
+
+      it("should write to ERC721 NFT contract", async () => {
+        const spender = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
+        const tokenId = "1";
+
+        const { text } = await expectToolSuccess("write_contract", {
+          address: deployedContracts.erc721,
+          contractName: "ERC721",
+          functionName: "approve",
+          args: [spender, tokenId],
+        });
+
+        expect(text).toContain("Transaction sent successfully!");
+        const hashMatch = text.match(/Hash: (0x[a-fA-F0-9]{64})/);
+        expect(hashMatch).toBeDefined();
+        if (hashMatch) {
+          console.log("✓ Approval transaction hash:", hashMatch[1]);
+        }
+
+        // Wait and verify
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const approvedResult = await expectToolSuccess("read_contract", {
+          address: deployedContracts.erc721,
+          contractName: "ERC721",
+          functionName: "getApproved",
+          args: [tokenId],
+        });
+
+        const approvedMatch = approvedResult.text.match(/Contract read result: (.+)/);
+        expect(approvedMatch).toBeDefined();
+        const approved = approvedMatch ? JSON.parse(approvedMatch[1]) : null;
+        expect(approved).toBe(spender);
+        console.log("✓ NFT approved to:", approved);
+      });
+    });
+
     describe("Deployment Summary", () => {
       it("should provide comprehensive test summary", async () => {
         const { text: accountText } = await expectToolSuccess(
@@ -132,7 +330,10 @@ describe.skipIf(!useRealAnvil)(
 
         console.log("\n=== CONTRACT DEPLOYMENT E2E TEST SUMMARY ===");
         console.log(`✓ Anvil chain running: ${anvil.name} (${anvil.id})`);
-        console.log(`✓ Contract deployed: ${deployedContracts.storage}`);
+        console.log(`✓ Contracts deployed:`);
+        console.log(`  - Storage: ${deployedContracts.storage}`);
+        console.log(`  - ERC20: ${deployedContracts.erc20}`);
+        console.log(`  - ERC721: ${deployedContracts.erc721}`);
         console.log(
           `✓ Account connected: ${accountText.includes("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266") ? "YES" : "NO"}`,
         );
@@ -142,10 +343,13 @@ describe.skipIf(!useRealAnvil)(
         console.log("✓ Private key wallet integration working!");
         console.log("✓ Real blockchain deployment infrastructure functional!");
         console.log("✓ MCP tools working with Anvil blockchain!");
+        console.log("✓ Contract read/write operations tested!");
         console.log("============================================\n");
 
         // Verify all key components are working
         expect(deployedContracts.storage).toBeDefined();
+        expect(deployedContracts.erc20).toBeDefined();
+        expect(deployedContracts.erc721).toBeDefined();
         expect(deployedContracts.storage).toMatch(/^0x[a-fA-F0-9]{40}$/);
         expect(accountText).toContain(
           "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",

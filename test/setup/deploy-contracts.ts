@@ -6,7 +6,11 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { anvil } from "viem/chains";
-import { MINIMAL_STORAGE } from "./minimal-contracts.js";
+import {
+  MINIMAL_ERC20,
+  MINIMAL_ERC721,
+  MINIMAL_STORAGE,
+} from "./minimal-contracts.js";
 
 // Default Anvil private key (first account)
 const ANVIL_PRIVATE_KEY =
@@ -14,6 +18,8 @@ const ANVIL_PRIVATE_KEY =
 
 export interface DeployedContracts {
   storage: Address;
+  erc20: Address;
+  erc721: Address;
 }
 
 export async function deployTestContracts(): Promise<DeployedContracts> {
@@ -56,13 +62,53 @@ export async function deployTestContracts(): Promise<DeployedContracts> {
       storageReceipt.contractAddress,
     );
 
+    // Deploy ERC20 token
+    console.log("Deploying ERC20 token...");
+    const erc20Hash = await walletClient.deployContract({
+      abi: MINIMAL_ERC20.abi,
+      bytecode: MINIMAL_ERC20.bytecode,
+    });
+
+    const erc20Receipt = await publicClient.waitForTransactionReceipt({
+      hash: erc20Hash,
+    });
+
+    if (!erc20Receipt.contractAddress) {
+      throw new Error("ERC20 contract deployment failed - no contract address");
+    }
+
+    console.log("ERC20 token deployed at:", erc20Receipt.contractAddress);
+
+    // Deploy ERC721 NFT
+    console.log("Deploying ERC721 NFT...");
+    const erc721Hash = await walletClient.deployContract({
+      abi: MINIMAL_ERC721.abi,
+      bytecode: MINIMAL_ERC721.bytecode,
+    });
+
+    const erc721Receipt = await publicClient.waitForTransactionReceipt({
+      hash: erc721Hash,
+    });
+
+    if (!erc721Receipt.contractAddress) {
+      throw new Error(
+        "ERC721 contract deployment failed - no contract address",
+      );
+    }
+
+    console.log("ERC721 NFT deployed at:", erc721Receipt.contractAddress);
+
     const deployedContracts = {
       storage: storageReceipt.contractAddress,
+      erc20: erc20Receipt.contractAddress,
+      erc721: erc721Receipt.contractAddress,
     };
 
     console.log("All contracts deployed successfully!");
     console.log("Contract addresses:");
     console.log("- Storage:", deployedContracts.storage);
+    console.log("- ERC20:", deployedContracts.erc20);
+    console.log("- ERC721:", deployedContracts.erc721);
 
     return deployedContracts;
   } catch (error) {
