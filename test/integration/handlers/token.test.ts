@@ -1,4 +1,5 @@
 import { beforeAll, describe, it } from "bun:test";
+import { handleToolCall } from "../../../src/tools/handlers.js";
 import {
   deployTestContracts,
   isAnvilRunning,
@@ -368,13 +369,41 @@ describe("Token Operations Integration", () => {
       await expectToolSuccess("switch_chain", { chainId: 999 });
 
       // Try to use a token on custom chain - should fail at network level
-      await expectToolExecutionError(
-        "get_token_info",
-        {
-          token: testTokenAddress,
-        },
-        "HTTP request failed", // Network error from fake RPC
-      );
+      console.log("[DEBUG] About to call get_token_info on custom chain 999");
+      console.log("[DEBUG] testTokenAddress:", testTokenAddress);
+      console.log("[DEBUG] NODE_ENV:", process.env.NODE_ENV);
+      console.log("[DEBUG] CI:", process.env.CI);
+
+      try {
+        const result = await handleToolCall({
+          method: "tools/call",
+          params: {
+            name: "get_token_info",
+            arguments: { token: testTokenAddress },
+          },
+        });
+        console.log("[DEBUG] Unexpected success:", result);
+        throw new Error("Expected this to fail but it succeeded");
+      } catch (error) {
+        console.log("[DEBUG] Caught error:", error.message);
+        console.log(
+          "[DEBUG] Error contains 'HTTP request failed':",
+          error.message.includes("HTTP request failed"),
+        );
+        console.log(
+          "[DEBUG] Error contains 'returned no data':",
+          error.message.includes("returned no data"),
+        );
+
+        // Now run the original test
+        await expectToolExecutionError(
+          "get_token_info",
+          {
+            token: testTokenAddress,
+          },
+          "HTTP request failed", // Network error from fake RPC
+        );
+      }
     });
 
     it("should handle private key wallet operations", async () => {
