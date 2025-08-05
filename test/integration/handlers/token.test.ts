@@ -1,5 +1,4 @@
 import { beforeAll, describe, it } from "bun:test";
-import { handleToolCall } from "../../../src/tools/handlers.js";
 import {
   deployTestContracts,
   isAnvilRunning,
