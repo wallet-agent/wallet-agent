@@ -3,9 +3,9 @@
 [![CI](https://github.com/wallet-agent/wallet-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/wallet-agent/wallet-agent/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/wallet-agent/wallet-agent/graph/badge.svg)](https://codecov.io/gh/wallet-agent/wallet-agent)
 
-MCP server for Web3 wallet interactions in AI assistants like Claude Code and Cursor. Supports mock wallets for testing and real wallets via private key import.
+MCP server enabling Web3 wallet interactions in AI tools such as Claude Code and Cursor, with support for mock wallets during testing and real wallets via private-key import.
 
-## Quick Start
+## Quick Start for Claude Code
 
 ```bash
 claude mcp add wallet-agent bunx wallet-agent
@@ -72,15 +72,15 @@ Verify with `/mcp` in Claude Code.
 ```
 "Connect to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 "Check my balance"
-"Send 0.1 ETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-"Switch to Polygon"
+"Send 0.1 ETH to shanev.eth"
+"Switch to HyperEVM"
 ```
 
 ### Token Operations
 ```
 "Transfer 100 USDC to 0x..."
-"Get my USDT balance"
-"Approve DAI spending for 0xDEX..."
+"Get my DOGE balance"
+"Approve USDC spending for 0xDEX..."
 ```
 
 ### Custom Chains

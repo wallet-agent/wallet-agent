@@ -10,7 +10,8 @@
     "wagmi",
     "evm",
     "ethereum",
-    "polygon",
+    "base",
+    "arbitrum",
     "blockchain"
   ],
   "author": "Shane Vitarana",
