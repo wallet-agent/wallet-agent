@@ -31,12 +31,12 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.bun/install/cache
-        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+        key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
         restore-keys: |
           ${{ runner.os }}-bun-
 
     - name: Install dependencies
-      run: bun install --frozen-lockfile
+      run: bun install
 
     - name: Run type checking
       run: bun run typecheck
@@ -86,12 +86,12 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.bun/install/cache
-        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+        key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
         restore-keys: |
           ${{ runner.os }}-bun-
 
     - name: Install dependencies
-      run: bun install --frozen-lockfile
+      run: bun install
 
     - name: Start Anvil via Docker
       run: |
