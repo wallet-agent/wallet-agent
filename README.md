@@ -5,6 +5,10 @@
 
 MCP server enabling Web3 wallet interactions in AI tools such as Claude Code and Cursor, with support for mock wallets during testing and real wallets via private-key import.
 
+> ⚠️ **WARNING: Beta Software** 
+> 
+> This is beta software under active development. **DO NOT use on mainnet or with wallets containing real funds.** This software has not been audited and may contain bugs that could result in loss of funds. Use only on testnets or local development environments.
+
 ## Quick Start for Claude Code
 
 ```bash
