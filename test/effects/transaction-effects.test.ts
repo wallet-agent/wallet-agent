@@ -4,7 +4,6 @@ import { parseEther } from "viem";
 import { anvil, mainnet } from "viem/chains";
 import type { ContractAdapter } from "../../src/adapters/contract-adapter.js";
 import type { ChainAdapter } from "../../src/adapters/wallet-adapter.js";
-import * as contractResolution from "../../src/core/contract-resolution.js";
 import { TransactionEffects } from "../../src/effects/transaction-effects.js";
 import type { WalletEffects } from "../../src/effects/wallet-effects.js";
 
@@ -64,19 +63,41 @@ describe("TransactionEffects", () => {
 
     // Mock contract adapter
     mockContractAdapter = {
-      getContract: mock(() => ({
-        abi: [
-          {
-            type: "function",
-            name: "transfer",
-            inputs: [
-              { name: "to", type: "address" },
-              { name: "amount", type: "uint256" },
+      getContract: mock((name: string) => {
+        if (name === "builtin:ERC20") {
+          return {
+            address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            abi: [
+              {
+                type: "function",
+                name: "transfer",
+                inputs: [
+                  { name: "to", type: "address" },
+                  { name: "amount", type: "uint256" },
+                ],
+                outputs: [{ type: "bool" }],
+              },
             ],
-            outputs: [{ type: "bool" }],
-          },
-        ],
-      })),
+          };
+        }
+        return undefined;
+      }),
+      getAbi: mock((name: string) => {
+        if (name === "builtin:ERC20") {
+          return [
+            {
+              type: "function",
+              name: "transfer",
+              inputs: [
+                { name: "to", type: "address" },
+                { name: "amount", type: "uint256" },
+              ],
+              outputs: [{ type: "bool" }],
+            },
+          ];
+        }
+        return undefined;
+      }),
     } as unknown as ContractAdapter;
 
     transactionEffects = new TransactionEffects(
@@ -360,26 +381,6 @@ describe("TransactionEffects", () => {
   });
 
   describe("simulateTransaction", () => {
-    beforeEach(() => {
-      // Mock resolveContract to return a valid contract
-      const resolveContractSpy = spyOn(contractResolution, "resolveContract");
-      resolveContractSpy.mockReturnValue({
-        address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        abi: [
-          {
-            type: "function",
-            name: "transfer",
-            inputs: [
-              { name: "to", type: "address" },
-              { name: "amount", type: "uint256" },
-            ],
-            outputs: [{ type: "bool" }],
-          },
-        ],
-        isBuiltin: true,
-        name: "builtin:ERC20",
-      });
-    });
 
     it("simulates successful transaction", async () => {
       const result = await transactionEffects.simulateTransaction(
@@ -480,19 +481,34 @@ describe("TransactionEffects", () => {
 
     it("throws error when function not found in ABI", async () => {
       // Override the mock to return an ABI without the transfer function
-      const resolveContractSpy = spyOn(contractResolution, "resolveContract");
-      resolveContractSpy.mockReturnValue({
-        address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        abi: [
-          {
-            type: "function",
-            name: "approve",
-            inputs: [],
-            outputs: [],
-          },
-        ],
-        isBuiltin: true,
-        name: "builtin:ERC20",
+      (mockContractAdapter as any).getAbi = mock((name: string) => {
+        if (name === "builtin:ERC20") {
+          return [
+            {
+              type: "function",
+              name: "approve",
+              inputs: [],
+              outputs: [],
+            },
+          ];
+        }
+        return undefined;
+      });
+      (mockContractAdapter as any).getContract = mock((name: string) => {
+        if (name === "builtin:ERC20") {
+          return {
+            address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            abi: [
+              {
+                type: "function",
+                name: "approve",
+                inputs: [],
+                outputs: [],
+              },
+            ],
+          };
+        }
+        return undefined;
       });
 
       const result = await transactionEffects.simulateTransaction(
