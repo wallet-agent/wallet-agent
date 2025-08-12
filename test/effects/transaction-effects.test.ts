@@ -381,7 +381,6 @@ describe("TransactionEffects", () => {
   });
 
   describe("simulateTransaction", () => {
-
     it("simulates successful transaction", async () => {
       const result = await transactionEffects.simulateTransaction(
         "builtin:ERC20",
