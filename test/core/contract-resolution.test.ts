@@ -1,4 +1,4 @@
-import { describe, expect, it, mock } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import type { Address } from "viem";
 import type { ContractAdapter } from "../../src/adapters/contract-adapter.js";
 import { ERC20_ABI, ERC721_ABI } from "../../src/core/builtin-contracts.js";
@@ -10,8 +10,8 @@ import {
 
 describe("Contract Resolution", () => {
   const mockContractAdapter: ContractAdapter = {
-    loadFromFile: mock(async () => {}),
-    getContract: mock((name: string, chainId: number) => {
+    loadFromFile: async () => {},
+    getContract: (name: string, chainId: number) => {
       if (name === "MyToken" && chainId === 1) {
         return {
           name: "MyToken",
@@ -20,16 +20,16 @@ describe("Contract Resolution", () => {
         };
       }
       return undefined;
-    }),
-    getAbi: mock((name: string) => {
+    },
+    getAbi: (name: string) => {
       if (name === "builtin:ERC20") return ERC20_ABI;
       if (name === "builtin:ERC721") return ERC721_ABI;
       if (name === "MyToken") return ERC20_ABI;
       return undefined;
-    }),
-    listContracts: mock(() => []),
-    registerContract: mock(() => {}),
-    clear: mock(() => {}),
+    },
+    listContracts: () => [],
+    registerContract: () => {},
+    clear: () => {},
   };
 
   describe("resolveContract", () => {
