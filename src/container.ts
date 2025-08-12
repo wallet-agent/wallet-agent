@@ -107,8 +107,17 @@ export class Container {
   /**
    * Reset the container instance (for testing only)
    */
-  static resetInstance(): void {
+  static async resetInstance(): Promise<void> {
     if (process.env.NODE_ENV === "test") {
+      // Ensure any existing wallet is disconnected before resetting
+      if (Container.instance) {
+        try {
+          await Container.instance.walletEffects.disconnectWallet();
+        } catch {
+          // Ignore errors during cleanup
+        }
+      }
+
       // @ts-expect-error - Resetting singleton for tests
       Container.instance = null;
       customChains.clear();

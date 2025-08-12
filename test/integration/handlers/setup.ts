@@ -18,7 +18,7 @@ export const TEST_PRIVATE_KEY =
 export function setupContainer() {
   beforeEach(async () => {
     // Reset the container singleton to get a fresh instance
-    Container.resetInstance();
+    await Container.resetInstance();
 
     // Get the new container instance
     const container = Container.getInstance();

@@ -31,6 +31,12 @@ export class WagmiWalletAdapter implements WalletAdapter {
       throw new Error("No connector available");
     }
 
+    // Check if already connected and disconnect first to avoid ConnectorAlreadyConnectedError
+    const account = getAccount(this.config);
+    if (account.isConnected) {
+      await disconnect(this.config);
+    }
+
     const result = await connect(this.config, { connector });
     return {
       address,

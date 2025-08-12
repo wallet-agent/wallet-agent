@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "bun:test";
+import { beforeEach, describe, expect, it } from "bun:test";
 import {
   expectToolExecutionError,
   expectToolSuccess,
@@ -10,8 +10,9 @@ import {
 describe("Chain Tools Integration", () => {
   setupContainer();
 
-  beforeAll(async () => {
-    // Set up wallet for operations
+  beforeEach(async () => {
+    // Set up wallet for operations - do this in beforeEach instead of beforeAll
+    // to ensure fresh connection after container reset
     await expectToolSuccess("connect_wallet", {
       address: TEST_ADDRESS_1,
     });
