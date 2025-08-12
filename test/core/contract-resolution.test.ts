@@ -9,31 +9,35 @@ import {
 } from "../../src/core/contract-resolution.js";
 
 describe("Contract Resolution", () => {
-  const mockContractAdapter: ContractAdapter = {
-    loadFromFile: async () => {},
-    getContract: (name: string, chainId: number) => {
-      if (name === "MyToken" && chainId === 1) {
-        return {
-          name: "MyToken",
-          address: "0x1234567890123456789012345678901234567890" as Address,
-          abi: ERC20_ABI,
-        };
-      }
-      return undefined;
-    },
-    getAbi: (name: string) => {
-      if (name === "builtin:ERC20") return ERC20_ABI;
-      if (name === "builtin:ERC721") return ERC721_ABI;
-      if (name === "MyToken") return ERC20_ABI;
-      return undefined;
-    },
-    listContracts: () => [],
-    registerContract: () => {},
-    clear: () => {},
+  // Factory function to create mock adapter
+  const createMockContractAdapter = (): ContractAdapter => {
+    return {
+      loadFromFile: async () => {},
+      getContract: (name: string, chainId: number) => {
+        if (name === "MyToken" && chainId === 1) {
+          return {
+            name: "MyToken",
+            address: "0x1234567890123456789012345678901234567890" as Address,
+            abi: ERC20_ABI,
+          };
+        }
+        return undefined;
+      },
+      getAbi: (name: string) => {
+        if (name === "builtin:ERC20") return ERC20_ABI;
+        if (name === "builtin:ERC721") return ERC721_ABI;
+        if (name === "MyToken") return ERC20_ABI;
+        return undefined;
+      },
+      listContracts: () => [],
+      registerContract: () => {},
+      clear: () => {},
+    };
   };
-
+  
   describe("resolveContract", () => {
     it("resolves user Wagmi contract by name", () => {
+      const mockContractAdapter = createMockContractAdapter();
       const result = resolveContract(
         "MyToken",
         undefined,
@@ -48,6 +52,7 @@ describe("Contract Resolution", () => {
     });
 
     it("resolves well-known token symbols", () => {
+      const mockContractAdapter = createMockContractAdapter();
       const result = resolveContract(
         "USDC",
         undefined,
@@ -62,6 +67,7 @@ describe("Contract Resolution", () => {
     });
 
     it("resolves address with explicit contract name", () => {
+      const mockContractAdapter = createMockContractAdapter();
       const address = "0x9999999999999999999999999999999999999999" as Address;
       const result = resolveContract(
         "MyToken",
@@ -77,6 +83,7 @@ describe("Contract Resolution", () => {
     });
 
     it("resolves address without ABI to default builtin", () => {
+      const mockContractAdapter = createMockContractAdapter();
       const address = "0x9999999999999999999999999999999999999999" as Address;
       const result = resolveContract(
         "UnknownContract",
@@ -92,6 +99,7 @@ describe("Contract Resolution", () => {
     });
 
     it("resolves raw address to default builtin", () => {
+      const mockContractAdapter = createMockContractAdapter();
       const address = "0x9999999999999999999999999999999999999999" as Address;
       const result = resolveContract(
         address,
@@ -107,6 +115,7 @@ describe("Contract Resolution", () => {
     });
 
     it("resolves raw address to ERC721 when specified", () => {
+      const mockContractAdapter = createMockContractAdapter();
       const address = "0x9999999999999999999999999999999999999999" as Address;
       const result = resolveContract(
         address,
@@ -123,6 +132,7 @@ describe("Contract Resolution", () => {
     });
 
     it("throws error for builtin contract without address", () => {
+      const mockContractAdapter = createMockContractAdapter();
       expect(() =>
         resolveContract("builtin:ERC20", undefined, 1, mockContractAdapter),
       ).toThrow(
@@ -131,6 +141,7 @@ describe("Contract Resolution", () => {
     });
 
     it("throws error for unknown contract without address", () => {
+      const mockContractAdapter = createMockContractAdapter();
       expect(() =>
         resolveContract("UnknownContract", undefined, 1, mockContractAdapter),
       ).toThrow(
