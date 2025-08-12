@@ -34,7 +34,7 @@ describe("Contract Resolution", () => {
       clear: () => {},
     };
   };
-  
+
   describe("resolveContract", () => {
     it("resolves user Wagmi contract by name", () => {
       const mockContractAdapter = createMockContractAdapter();
