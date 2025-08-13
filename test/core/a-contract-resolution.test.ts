@@ -183,7 +183,7 @@ describe("Contract Resolution", () => {
     });
 
     it("returns false for undefined ABI", () => {
-      expect(supportsInterface(undefined as unknown as any)).toBe(false);
+      expect(supportsInterface(undefined as unknown as never[])).toBe(false);
     });
   });
 

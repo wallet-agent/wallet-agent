@@ -480,7 +480,11 @@ describe("TransactionEffects", () => {
 
     it("throws error when function not found in ABI", async () => {
       // Override the mock to return an ABI without the transfer function
-      (mockContractAdapter as any).getAbi = mock((name: string) => {
+      (
+        mockContractAdapter as unknown as {
+          getAbi: typeof mockContractAdapter.getAbi;
+        }
+      ).getAbi = mock((name: string) => {
         if (name === "builtin:ERC20") {
           return [
             {
@@ -493,7 +497,11 @@ describe("TransactionEffects", () => {
         }
         return undefined;
       });
-      (mockContractAdapter as any).getContract = mock((name: string) => {
+      (
+        mockContractAdapter as unknown as {
+          getContract: typeof mockContractAdapter.getContract;
+        }
+      ).getContract = mock((name: string) => {
         if (name === "builtin:ERC20") {
           return {
             address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",

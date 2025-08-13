@@ -51,7 +51,7 @@ export function createMockTransport(
     config: {
       key: "mock",
       name: "Mock Transport",
-      request: {} as unknown as any,
+      request: {} as unknown as never,
       retryCount: 3,
       retryDelay: 150,
       timeout: 10_000,
