@@ -102,8 +102,13 @@ jobs:
           anvil
         sleep 2
 
+    - name: Compile Counter contract
+      run: bun run scripts/compile-counter.ts
+
     - name: Run integration tests with Anvil
-      run: bun test test/integration/handlers/token.test.ts
+      run: |
+        bun test test/integration/handlers/token.test.ts
+        bun test test/integration/counter-e2e.test.ts
 
     - name: Stop Anvil
       if: always()
