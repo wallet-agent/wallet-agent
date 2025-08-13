@@ -11,13 +11,32 @@ MCP server enabling Web3 wallet interactions in AI tools such as Claude Code and
 > 
 > This is beta software under active development. **DO NOT use on mainnet or with wallets containing real funds.** This software has not been audited and may contain bugs that could result in loss of funds. Use only on testnets or local development environments.
 
-## Quick Start for Claude Code
+## Quick Start
+
+### Claude Code
 
 ```bash
 claude mcp add wallet-agent bunx wallet-agent
 ```
 
 Verify with `/mcp` in Claude Code.
+
+### Cursor
+
+Add to your `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "wallet-agent": {
+      "command": "bunx",
+      "args": ["wallet-agent"]
+    }
+  }
+}
+```
+
+Then restart Cursor.
 
 ## Usage Examples
 
