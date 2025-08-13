@@ -22,8 +22,26 @@
   },
   "main": "dist/index.js",
   "type": "module",
+  "types": "dist/index.d.ts",
   "bin": {
     "wallet-agent": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js",
+      "default": "./dist/cli.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "default": "./dist/server.js"
+    }
   },
   "files": [
     "dist/**/*",

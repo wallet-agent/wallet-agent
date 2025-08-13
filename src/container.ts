@@ -1,6 +1,6 @@
 import { mock } from "@wagmi/connectors";
 import { createConfig, getAccount } from "@wagmi/core";
-import type { Address, Chain } from "viem";
+import type { Address, Chain, Transport } from "viem";
 import { http } from "viem";
 import { anvil, mainnet, polygon, sepolia } from "viem/chains";
 import type { ContractAdapter } from "./adapters/contract-adapter.js";
@@ -13,25 +13,51 @@ import {
 import type { ChainAdapter } from "./adapters/wallet-adapter.js";
 import { readContract, writeContract } from "./contract-operations.js";
 import { ContractEffects } from "./effects/contract-effects.js";
+import type { ContractStore } from "./effects/contract-store.js";
 import { InMemoryContractStore } from "./effects/contract-store.js";
+import type { FileReader } from "./effects/file-reader.js";
 import { NodeFileReader } from "./effects/file-reader.js";
 import { TokenEffects } from "./effects/token-effects.js";
 import { TransactionEffects } from "./effects/transaction-effects.js";
 import { WalletEffects } from "./effects/wallet-effects.js";
 
-// Mock accounts
-export const mockAccounts = [
+// Default mock accounts
+export const DEFAULT_MOCK_ACCOUNTS = [
   "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
   "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
   "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
 ] as const satisfies readonly Address[];
 
-// Built-in chains (Anvil first as default)
-export const builtInChains = [anvil, mainnet, sepolia, polygon];
+// Default built-in chains (Anvil first as default)
+export const DEFAULT_BUILTIN_CHAINS = [anvil, mainnet, sepolia, polygon];
 
-// Global state stores
+// Legacy global state stores (for backward compatibility)
 export const customChains = new Map<number, Chain>();
 export const privateKeyWallets = new Map<Address, `0x${string}`>();
+
+// Re-export for backward compatibility
+export const mockAccounts = DEFAULT_MOCK_ACCOUNTS;
+export const builtInChains = DEFAULT_BUILTIN_CHAINS;
+
+/**
+ * Configuration options for creating a Container instance
+ */
+export interface ContainerOptions {
+  /** Custom chains to include (in addition to built-in chains) */
+  chains?: Chain[];
+  /** Mock accounts for testing */
+  mockAccounts?: readonly Address[];
+  /** File reader implementation */
+  fileReader?: FileReader;
+  /** Contract store implementation */
+  contractStore?: ContractStore;
+  /** Transport provider for chains */
+  transportProvider?: (chain: Chain) => Transport;
+  /** Whether to include default built-in chains */
+  includeBuiltinChains?: boolean;
+  /** Initial private key wallets */
+  privateKeyWallets?: Map<Address, `0x${string}`>;
+}
 
 /**
  * Dependency injection container
@@ -46,9 +72,35 @@ export class Container {
   public transactionEffects: TransactionEffects;
   public wagmiConfig: ReturnType<typeof createConfig>;
 
-  private constructor() {
+  // Instance-specific state stores
+  public readonly customChains: Map<number, Chain>;
+  public readonly privateKeyWallets: Map<Address, `0x${string}`>;
+  private readonly options: ContainerOptions;
+
+  constructor(options: ContainerOptions = {}) {
+    this.options = options;
+
+    // Initialize instance-specific state
+    this.customChains = new Map();
+    this.privateKeyWallets = options.privateKeyWallets || new Map();
+
+    // Initialize chains
+    const baseChains =
+      options.includeBuiltinChains !== false ? DEFAULT_BUILTIN_CHAINS : [];
+    const allInitialChains = [...baseChains, ...(options.chains || [])];
+
+    // Add custom chains to the map
+    if (options.chains) {
+      for (const chain of options.chains) {
+        this.customChains.set(chain.id, chain);
+      }
+    }
+
     // Initialize chain adapter
-    this.chainAdapter = new ChainAdapterImpl(builtInChains, customChains);
+    this.chainAdapter = new ChainAdapterImpl(
+      allInitialChains,
+      this.customChains,
+    );
 
     // Initialize Wagmi config
     this.wagmiConfig = this.createWagmiConfig();
@@ -58,21 +110,22 @@ export class Container {
 
     // Initialize private key client factory
     const privateKeyClientFactory = new PrivateKeyWalletClientFactory(
-      privateKeyWallets,
+      this.privateKeyWallets,
     );
 
     // Initialize wallet effects
+    const accounts = options.mockAccounts || DEFAULT_MOCK_ACCOUNTS;
     this.walletEffects = new WalletEffects(
       wagmiAdapter,
       privateKeyClientFactory,
       this.chainAdapter,
-      mockAccounts,
-      () => Array.from(privateKeyWallets.keys()),
+      accounts,
+      () => Array.from(this.privateKeyWallets.keys()),
     );
 
     // Initialize contract adapter
-    const fileReader = new NodeFileReader();
-    const contractStore = new InMemoryContractStore();
+    const fileReader = options.fileReader || new NodeFileReader();
+    const contractStore = options.contractStore || new InMemoryContractStore();
     this.contractAdapter = new ContractEffects(fileReader, contractStore);
 
     // Initialize token effects
@@ -105,6 +158,13 @@ export class Container {
   }
 
   /**
+   * Create a new Container instance with custom options
+   */
+  static create(options?: ContainerOptions): Container {
+    return new Container(options);
+  }
+
+  /**
    * Reset the container instance (for testing only)
    */
   static async resetInstance(): Promise<void> {
@@ -120,6 +180,7 @@ export class Container {
 
       // @ts-expect-error - Resetting singleton for tests
       Container.instance = null;
+      // Clear global state (for backward compatibility)
       customChains.clear();
       privateKeyWallets.clear();
     }
@@ -133,15 +194,16 @@ export class Container {
     // Update the adapter with new config
     const wagmiAdapter = new WagmiWalletAdapter(this.wagmiConfig);
     const privateKeyClientFactory = new PrivateKeyWalletClientFactory(
-      privateKeyWallets,
+      this.privateKeyWallets,
     );
 
+    const accounts = this.options.mockAccounts || DEFAULT_MOCK_ACCOUNTS;
     this.walletEffects = new WalletEffects(
       wagmiAdapter,
       privateKeyClientFactory,
       this.chainAdapter,
-      mockAccounts,
-      () => Array.from(privateKeyWallets.keys()),
+      accounts,
+      () => Array.from(this.privateKeyWallets.keys()),
     );
 
     // Update transaction effects with new wallet effects
@@ -164,11 +226,14 @@ export class Container {
       transports[chain.id] = this.createTransport(chain);
     }
 
+    const mockAccountsArray =
+      this.options.mockAccounts || DEFAULT_MOCK_ACCOUNTS;
+
     return createConfig({
       chains: allChains as [Chain, ...Chain[]],
       connectors: [
         mock({
-          accounts: mockAccounts,
+          accounts: mockAccountsArray as readonly [Address, ...Address[]],
           features: {
             reconnect: true,
           },
@@ -179,6 +244,11 @@ export class Container {
   }
 
   private createTransport(chain: Chain): ReturnType<typeof http> {
+    // Use custom transport provider if provided
+    if (this.options.transportProvider) {
+      return this.options.transportProvider(chain) as ReturnType<typeof http>;
+    }
+
     // Check if test transport is available via global
     if (
       process.env.NODE_ENV === "test" &&
@@ -217,7 +287,12 @@ export class Container {
   }
 }
 
-// Export singleton instance getter
+// Export singleton instance getter (for backward compatibility)
 export function getContainer(): Container {
   return Container.getInstance();
+}
+
+// Export factory function for creating new containers
+export function createContainer(options?: ContainerOptions): Container {
+  return Container.create(options);
 }

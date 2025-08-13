@@ -2,12 +2,14 @@ import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { type Address, type Chain, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { getContainer, mockAccounts, privateKeyWallets } from "./container.js";
+import { getContainer, mockAccounts } from "./container.js";
 import { PrivateKeySchema } from "./schemas.js";
+
+export type WalletType = "mock" | "privateKey";
 
 export interface WalletInfo {
   address: Address;
-  type: "mock" | "privateKey";
+  type: WalletType;
 }
 
 /**
@@ -31,31 +33,28 @@ function resolvePrivateKey(input: string): `0x${string}` {
       return PrivateKeySchema.parse(fileContent);
     } catch (error) {
       throw new Error(
-        `Failed to read private key from file ${input}: ${error}`,
+        `Failed to read private key from file: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
 
-  // Environment variable (doesn't start with 0x and doesn't contain /)
-  if (!input.includes("/")) {
-    const envValue = process.env[input];
-    if (!envValue) {
-      throw new Error(`Environment variable ${input} is not set`);
-    }
-    return PrivateKeySchema.parse(envValue);
+  // Environment variable (anything else is treated as env var name)
+  const envValue = process.env[input];
+  if (!envValue) {
+    throw new Error(`Environment variable ${input} is not set`);
   }
 
-  // If we get here, it's an invalid format
-  throw new Error(
-    "Invalid private key input format. Expected: 0x-prefixed private key, environment variable name, or file path",
-  );
+  return PrivateKeySchema.parse(envValue);
 }
 
-export function importPrivateKey(privateKeyInput: string): Address {
+export function importPrivateKey(input: string): Address {
   try {
-    const validatedKey = resolvePrivateKey(privateKeyInput);
+    const validatedKey = resolvePrivateKey(input);
     const account = privateKeyToAccount(validatedKey);
-    privateKeyWallets.set(account.address, validatedKey);
+
+    // Store in container's instance-specific map
+    const container = getContainer();
+    container.privateKeyWallets.set(account.address, validatedKey);
     return account.address;
   } catch (error) {
     throw new Error(`Failed to import private key: ${error}`);
@@ -63,6 +62,9 @@ export function importPrivateKey(privateKeyInput: string): Address {
 }
 
 export function removePrivateKey(address: Address): boolean {
+  const container = getContainer();
+  const privateKeyWallets = container.privateKeyWallets;
+
   // Clear the private key from memory before deletion
   if (privateKeyWallets.has(address)) {
     // Overwrite the key in memory (though JS doesn't guarantee this)
@@ -76,6 +78,9 @@ export function removePrivateKey(address: Address): boolean {
 }
 
 export function clearAllPrivateKeys(): void {
+  const container = getContainer();
+  const privateKeyWallets = container.privateKeyWallets;
+
   // Overwrite all keys before clearing
   for (const [address] of privateKeyWallets) {
     privateKeyWallets.set(
@@ -87,6 +92,9 @@ export function clearAllPrivateKeys(): void {
 }
 
 export function listImportedWallets(): WalletInfo[] {
+  const container = getContainer();
+  const privateKeyWallets = container.privateKeyWallets;
+
   return Array.from(privateKeyWallets.keys()).map((address) => ({
     address,
     type: "privateKey" as const,
@@ -94,7 +102,10 @@ export function listImportedWallets(): WalletInfo[] {
 }
 
 export function createPrivateKeyWalletClient(address: Address, chain: Chain) {
+  const container = getContainer();
+  const privateKeyWallets = container.privateKeyWallets;
   const privateKey = privateKeyWallets.get(address);
+
   if (!privateKey) {
     throw new Error(`No private key found for address ${address}`);
   }
@@ -107,26 +118,23 @@ export function createPrivateKeyWalletClient(address: Address, chain: Chain) {
   });
 }
 
-export function getCurrentWalletInfo(): {
-  type: "mock" | "privateKey";
-  availableAddresses: Address[];
-} {
-  const walletType = getContainer().walletEffects.getCurrentWalletType();
+export function getCurrentWalletInfo() {
+  const container = getContainer();
+  const effects = container.walletEffects;
+  const address = effects.getAddress();
+  const walletType = effects.getCurrentWalletType();
 
-  if (walletType === "privateKey") {
-    return {
-      type: walletType,
-      availableAddresses: Array.from(privateKeyWallets.keys()),
-    };
-  }
-
-  // Mock wallet
   return {
-    type: "mock",
-    availableAddresses: [...mockAccounts],
+    type: walletType,
+    walletType, // keep for backward compatibility
+    currentAddress: address,
+    availableAddresses:
+      walletType === "privateKey"
+        ? Array.from(container.privateKeyWallets.keys())
+        : [...mockAccounts],
   };
 }
 
-export function setWalletType(type: "mock" | "privateKey") {
+export function setWalletType(type: WalletType) {
   getContainer().walletEffects.setWalletType(type);
 }

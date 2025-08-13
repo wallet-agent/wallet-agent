@@ -2,6 +2,9 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { FileReader } from "../adapters/contract-adapter.js";
 
+// Re-export the FileReader interface
+export type { FileReader } from "../adapters/contract-adapter.js";
+
 /**
  * Node.js file reader implementation
  */

@@ -4,6 +4,9 @@ import { BUILTIN_CONTRACTS } from "../core/builtin-contracts.js";
 import type { ContractConfig, WagmiContract } from "../core/contracts.js";
 import { resolveContractAddress } from "../core/contracts.js";
 
+// Re-export the ContractStore interface
+export type { ContractStore } from "../adapters/contract-adapter.js";
+
 /**
  * In-memory contract store implementation
  */
