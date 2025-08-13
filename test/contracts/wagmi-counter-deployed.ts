@@ -5,7 +5,7 @@ export const counterContract = {
       name: "decrementCounter",
       outputs: [],
       stateMutability: "nonpayable",
-      type: "function"
+      type: "function",
     },
     {
       inputs: [],
@@ -14,21 +14,21 @@ export const counterContract = {
         {
           internalType: "int256",
           name: "",
-          type: "int256"
-        }
+          type: "int256",
+        },
       ],
       stateMutability: "view",
-      type: "function"
+      type: "function",
     },
     {
       inputs: [],
       name: "incrementCounter",
       outputs: [],
       stateMutability: "nonpayable",
-      type: "function"
-    }
+      type: "function",
+    },
   ],
   address: {
-    31337: "0x7a2088a1bfc9d81c55368ae168c2c02570cb814f"
-  }
+    31337: "0x7a2088a1bfc9d81c55368ae168c2c02570cb814f",
+  },
 } as const;
