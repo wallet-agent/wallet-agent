@@ -5,10 +5,7 @@ import {
   deployTestContracts,
   isAnvilRunning,
 } from "../setup/deploy-contracts.js";
-import {
-  expectToolSuccess,
-  TEST_PRIVATE_KEY,
-} from "./handlers/setup.js";
+import { expectToolSuccess, TEST_PRIVATE_KEY } from "./handlers/setup.js";
 
 const useRealAnvil = process.env.USE_REAL_ANVIL === "true";
 
