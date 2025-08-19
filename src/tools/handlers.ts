@@ -580,11 +580,19 @@ export async function handleToolCall(request: CallToolRequest) {
             ...(functionArgs && { args: functionArgs }),
           });
 
+          // Handle BigInt serialization
+          const serializedResult = JSON.stringify(
+            result,
+            (_key, value) =>
+              typeof value === "bigint" ? value.toString() : value,
+            2,
+          );
+
           return {
             content: [
               {
                 type: "text",
-                text: `Contract read result: ${JSON.stringify(result, null, 2)}`,
+                text: `Contract read result: ${serializedResult}`,
               },
             ],
           };
