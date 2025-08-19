@@ -51,7 +51,17 @@ export function listContracts() {
  */
 export async function writeContract(params: ContractWriteParams): Promise<Hex> {
   const container = getContainer();
-  const account = getAccount(container.wagmiConfig);
+  
+  // For private key wallets, use our internal state instead of Wagmi's
+  const currentAccount = container.walletEffects.getCurrentAccount();
+  if (!currentAccount.isConnected || !currentAccount.address) {
+    throw new Error("No wallet connected");
+  }
+  
+  const account = getCurrentWalletInfo().type === "privateKey" 
+    ? { address: currentAccount.address as Address }
+    : getAccount(container.wagmiConfig);
+    
   if (!account.address) {
     throw new Error("No wallet connected");
   }
