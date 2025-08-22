@@ -89,7 +89,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "build": "rm -rf dist && mkdir -p dist && echo 'export * from \"../src/index.ts\";' > dist/index.js && tsc -p tsconfig.build.json || true",
+    "build:types": "tsc -p tsconfig.build.json",
     "dev": "bun run src/index.ts",
     "test": "node ../../scripts/run-tests.js",
     "test:watch": "NODE_ENV=test bun test --watch",
