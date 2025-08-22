@@ -1,4 +1,5 @@
-import type { Tool } from "@modelcontextprotocol/sdk/types.js";
+import type { Tool } from "@modelcontextprotocol/sdk/types.js"
+import { hyperliquidTools } from "./hyperliquid-tools.js"
 
 export const toolDefinitions: Tool[] = [
   {
@@ -9,8 +10,7 @@ export const toolDefinitions: Tool[] = [
       properties: {
         address: {
           type: "string",
-          description:
-            "The wallet address to connect (must be one of the mock accounts)",
+          description: "The wallet address to connect (must be one of the mock accounts)",
         },
       },
       required: ["address"],
@@ -125,8 +125,7 @@ export const toolDefinitions: Tool[] = [
       properties: {
         address: {
           type: "string",
-          description:
-            "Address to check balance for (defaults to connected account)",
+          description: "Address to check balance for (defaults to connected account)",
         },
       },
     },
@@ -290,8 +289,7 @@ export const toolDefinitions: Tool[] = [
       properties: {
         filePath: {
           type: "string",
-          description:
-            "Path to the Wagmi generated file (e.g., './src/generated.ts')",
+          description: "Path to the Wagmi generated file (e.g., './src/generated.ts')",
         },
       },
       required: ["filePath"],
@@ -381,8 +379,7 @@ export const toolDefinitions: Tool[] = [
         },
         amount: {
           type: "string",
-          description:
-            "Amount to transfer (in token units, e.g., '100' for 100 USDC)",
+          description: "Amount to transfer (in token units, e.g., '100' for 100 USDC)",
         },
       },
       required: ["token", "to", "amount"],
@@ -404,8 +401,7 @@ export const toolDefinitions: Tool[] = [
         },
         amount: {
           type: "string",
-          description:
-            "Amount to approve (in token units, or 'max' for unlimited)",
+          description: "Amount to approve (in token units, or 'max' for unlimited)",
         },
       },
       required: ["token", "spender", "amount"],
@@ -423,8 +419,7 @@ export const toolDefinitions: Tool[] = [
         },
         address: {
           type: "string",
-          description:
-            "Address to check balance for (defaults to connected wallet)",
+          description: "Address to check balance for (defaults to connected wallet)",
         },
       },
       required: ["token"],
@@ -572,8 +567,7 @@ export const toolDefinitions: Tool[] = [
   },
   {
     name: "simulate_transaction",
-    description:
-      "Simulate a contract transaction before executing to check if it will succeed",
+    description: "Simulate a contract transaction before executing to check if it will succeed",
     inputSchema: {
       type: "object",
       properties: {
@@ -596,8 +590,7 @@ export const toolDefinitions: Tool[] = [
         },
         address: {
           type: "string",
-          description:
-            "Address to simulate from (defaults to connected wallet)",
+          description: "Address to simulate from (defaults to connected wallet)",
         },
       },
       required: ["contract", "function"],
@@ -617,4 +610,6 @@ export const toolDefinitions: Tool[] = [
       required: ["chainId"],
     },
   },
-];
+  // Add Hyperliquid tools
+  ...hyperliquidTools,
+]

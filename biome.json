@@ -1,44 +1,46 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "files": {
-    "includes": ["src/**/*", "test/**/*", "*.json", "*.md", "*.ts"]
+    "ignoreUnknown": true,
+    "maxSize": 1048576
   },
   "formatter": {
+    "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 2
+    "indentWidth": 2,
+    "lineWidth": 100
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noExplicitAny": "error"
+        "noExplicitAny": "error",
+        "noConfusingVoidType": "error"
       },
       "style": {
-        "useTemplate": "error",
-        "noNonNullAssertion": "error"
+        "noNonNullAssertion": "warn",
+        "useImportType": "error",
+        "useExportType": "error"
+      },
+      "complexity": {
+        "noBannedTypes": "error"
       },
       "correctness": {
         "noUnusedVariables": "error",
-        "noUnusedFunctionParameters": "error"
+        "noUnusedImports": "error"
       }
     }
   },
-  "overrides": [
-    {
-      "includes": ["test/**/*"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noExplicitAny": "warn"
-          }
-        }
-      }
-    }
-  ],
   "javascript": {
     "formatter": {
-      "quoteStyle": "double"
+      "quoteStyle": "double",
+      "semicolons": "asNeeded"
     }
   }
 }

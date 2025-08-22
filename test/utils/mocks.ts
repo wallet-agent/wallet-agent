@@ -1,10 +1,10 @@
-import { mock } from "bun:test";
-import type { Address, Chain, WalletClient } from "viem";
+import { mock } from "bun:test"
+import type { Address, Chain, WalletClient } from "viem"
 import type {
   ChainAdapter,
   WalletAdapter,
   WalletClientFactory,
-} from "../../src/adapters/wallet-adapter";
+} from "../../src/adapters/wallet-adapter"
 
 /**
  * Create a mock wallet adapter
@@ -28,7 +28,7 @@ export function createMockWalletAdapter(): WalletAdapter {
     signTypedData: mock(async () => "0xmockedtypedsignature"),
     sendTransaction: mock(async () => "0xmockedtxhash" as `0x${string}`),
     switchChain: mock(async () => {}),
-  };
+  }
 }
 
 /**
@@ -42,37 +42,31 @@ export function createMockWalletClientFactory(): WalletClientFactory {
           address: testAddresses.privateKey1,
           type: "local" as const,
         },
-        signMessage: mock(
-          async () => "0xprivatekey-signature" as `0x${string}`,
-        ),
-        signTypedData: mock(
-          async () => "0xprivatekey-typedsignature" as `0x${string}`,
-        ),
-        sendTransaction: mock(
-          async () => "0xprivatekey-txhash" as `0x${string}`,
-        ),
-      };
-      return mockClient as unknown as WalletClient;
+        signMessage: mock(async () => "0xprivatekey-signature" as `0x${string}`),
+        signTypedData: mock(async () => "0xprivatekey-typedsignature" as `0x${string}`),
+        sendTransaction: mock(async () => "0xprivatekey-txhash" as `0x${string}`),
+      }
+      return mockClient as unknown as WalletClient
     }),
-  };
+  }
 }
 
 /**
  * Create a mock chain adapter
  */
 export function createMockChainAdapter(chains: Chain[] = []): ChainAdapter {
-  const chainMap = new Map(chains.map((c) => [c.id, c]));
+  const chainMap = new Map(chains.map((c) => [c.id, c]))
   return {
     getAllChains: mock(() => chains),
     getChain: mock((chainId: number) => chainMap.get(chainId)),
     addCustomChain: mock((chain: Chain) => {
       if (chainMap.has(chain.id)) {
-        throw new Error(`Chain with ID ${chain.id} already exists`);
+        throw new Error(`Chain with ID ${chain.id} already exists`)
       }
-      chainMap.set(chain.id, chain);
-      chains.push(chain);
+      chainMap.set(chain.id, chain)
+      chains.push(chain)
     }),
-  };
+  }
 }
 
 /**
@@ -84,7 +78,7 @@ export const testAddresses = {
   mock3: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" as Address,
   privateKey1: "0x742d35Cc6634C0532925a3b844Bc9e7595f6E123" as Address,
   privateKey2: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199" as Address,
-};
+}
 
 /**
  * Create test chains
@@ -102,4 +96,4 @@ export const testChains = {
     nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
     rpcUrls: { default: { http: ["https://eth.llamarpc.com"] } },
   } as Chain,
-};
+}

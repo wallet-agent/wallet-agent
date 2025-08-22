@@ -1,0 +1,36 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Override for build
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    // Remove Bun-specific options for declaration generation
+    "allowImportingTsExtensions": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    // Skip ALL library checking
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+
+    // Generate declarations even with errors
+    "noEmitOnError": false,
+
+    // Set to generate declarations only without deep type checking
+    "isolatedModules": false,
+    "preserveSymlinks": false
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules/**/*",
+    "../../node_modules/**/*",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
+}

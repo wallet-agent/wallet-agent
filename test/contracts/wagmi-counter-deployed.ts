@@ -31,4 +31,4 @@ export const counterContract = {
   address: {
     31337: "0x7a2088a1bfc9d81c55368ae168c2c02570cb814f",
   },
-} as const;
+} as const

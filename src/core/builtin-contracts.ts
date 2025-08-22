@@ -1,5 +1,5 @@
-import type { Abi } from "viem";
-import type { WagmiContract } from "./contracts.js";
+import type { Abi } from "viem"
+import type { WagmiContract } from "./contracts.js"
 
 /**
  * ERC-20 Token Standard ABI
@@ -122,7 +122,7 @@ export const ERC20_ABI = [
     name: "Approval",
     type: "event",
   },
-] as const satisfies Abi;
+] as const satisfies Abi
 
 /**
  * ERC-721 NFT Standard ABI
@@ -295,7 +295,7 @@ export const ERC721_ABI = [
     name: "ApprovalForAll",
     type: "event",
   },
-] as const satisfies Abi;
+] as const satisfies Abi
 
 /**
  * Built-in contract definitions
@@ -309,13 +309,13 @@ export const BUILTIN_CONTRACTS: WagmiContract[] = [
     name: "builtin:ERC721",
     abi: ERC721_ABI,
   },
-];
+]
 
 /**
  * Check if a contract name is a built-in contract
  */
 export function isBuiltinContract(name: string): boolean {
-  return name.startsWith("builtin:");
+  return name.startsWith("builtin:")
 }
 
 /**
@@ -323,5 +323,5 @@ export function isBuiltinContract(name: string): boolean {
  * e.g., "builtin:ERC20" -> "ERC20"
  */
 export function getStandardName(builtinName: string): string {
-  return builtinName.replace("builtin:", "");
+  return builtinName.replace("builtin:", "")
 }

@@ -1,19 +1,19 @@
-import type { Chain } from "viem";
-import { defineChain } from "viem";
+import type { Chain } from "viem"
+import { defineChain } from "viem"
 
 /**
  * Build a custom chain configuration
  */
 export function buildCustomChain(params: {
-  id: number;
-  name: string;
-  rpcUrl: string;
+  id: number
+  name: string
+  rpcUrl: string
   nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  blockExplorerUrl?: string;
+    name: string
+    symbol: string
+    decimals: number
+  }
+  blockExplorerUrl?: string
 }): Chain {
   return defineChain({
     id: params.id,
@@ -32,31 +32,27 @@ export function buildCustomChain(params: {
           },
         }
       : undefined,
-  });
+  })
 }
 
 /**
  * Build transaction parameters
  */
-export function buildTransactionParams(params: {
-  to: string;
-  value: bigint;
-  data?: string;
-}) {
+export function buildTransactionParams(params: { to: string; value: bigint; data?: string }) {
   const txParams: {
-    to: `0x${string}`;
-    value: bigint;
-    data?: `0x${string}`;
+    to: `0x${string}`
+    value: bigint
+    data?: `0x${string}`
   } = {
     to: params.to as `0x${string}`,
     value: params.value,
-  };
-
-  if (params.data) {
-    txParams.data = params.data as `0x${string}`;
   }
 
-  return txParams;
+  if (params.data) {
+    txParams.data = params.data as `0x${string}`
+  }
+
+  return txParams
 }
 
 /**
@@ -67,7 +63,7 @@ export function buildErrorResponse(code: number, message: string) {
     code,
     message,
     data: null,
-  };
+  }
 }
 
 /**
@@ -81,5 +77,5 @@ export function buildToolResponse(text: string) {
         text,
       },
     ],
-  };
+  }
 }

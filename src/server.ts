@@ -1,4 +1,4 @@
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { Server } from "@modelcontextprotocol/sdk/server/index.js"
 import {
   CallToolRequestSchema,
   ErrorCode,
@@ -6,12 +6,12 @@ import {
   ListToolsRequestSchema,
   McpError,
   ReadResourceRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import { getAccount } from "@wagmi/core";
-import { getAllChains } from "./chains.js";
-import { customChains, getContainer } from "./container.js";
-import { toolDefinitions } from "./tools/definitions.js";
-import { handleToolCall } from "./tools/handlers.js";
+} from "@modelcontextprotocol/sdk/types.js"
+import { getAccount } from "@wagmi/core"
+import { getAllChains } from "./chains.js"
+import { customChains, getContainer } from "./container.js"
+import { toolDefinitions } from "./tools/definitions.js"
+import { handleToolCall } from "./tools/handlers.js"
 
 export function createMcpServer() {
   const server = new Server(
@@ -25,17 +25,17 @@ export function createMcpServer() {
         resources: {},
       },
     },
-  );
+  )
 
   // Handle tool listing
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
       tools: toolDefinitions,
-    };
-  });
+    }
+  })
 
   // Handle tool execution
-  server.setRequestHandler(CallToolRequestSchema, handleToolCall);
+  server.setRequestHandler(CallToolRequestSchema, handleToolCall)
 
   // Handle resource listing
   server.setRequestHandler(ListResourcesRequestSchema, async () => {
@@ -54,16 +54,16 @@ export function createMcpServer() {
           mimeType: "application/json",
         },
       ],
-    };
-  });
+    }
+  })
 
   // Handle resource reading
   server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-    const { uri } = request.params;
+    const { uri } = request.params
 
     switch (uri) {
       case "wallet://state": {
-        const account = getAccount(getContainer().wagmiConfig);
+        const account = getAccount(getContainer().wagmiConfig)
         return {
           contents: [
             {
@@ -81,7 +81,7 @@ export function createMcpServer() {
               ),
             },
           ],
-        };
+        }
       }
 
       case "wallet://chains": {
@@ -103,16 +103,13 @@ export function createMcpServer() {
               ),
             },
           ],
-        };
+        }
       }
 
       default:
-        throw new McpError(
-          ErrorCode.InvalidRequest,
-          `Unknown resource: ${uri}`,
-        );
+        throw new McpError(ErrorCode.InvalidRequest, `Unknown resource: ${uri}`)
     }
-  });
+  })
 
-  return server;
+  return server
 }
