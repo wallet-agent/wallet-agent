@@ -7,15 +7,19 @@
  */
 
 // Re-export viem types commonly used
-export type { Address, Chain, Transport } from "viem";
-export type { ContractAdapter } from "./adapters/contract-adapter.js";
-export type { TokenAdapter } from "./adapters/token-adapter.js";
+export type { Address, Chain, Transport } from "viem"
+export type { ContractAdapter } from "./adapters/contract-adapter.js"
+export type { TokenAdapter } from "./adapters/token-adapter.js"
 // Core types
 export type {
   ChainAdapter,
   WalletAdapter,
-} from "./adapters/wallet-adapter.js";
-
+} from "./adapters/wallet-adapter.js"
+export {
+  type ApiResponse,
+  type ProToolDefinition,
+  WalletAgentAPIClient,
+} from "./api/client.js"
 // Chain management
 export {
   addCustomChain,
@@ -27,7 +31,12 @@ export {
   removeCustomChainFromContainer,
   updateCustomChain,
   updateCustomChainInContainer,
-} from "./chains.js";
+} from "./chains.js"
+export {
+  config,
+  getHyperliquidEndpoint,
+  type WalletAgentConfig,
+} from "./config/environment.js"
 // Container and configuration
 export {
   Container,
@@ -36,44 +45,51 @@ export {
   DEFAULT_BUILTIN_CHAINS,
   DEFAULT_MOCK_ACCOUNTS,
   getContainer,
-} from "./container.js";
-
+} from "./container.js"
 // Contract operations
 export {
   listContracts,
   loadWagmiConfig,
   readContract,
   writeContract,
-} from "./contract-operations.js";
-export { ContractEffects } from "./effects/contract-effects.js";
+} from "./contract-operations.js"
+export { ContractEffects } from "./effects/contract-effects.js"
 export {
   type ContractStore,
   InMemoryContractStore,
-} from "./effects/contract-store.js";
-export { type FileReader, NodeFileReader } from "./effects/file-reader.js";
-export { TokenEffects } from "./effects/token-effects.js";
-export { TransactionEffects } from "./effects/transaction-effects.js";
+} from "./effects/contract-store.js"
+export { type FileReader, NodeFileReader } from "./effects/file-reader.js"
+export { TokenEffects } from "./effects/token-effects.js"
+export { TransactionEffects } from "./effects/transaction-effects.js"
 // Effects (for advanced users)
-export { WalletEffects } from "./effects/wallet-effects.js";
+export { WalletEffects } from "./effects/wallet-effects.js"
 // Schemas and types
-export * from "./schemas.js";
+export * from "./schemas.js"
 // Signing operations
 export {
   signWalletMessage,
   signWalletTypedData,
-} from "./signing.js";
+} from "./signing.js"
+export {
+  clearHyperliquidWallet,
+  getCurrentHyperliquidAddress,
+  handleHyperliquidTool,
+} from "./tools/hyperliquid-handlers.js"
+export { hyperliquidTools } from "./tools/hyperliquid-tools.js"
 // Transaction operations
 export {
   sendWalletTransaction,
   switchToChain,
-} from "./transactions.js";
+} from "./transactions.js"
+// Hyperliquid and API support
+export { GenericWalletManager } from "./wallet/generic-wallet-manager.js"
 // Wallet operations
 export {
   connectWallet,
   disconnectWallet,
   getCurrentAccount,
   getWalletBalance,
-} from "./wallet.js";
+} from "./wallet.js"
 // Wallet manager
 export {
   getCurrentWalletInfo,
@@ -81,4 +97,4 @@ export {
   removePrivateKey,
   setWalletType,
   type WalletType,
-} from "./wallet-manager.js";
+} from "./wallet-manager.js"

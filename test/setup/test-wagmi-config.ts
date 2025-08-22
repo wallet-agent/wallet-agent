@@ -14,7 +14,7 @@ export const StorageABI = [
     stateMutability: "nonpayable",
     type: "function",
   },
-] as const;
+] as const
 
 // This format is what the wallet-agent expects from Wagmi configs
-export const StorageAddress = {} as const;
+export const StorageAddress = {} as const

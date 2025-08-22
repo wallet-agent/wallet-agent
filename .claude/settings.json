@@ -1,20 +1,20 @@
 {
-    "hooks": {
-      "PostToolUse": [
-        {
-          "matcher": "Write|Edit|MultiEdit",
-          "hooks": [
-            {
-              "type": "command",
-              "command": "jq -r '.tool_input.file_path' | { read file_path; if echo \\\"$file_path\\\" | grep -q '\\\\.ts$'; then biome check --write \\\"$file_path\\\"; fi; }"
-            },
-            {
-              "type": "command",
-              "command": "jq -r '.tool_input.file_path' | { read file_path; if echo \\\"$file_path\\\" | grep -q '\\\\.ts$'; then echo \\\"Running TypeScript type check...\\\"; bunx tsc --noEmit; fi; }"
-            }
-          ]
-        }
-      ]
-    },
-    "$schema": "https://json.schemastore.org/claude-code-settings.json"
-  }
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | { read file_path; if echo \\\"$file_path\\\" | grep -q '\\\\.ts$'; then biome check --write \\\"$file_path\\\"; fi; }"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | { read file_path; if echo \\\"$file_path\\\" | grep -q '\\\\.ts$'; then echo \\\"Running TypeScript type check...\\\"; bunx tsc --noEmit; fi; }"
+          }
+        ]
+      }
+    ]
+  },
+  "$schema": "https://json.schemastore.org/claude-code-settings.json"
+}

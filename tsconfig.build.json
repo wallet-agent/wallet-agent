@@ -1,0 +1,44 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Override for build - simple transpilation
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    // Use simple module output
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
+
+    // Remove Bun-specific options
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false,
+
+    // Disable ALL type checking for build
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noEmitOnError": false,
+    "isolatedModules": true,
+
+    // Disable strict checks
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules/**/*",
+    "../../node_modules/**/*",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.integration.test.ts"
+  ]
+}

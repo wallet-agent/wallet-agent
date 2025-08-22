@@ -1,5 +1,5 @@
-import type { Address, Hex } from "viem";
-import type { ContractAdapter } from "../adapters/contract-adapter.js";
+import type { Address, Hex } from "viem"
+import type { ContractAdapter } from "../adapters/contract-adapter.js"
 import type {
   NFTInfoParams,
   NFTInfoResult,
@@ -11,18 +11,15 @@ import type {
   TokenBalanceResult,
   TokenInfoResult,
   TokenTransferParams,
-} from "../adapters/token-adapter.js";
-import type {
-  ContractReadParams,
-  ContractWriteParams,
-} from "../contract-operations.js";
-import { resolveContract } from "../core/contract-resolution.js";
+} from "../adapters/token-adapter.js"
+import type { ContractReadParams, ContractWriteParams } from "../contract-operations.js"
+import { resolveContract } from "../core/contract-resolution.js"
 import {
   formatTokenAmount,
   getTokenInfoByAddress,
   parseTokenAmount,
-} from "../core/token-registry.js";
-import type { WalletEffects } from "./wallet-effects.js";
+} from "../core/token-registry.js"
+import type { WalletEffects } from "./wallet-effects.js"
 
 /**
  * Token effects handler with dependency injection
@@ -40,7 +37,7 @@ export class TokenEffects implements TokenAdapter {
    * Transfer ERC-20 tokens
    */
   async transferToken(params: TokenTransferParams): Promise<Hex> {
-    const chainId = this.walletEffects.getCurrentChainId();
+    const chainId = this.walletEffects.getCurrentChainId()
 
     // Resolve the token contract
     const resolved = resolveContract(
@@ -49,17 +46,17 @@ export class TokenEffects implements TokenAdapter {
       chainId,
       this.contractAdapter,
       "builtin:ERC20",
-    );
+    )
 
     // Get token decimals
     const decimals = (await this.readContract({
       contract: resolved.isBuiltin ? "builtin:ERC20" : resolved.name,
       address: resolved.address,
       function: "decimals",
-    })) as number;
+    })) as number
 
     // Parse amount to smallest unit
-    const amountWei = parseTokenAmount(params.amount, decimals);
+    const amountWei = parseTokenAmount(params.amount, decimals)
 
     // Execute transfer
     return await this.writeContract({
@@ -67,14 +64,14 @@ export class TokenEffects implements TokenAdapter {
       address: resolved.address,
       function: "transfer",
       args: [params.to, amountWei],
-    });
+    })
   }
 
   /**
    * Approve ERC-20 token spending
    */
   async approveToken(params: TokenApproveParams): Promise<Hex> {
-    const chainId = this.walletEffects.getCurrentChainId();
+    const chainId = this.walletEffects.getCurrentChainId()
 
     // Resolve the token contract
     const resolved = resolveContract(
@@ -83,23 +80,23 @@ export class TokenEffects implements TokenAdapter {
       chainId,
       this.contractAdapter,
       "builtin:ERC20",
-    );
+    )
 
-    let amountWei: bigint;
+    let amountWei: bigint
 
     if (params.amount.toLowerCase() === "max") {
       // Max uint256
-      amountWei = 2n ** 256n - 1n;
+      amountWei = 2n ** 256n - 1n
     } else {
       // Get token decimals
       const decimals = (await this.readContract({
         contract: resolved.isBuiltin ? "builtin:ERC20" : resolved.name,
         address: resolved.address,
         function: "decimals",
-      })) as number;
+      })) as number
 
       // Parse amount to smallest unit
-      amountWei = parseTokenAmount(params.amount, decimals);
+      amountWei = parseTokenAmount(params.amount, decimals)
     }
 
     // Execute approve
@@ -108,21 +105,19 @@ export class TokenEffects implements TokenAdapter {
       address: resolved.address,
       function: "approve",
       args: [params.spender, amountWei],
-    });
+    })
   }
 
   /**
    * Get ERC-20 token balance
    */
-  async getTokenBalance(
-    params: TokenBalanceParams,
-  ): Promise<TokenBalanceResult> {
-    const chainId = this.walletEffects.getCurrentChainId();
+  async getTokenBalance(params: TokenBalanceParams): Promise<TokenBalanceResult> {
+    const chainId = this.walletEffects.getCurrentChainId()
 
     // Use current account if no address provided
-    const address = params.address || this.getCurrentAccount()?.address;
+    const address = params.address || this.getCurrentAccount()?.address
     if (!address) {
-      throw new Error("No address provided and no wallet connected");
+      throw new Error("No address provided and no wallet connected")
     }
 
     // Resolve the token contract
@@ -132,7 +127,7 @@ export class TokenEffects implements TokenAdapter {
       chainId,
       this.contractAdapter,
       "builtin:ERC20",
-    );
+    )
 
     // Get token info
     const [balanceRaw, symbol, decimals] = await Promise.all([
@@ -152,23 +147,23 @@ export class TokenEffects implements TokenAdapter {
         address: resolved.address,
         function: "decimals",
       }) as Promise<number>,
-    ]);
+    ])
 
-    const balance = formatTokenAmount(balanceRaw, decimals);
+    const balance = formatTokenAmount(balanceRaw, decimals)
 
     return {
       balance,
       balanceRaw,
       symbol,
       decimals,
-    };
+    }
   }
 
   /**
    * Get ERC-20 token information
    */
   async getTokenInfo(token: string): Promise<TokenInfoResult> {
-    const chainId = this.walletEffects.getCurrentChainId();
+    const chainId = this.walletEffects.getCurrentChainId()
 
     // Resolve the token contract
     const resolved = resolveContract(
@@ -177,7 +172,7 @@ export class TokenEffects implements TokenAdapter {
       chainId,
       this.contractAdapter,
       "builtin:ERC20",
-    );
+    )
 
     // Get token info from contract
     const [name, symbol, decimals] = await Promise.all([
@@ -196,10 +191,10 @@ export class TokenEffects implements TokenAdapter {
         address: resolved.address,
         function: "decimals",
       }) as Promise<number>,
-    ]);
+    ])
 
     // Check if it's a well-known token
-    const wellKnownInfo = getTokenInfoByAddress(resolved.address, chainId);
+    const wellKnownInfo = getTokenInfoByAddress(resolved.address, chainId)
 
     return {
       name,
@@ -207,18 +202,18 @@ export class TokenEffects implements TokenAdapter {
       decimals,
       address: resolved.address,
       isWellKnown: !!wellKnownInfo,
-    };
+    }
   }
 
   /**
    * Transfer ERC-721 NFT
    */
   async transferNFT(params: NFTTransferParams): Promise<Hex> {
-    const chainId = this.walletEffects.getCurrentChainId();
-    const account = this.getCurrentAccount();
+    const chainId = this.walletEffects.getCurrentChainId()
+    const account = this.getCurrentAccount()
 
     if (!account?.address) {
-      throw new Error("No wallet connected");
+      throw new Error("No wallet connected")
     }
 
     // Resolve the NFT contract
@@ -228,7 +223,7 @@ export class TokenEffects implements TokenAdapter {
       chainId,
       this.contractAdapter,
       "builtin:ERC721",
-    );
+    )
 
     // Execute safeTransferFrom
     return await this.writeContract({
@@ -236,14 +231,14 @@ export class TokenEffects implements TokenAdapter {
       address: resolved.address,
       function: "safeTransferFrom",
       args: [account.address, params.to, BigInt(params.tokenId)],
-    });
+    })
   }
 
   /**
    * Get NFT owner
    */
   async getNFTOwner(params: NFTQueryParams): Promise<Address> {
-    const chainId = this.walletEffects.getCurrentChainId();
+    const chainId = this.walletEffects.getCurrentChainId()
 
     // Resolve the NFT contract
     const resolved = resolveContract(
@@ -252,7 +247,7 @@ export class TokenEffects implements TokenAdapter {
       chainId,
       this.contractAdapter,
       "builtin:ERC721",
-    );
+    )
 
     // Get owner
     return (await this.readContract({
@@ -260,14 +255,14 @@ export class TokenEffects implements TokenAdapter {
       address: resolved.address,
       function: "ownerOf",
       args: [BigInt(params.tokenId)],
-    })) as Address;
+    })) as Address
   }
 
   /**
    * Get NFT information
    */
   async getNFTInfo(params: NFTInfoParams): Promise<NFTInfoResult> {
-    const chainId = this.walletEffects.getCurrentChainId();
+    const chainId = this.walletEffects.getCurrentChainId()
 
     // Resolve the NFT contract
     const resolved = resolveContract(
@@ -276,7 +271,7 @@ export class TokenEffects implements TokenAdapter {
       chainId,
       this.contractAdapter,
       "builtin:ERC721",
-    );
+    )
 
     // Get basic info
     const [name, symbol] = await Promise.all([
@@ -290,23 +285,23 @@ export class TokenEffects implements TokenAdapter {
         address: resolved.address,
         function: "symbol",
       }) as Promise<string>,
-    ]);
+    ])
 
     // Get token URI if token ID provided
-    let tokenURI: string | undefined;
+    let tokenURI: string | undefined
     if (params.tokenId) {
       tokenURI = (await this.readContract({
         contract: resolved.isBuiltin ? "builtin:ERC721" : resolved.name,
         address: resolved.address,
         function: "tokenURI",
         args: [BigInt(params.tokenId)],
-      })) as string;
+      })) as string
     }
 
     return {
       name,
       symbol,
       ...(tokenURI !== undefined && { tokenURI }),
-    };
+    }
   }
 }

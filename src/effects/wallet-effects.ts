@@ -1,20 +1,16 @@
-import type { Address } from "viem";
-import type {
-  ChainAdapter,
-  WalletAdapter,
-  WalletClientFactory,
-} from "../adapters/wallet-adapter";
-import { addressExists } from "../core/validators";
+import type { Address } from "viem"
+import type { ChainAdapter, WalletAdapter, WalletClientFactory } from "../adapters/wallet-adapter"
+import { addressExists } from "../core/validators"
 
-export type WalletType = "mock" | "privateKey";
+export type WalletType = "mock" | "privateKey"
 
 /**
  * Wallet effects handler with dependency injection
  */
 export class WalletEffects {
-  private connectedAddress: Address | undefined;
-  private currentChainId: number = 31337; // Default to Anvil
-  private currentWalletType: WalletType = "mock";
+  private connectedAddress: Address | undefined
+  private currentChainId: number = 31337 // Default to Anvil
+  private currentWalletType: WalletType = "mock"
 
   constructor(
     private mockWalletAdapter: WalletAdapter,
@@ -26,83 +22,76 @@ export class WalletEffects {
 
   // Getters
   getConnectedAddress(): Address | undefined {
-    return this.connectedAddress;
+    return this.connectedAddress
   }
 
   getCurrentChainId(): number {
-    return this.currentChainId;
+    return this.currentChainId
   }
 
   getCurrentWalletType(): WalletType {
-    return this.currentWalletType;
+    return this.currentWalletType
   }
 
   getAddress(): Address | undefined {
-    return this.connectedAddress;
+    return this.connectedAddress
   }
 
   getChainId(): number {
-    return this.currentChainId;
+    return this.currentChainId
   }
 
   getPublicClient() {
-    const chain = this.chainAdapter.getChain(this.currentChainId);
-    if (!chain) return undefined;
+    const chain = this.chainAdapter.getChain(this.currentChainId)
+    if (!chain) return undefined
 
     // For now, we'll return the wallet client which can act as a public client
     if (this.currentWalletType === "privateKey" && this.connectedAddress) {
-      return this.privateKeyClientFactory.createWalletClient(
-        this.connectedAddress,
-        chain,
-      );
+      return this.privateKeyClientFactory.createWalletClient(this.connectedAddress, chain)
     }
     // Mock adapter doesn't provide public client directly
-    return undefined;
+    return undefined
   }
 
   // Setters
   setCurrentChainId(chainId: number): void {
-    this.currentChainId = chainId;
+    this.currentChainId = chainId
   }
 
   setWalletType(type: WalletType): void {
     if (type === "privateKey" && this.privateKeyAddresses().length === 0) {
-      throw new Error(
-        "No private keys imported. Use import_private_key first.",
-      );
+      throw new Error("No private keys imported. Use import_private_key first.")
     }
-    this.currentWalletType = type;
+    this.currentWalletType = type
   }
 
   // Wallet operations
   async connectWallet(address: Address) {
     if (this.currentWalletType === "privateKey") {
-      const privateKeyAddresses = this.privateKeyAddresses();
+      const privateKeyAddresses = this.privateKeyAddresses()
       if (!addressExists(address, privateKeyAddresses)) {
-        throw new Error(
-          `Address ${address} is not in the list of imported wallets`,
-        );
+        throw new Error(`Address ${address} is not in the list of imported wallets`)
       }
-      this.connectedAddress = address;
+      this.connectedAddress = address
       return {
         address,
         chainId: this.currentChainId,
-      };
+      }
     }
 
     // Mock wallet logic
     if (!addressExists(address, this.mockAccounts)) {
-      throw new Error(`Address ${address} is not in the list of mock accounts`);
+      throw new Error(`Address ${address} is not in the list of mock accounts`)
     }
 
-    const result = await this.mockWalletAdapter.connect(address);
-    this.connectedAddress = address;
-    return result;
+    const result = await this.mockWalletAdapter.connect(address)
+    this.connectedAddress = address
+    return result
   }
 
   async disconnectWallet() {
-    await this.mockWalletAdapter.disconnect();
-    this.connectedAddress = undefined;
+    await this.mockWalletAdapter.disconnect()
+    this.connectedAddress = undefined
   }
 
   getCurrentAccount() {
@@ -112,150 +101,138 @@ export class WalletEffects {
         address: this.connectedAddress,
         chainId: this.currentChainId,
         connector: "privateKey",
-      };
+      }
     }
-    return this.mockWalletAdapter.getAccount();
+    return this.mockWalletAdapter.getAccount()
   }
 
   async getBalance(address?: Address) {
-    const addressToCheck = address || this.connectedAddress;
+    const addressToCheck = address || this.connectedAddress
     if (!addressToCheck) {
-      throw new Error("No address provided and no wallet connected");
+      throw new Error("No address provided and no wallet connected")
     }
 
-    const chain = this.chainAdapter.getChain(this.currentChainId);
+    const chain = this.chainAdapter.getChain(this.currentChainId)
     if (!chain) {
-      throw new Error(`Chain ${this.currentChainId} not found`);
+      throw new Error(`Chain ${this.currentChainId} not found`)
     }
 
     if (this.currentWalletType === "privateKey") {
       // For private key wallets, we would need to use publicClient
       // This is a simplified version - in real implementation you'd use viem's publicClient
-      const balance = await this.mockWalletAdapter.getBalance(
-        addressToCheck,
-        this.currentChainId,
-      );
+      const balance = await this.mockWalletAdapter.getBalance(addressToCheck, this.currentChainId)
       return {
         address: addressToCheck,
         balance: balance.value,
         symbol: chain.nativeCurrency.symbol,
-      };
+      }
     }
 
-    const balance = await this.mockWalletAdapter.getBalance(
-      addressToCheck,
-      this.currentChainId,
-    );
+    const balance = await this.mockWalletAdapter.getBalance(addressToCheck, this.currentChainId)
     return {
       address: addressToCheck,
       balance: balance.value,
       symbol: balance.symbol,
-    };
+    }
   }
 
   async signMessage(message: string) {
     if (!this.connectedAddress) {
-      throw new Error("No wallet connected");
+      throw new Error("No wallet connected")
     }
 
     if (this.currentWalletType === "privateKey") {
-      const chain = this.chainAdapter.getChain(this.currentChainId);
-      if (!chain) throw new Error("Chain not found");
+      const chain = this.chainAdapter.getChain(this.currentChainId)
+      if (!chain) throw new Error("Chain not found")
 
       const walletClient = this.privateKeyClientFactory.createWalletClient(
         this.connectedAddress,
         chain,
-      );
+      )
       // @ts-expect-error - Viem types are complex, wallet client has signMessage
-      return await walletClient.signMessage({ message });
+      return await walletClient.signMessage({ message })
     }
 
     // In test mode with mock wallet, return a mock signature
     if (process.env.NODE_ENV === "test") {
-      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" as `0x${string}`;
+      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" as `0x${string}`
     }
 
-    return await this.mockWalletAdapter.signMessage(message);
+    return await this.mockWalletAdapter.signMessage(message)
   }
 
   async signTypedData(params: {
-    domain: Record<string, unknown>;
-    types: Record<string, unknown>;
-    primaryType: string;
-    message: Record<string, unknown>;
+    domain: Record<string, unknown>
+    types: Record<string, unknown>
+    primaryType: string
+    message: Record<string, unknown>
   }) {
     if (!this.connectedAddress) {
-      throw new Error("No wallet connected");
+      throw new Error("No wallet connected")
     }
 
     if (this.currentWalletType === "privateKey") {
-      const chain = this.chainAdapter.getChain(this.currentChainId);
-      if (!chain) throw new Error("Chain not found");
+      const chain = this.chainAdapter.getChain(this.currentChainId)
+      if (!chain) throw new Error("Chain not found")
 
       const walletClient = this.privateKeyClientFactory.createWalletClient(
         this.connectedAddress,
         chain,
-      );
+      )
       const typedDataParams = {
         domain: params.domain,
         types: params.types,
         primaryType: params.primaryType,
         message: params.message,
-      } as Parameters<typeof walletClient.signTypedData>[0];
-      return await walletClient.signTypedData(typedDataParams);
+      } as Parameters<typeof walletClient.signTypedData>[0]
+      return await walletClient.signTypedData(typedDataParams)
     }
 
     // In test mode with mock wallet, return a mock signature
     if (process.env.NODE_ENV === "test") {
-      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" as `0x${string}`;
+      return "0x1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" as `0x${string}`
     }
 
-    return await this.mockWalletAdapter.signTypedData(params);
+    return await this.mockWalletAdapter.signTypedData(params)
   }
 
-  async sendTransaction(params: {
-    to: Address;
-    value: bigint;
-    data?: `0x${string}`;
-  }) {
+  async sendTransaction(params: { to: Address; value: bigint; data?: `0x${string}` }) {
     if (!this.connectedAddress) {
-      throw new Error("No wallet connected");
+      throw new Error("No wallet connected")
     }
 
     if (this.currentWalletType === "privateKey") {
-      const chain = this.chainAdapter.getChain(this.currentChainId);
-      if (!chain) throw new Error("Chain not found");
+      const chain = this.chainAdapter.getChain(this.currentChainId)
+      if (!chain) throw new Error("Chain not found")
 
       const walletClient = this.privateKeyClientFactory.createWalletClient(
         this.connectedAddress,
         chain,
-      );
+      )
       // @ts-expect-error - Viem types are complex, wallet client has sendTransaction
-      return await walletClient.sendTransaction(params);
+      return await walletClient.sendTransaction(params)
     }
 
     // In test mode with mock wallet, return a mock transaction hash
     if (process.env.NODE_ENV === "test") {
-      return "0x1234567890123456789012345678901234567890123456789012345678901234" as `0x${string}`;
+      return "0x1234567890123456789012345678901234567890123456789012345678901234" as `0x${string}`
     }
 
-    return await this.mockWalletAdapter.sendTransaction(params);
+    return await this.mockWalletAdapter.sendTransaction(params)
   }
 
   async switchChain(chainId: number) {
-    const chain = this.chainAdapter.getChain(chainId);
+    const chain = this.chainAdapter.getChain(chainId)
     if (!chain) {
-      throw new Error(
-        `Chain ID ${chainId} is not supported. Add it first using add_custom_chain.`,
-      );
+      throw new Error(`Chain ID ${chainId} is not supported. Add it first using add_custom_chain.`)
     }
 
-    await this.mockWalletAdapter.switchChain(chainId);
-    this.setCurrentChainId(chainId);
+    await this.mockWalletAdapter.switchChain(chainId)
+    this.setCurrentChainId(chainId)
 
     return {
       chainId,
       chainName: chain.name,
-    };
+    }
   }
 }
