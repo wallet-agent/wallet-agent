@@ -1,13 +1,52 @@
-src/
-examples/
-.claude/
-*.lock
-*.lockb
-tsconfig.json
+# Test files
+test/
+*.test.ts
+*.test.js
+scripts/test-*.sh
+coverage/
+.nyc_output/
+
+# Development config files
+tsconfig.dev.json
 biome.json
-.gitignore
+.biomeignore
 claude_mcp_config.json
+
+# Git and CI files
 .git/
-node_modules/
+.github/
+.gitignore
+.git-subtree-*
+
+# Documentation source files
+.claude/
+examples/
+
+# Temporary files
+*.tmp
 *.log
 .DS_Store
+
+# Lock files (consumers should use their own)
+bun.lockb
+*.lock
+*.lockb
+yarn.lock
+pnpm-lock.yaml
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts that shouldn't be published
+*.tsbuildinfo
+*.map
+
+# Contract source files
+contracts/
+scripts/compile-*.ts
+
+# Node modules (shouldn't be published)
+node_modules/

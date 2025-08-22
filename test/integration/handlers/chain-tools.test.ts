@@ -1,22 +1,22 @@
-import { beforeEach, describe, expect, it } from "bun:test";
+import { beforeEach, describe, expect, it } from "bun:test"
 import {
   expectToolExecutionError,
   expectToolSuccess,
   expectToolValidationError,
   setupContainer,
   TEST_ADDRESS_1,
-} from "./setup.js";
+} from "./setup.js"
 
 describe("Chain Tools Integration", () => {
-  setupContainer();
+  setupContainer()
 
   beforeEach(async () => {
     // Set up wallet for operations - do this in beforeEach instead of beforeAll
     // to ensure fresh connection after container reset
     await expectToolSuccess("connect_wallet", {
       address: TEST_ADDRESS_1,
-    });
-  });
+    })
+  })
 
   describe("add_custom_chain", () => {
     it("should add a valid custom chain", async () => {
@@ -29,11 +29,11 @@ describe("Chain Tools Integration", () => {
           symbol: "TEST",
           decimals: 18,
         },
-      });
+      })
 
-      expect(result.text).toContain("Custom chain added successfully");
-      expect(result.text).toContain("Test Chain");
-    });
+      expect(result.text).toContain("Custom chain added successfully")
+      expect(result.text).toContain("Test Chain")
+    })
 
     it("should handle chain configuration with zero decimals (edge case)", async () => {
       const result = await expectToolSuccess("add_custom_chain", {
@@ -45,11 +45,11 @@ describe("Chain Tools Integration", () => {
           symbol: "ZERO",
           decimals: 0, // Edge case: zero decimals should be valid
         },
-      });
+      })
 
-      expect(result.text).toContain("Custom chain added successfully");
-      expect(result.text).toContain("Zero Decimal Chain");
-    });
+      expect(result.text).toContain("Custom chain added successfully")
+      expect(result.text).toContain("Zero Decimal Chain")
+    })
 
     it("should add a custom chain with block explorer", async () => {
       const result = await expectToolSuccess("add_custom_chain", {
@@ -62,11 +62,11 @@ describe("Chain Tools Integration", () => {
           decimals: 18,
         },
         blockExplorerUrl: "https://explorer.example.com",
-      });
+      })
 
-      expect(result.text).toContain("Custom chain added successfully");
-      expect(result.text).toContain("Test Chain 2");
-    });
+      expect(result.text).toContain("Custom chain added successfully")
+      expect(result.text).toContain("Test Chain 2")
+    })
 
     it("should validate chain ID parameter", async () => {
       await expectToolValidationError("add_custom_chain", {
@@ -78,8 +78,8 @@ describe("Chain Tools Integration", () => {
           symbol: "TEST",
           decimals: 18,
         },
-      });
-    });
+      })
+    })
 
     it("should handle invalid chain configuration - negative decimals", async () => {
       await expectToolValidationError("add_custom_chain", {
@@ -91,8 +91,8 @@ describe("Chain Tools Integration", () => {
           symbol: "TEST",
           decimals: -1, // Invalid: negative decimals
         },
-      });
-    });
+      })
+    })
 
     it("should handle invalid chain configuration - empty name", async () => {
       await expectToolValidationError("add_custom_chain", {
@@ -104,8 +104,8 @@ describe("Chain Tools Integration", () => {
           symbol: "TEST",
           decimals: 18,
         },
-      });
-    });
+      })
+    })
 
     it("should handle invalid chain configuration - empty currency symbol", async () => {
       await expectToolValidationError("add_custom_chain", {
@@ -117,9 +117,9 @@ describe("Chain Tools Integration", () => {
           symbol: "", // Invalid: empty symbol
           decimals: 18,
         },
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe("update_custom_chain", () => {
     it("should update a custom chain", async () => {
@@ -133,18 +133,18 @@ describe("Chain Tools Integration", () => {
           symbol: "ORIG",
           decimals: 18,
         },
-      });
+      })
 
       // Then update it
       const result = await expectToolSuccess("update_custom_chain", {
         chainId: 999994,
         name: "Updated Chain",
         rpcUrl: "https://updated-rpc.example.com",
-      });
+      })
 
-      expect(result.text).toContain("Custom chain 999994 updated successfully");
-      expect(result.text).toContain("Updated Chain");
-    });
+      expect(result.text).toContain("Custom chain 999994 updated successfully")
+      expect(result.text).toContain("Updated Chain")
+    })
 
     it("should validate RPC URL format", async () => {
       // First add a chain
@@ -157,14 +157,14 @@ describe("Chain Tools Integration", () => {
           symbol: "TEST",
           decimals: 18,
         },
-      });
+      })
 
       // Try to update with invalid RPC URL
       await expectToolValidationError("update_custom_chain", {
         chainId: 999993,
         rpcUrl: "invalid-url", // Invalid: doesn't start with http
-      });
-    });
+      })
+    })
 
     it("should validate native currency updates - negative decimals", async () => {
       // First add a chain
@@ -177,7 +177,7 @@ describe("Chain Tools Integration", () => {
           symbol: "TEST",
           decimals: 18,
         },
-      });
+      })
 
       // Try to update with invalid native currency
       await expectToolValidationError("update_custom_chain", {
@@ -187,8 +187,8 @@ describe("Chain Tools Integration", () => {
           symbol: "UPD",
           decimals: -5, // Invalid: negative decimals
         },
-      });
-    });
+      })
+    })
 
     it("should validate native currency updates - empty symbol", async () => {
       // First add a chain
@@ -201,7 +201,7 @@ describe("Chain Tools Integration", () => {
           symbol: "TEST",
           decimals: 18,
         },
-      });
+      })
 
       // Try to update with invalid native currency
       await expectToolValidationError("update_custom_chain", {
@@ -211,8 +211,8 @@ describe("Chain Tools Integration", () => {
           symbol: "", // Invalid: empty symbol
           decimals: 18,
         },
-      });
-    });
+      })
+    })
 
     it("should handle non-existent chain ID", async () => {
       await expectToolExecutionError(
@@ -222,9 +222,9 @@ describe("Chain Tools Integration", () => {
           name: "Updated Chain",
         },
         "Custom chain with ID 888888 not found",
-      );
-    });
-  });
+      )
+    })
+  })
 
   describe("remove_custom_chain", () => {
     it("should remove a custom chain", async () => {
@@ -238,15 +238,15 @@ describe("Chain Tools Integration", () => {
           symbol: "REM",
           decimals: 18,
         },
-      });
+      })
 
       // Then remove it
       const result = await expectToolSuccess("remove_custom_chain", {
         chainId: 999990,
-      });
+      })
 
-      expect(result.text).toContain("Custom chain 999990 removed successfully");
-    });
+      expect(result.text).toContain("Custom chain 999990 removed successfully")
+    })
 
     it("should prevent removing currently connected chain", async () => {
       // First add a chain
@@ -259,12 +259,12 @@ describe("Chain Tools Integration", () => {
           symbol: "CUR",
           decimals: 18,
         },
-      });
+      })
 
       // Switch to this chain
       await expectToolSuccess("switch_chain", {
         chainId: 999989,
-      });
+      })
 
       // Try to remove it while connected
       await expectToolExecutionError(
@@ -273,13 +273,13 @@ describe("Chain Tools Integration", () => {
           chainId: 999989,
         },
         "Cannot remove the currently connected chain",
-      );
+      )
 
       // Switch back to default chain for cleanup
       await expectToolSuccess("switch_chain", {
         chainId: 31337, // Anvil chain
-      });
-    });
+      })
+    })
 
     it("should handle non-existent chain ID", async () => {
       await expectToolExecutionError(
@@ -288,13 +288,13 @@ describe("Chain Tools Integration", () => {
           chainId: 777777, // Non-existent chain
         },
         "Custom chain with ID 777777 not found",
-      );
-    });
+      )
+    })
 
     it("should validate chain ID parameter", async () => {
       await expectToolValidationError("remove_custom_chain", {
         chainId: "invalid",
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

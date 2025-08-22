@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "bun:test"
 import {
   expectToolExecutionError,
   expectToolSuccess,
@@ -6,61 +6,53 @@ import {
   setupContainer,
   TEST_ADDRESS_1,
   TEST_PRIVATE_KEY,
-} from "./setup.js";
+} from "./setup.js"
 
 describe("Signing Tools Integration", () => {
-  setupContainer();
+  setupContainer()
 
   describe("sign_message", () => {
     test("should sign a message with mock wallet", async () => {
       // Connect wallet first
-      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 });
+      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 })
 
       const { text } = await expectToolSuccess(
         "sign_message",
         { message: "Hello, Ethereum!" },
         "Message signed successfully",
-      );
+      )
 
-      expect(text).toContain("Signature: 0x");
+      expect(text).toContain("Signature: 0x")
       // Mock wallet returns a deterministic signature
-      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/);
-    });
+      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/)
+    })
 
     test("should sign a message with private key wallet", async () => {
       // Import private key and switch to private key mode
       await expectToolSuccess("import_private_key", {
         privateKey: TEST_PRIVATE_KEY,
-      });
-      await expectToolSuccess("set_wallet_type", { type: "privateKey" });
-      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 });
+      })
+      await expectToolSuccess("set_wallet_type", { type: "privateKey" })
+      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 })
 
       const { text } = await expectToolSuccess(
         "sign_message",
         { message: "Hello from private key!" },
         "Message signed successfully",
-      );
+      )
 
-      expect(text).toContain("Signature: 0x");
-      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/);
-    });
+      expect(text).toContain("Signature: 0x")
+      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/)
+    })
 
     test("should validate message parameter", async () => {
-      await expectToolValidationError(
-        "sign_message",
-        {},
-        "Invalid input: expected string",
-      );
-    });
+      await expectToolValidationError("sign_message", {}, "Invalid input: expected string")
+    })
 
     test("should require wallet connection", async () => {
-      await expectToolExecutionError(
-        "sign_message",
-        { message: "Test" },
-        "No wallet connected",
-      );
-    });
-  });
+      await expectToolExecutionError("sign_message", { message: "Test" }, "No wallet connected")
+    })
+  })
 
   describe("sign_typed_data", () => {
     const typedData = {
@@ -81,64 +73,60 @@ describe("Signing Tools Integration", () => {
         content: "Hello, typed data!",
         timestamp: 1234567890,
       },
-    };
+    }
 
     test("should sign typed data with mock wallet", async () => {
       // Connect wallet first
-      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 });
+      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 })
 
       const { text } = await expectToolSuccess(
         "sign_typed_data",
         typedData,
         "Typed data signed successfully",
-      );
+      )
 
-      expect(text).toContain("Signature: 0x");
-      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/);
-    });
+      expect(text).toContain("Signature: 0x")
+      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/)
+    })
 
     test("should sign typed data with private key wallet", async () => {
       // Import private key and switch to private key mode
       await expectToolSuccess("import_private_key", {
         privateKey: TEST_PRIVATE_KEY,
-      });
-      await expectToolSuccess("set_wallet_type", { type: "privateKey" });
-      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 });
+      })
+      await expectToolSuccess("set_wallet_type", { type: "privateKey" })
+      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 })
 
       const { text } = await expectToolSuccess(
         "sign_typed_data",
         typedData,
         "Typed data signed successfully",
-      );
+      )
 
-      expect(text).toContain("Signature: 0x");
-      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/);
-    });
+      expect(text).toContain("Signature: 0x")
+      expect(text).toMatch(/Signature: 0x[a-fA-F0-9]{130}/)
+    })
 
     test("should validate required fields", async () => {
       await expectToolValidationError(
         "sign_typed_data",
         { domain: typedData.domain },
         "Invalid input: expected",
-      );
+      )
 
       await expectToolValidationError(
         "sign_typed_data",
         { types: typedData.types, primaryType: typedData.primaryType },
         "Invalid input: expected record",
-      );
-    });
+      )
+    })
 
     test("should require wallet connection", async () => {
-      await expectToolExecutionError(
-        "sign_typed_data",
-        typedData,
-        "No wallet connected",
-      );
-    });
+      await expectToolExecutionError("sign_typed_data", typedData, "No wallet connected")
+    })
 
     test("should handle complex typed data", async () => {
-      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 });
+      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 })
 
       const complexTypedData = {
         domain: {
@@ -176,15 +164,15 @@ describe("Signing Tools Integration", () => {
             "0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd",
           ],
         },
-      };
+      }
 
       const { text } = await expectToolSuccess(
         "sign_typed_data",
         complexTypedData,
         "Typed data signed successfully",
-      );
+      )
 
-      expect(text).toContain("Signature: 0x");
-    });
-  });
-});
+      expect(text).toContain("Signature: 0x")
+    })
+  })
+})

@@ -1,13 +1,13 @@
-import type { Address } from "viem";
+import type { Address } from "viem"
 
 /**
  * Well-known token information
  */
 export interface TokenInfo {
-  symbol: string;
-  name: string;
-  decimals: number;
-  addresses: Record<number, Address>; // chainId -> address
+  symbol: string
+  name: string
+  decimals: number
+  addresses: Record<number, Address> // chainId -> address
 }
 
 /**
@@ -78,7 +78,7 @@ export const WELL_KNOWN_TOKENS: Record<string, TokenInfo> = {
       11155111: "0x779877A7B0D9E8603169DdbD7836e478b4624789", // Sepolia
     },
   },
-};
+}
 
 /**
  * Resolve a token identifier to an address
@@ -86,32 +86,26 @@ export const WELL_KNOWN_TOKENS: Record<string, TokenInfo> = {
  * @param chainId - Chain ID to resolve for
  * @returns The token address, or undefined if not found
  */
-export function resolveTokenAddress(
-  tokenOrAddress: string,
-  chainId: number,
-): Address | undefined {
+export function resolveTokenAddress(tokenOrAddress: string, chainId: number): Address | undefined {
   // Only resolve known token symbols, not raw addresses
-  const tokenInfo = WELL_KNOWN_TOKENS[tokenOrAddress.toUpperCase()];
+  const tokenInfo = WELL_KNOWN_TOKENS[tokenOrAddress.toUpperCase()]
   if (tokenInfo) {
-    return tokenInfo.addresses[chainId];
+    return tokenInfo.addresses[chainId]
   }
 
-  return undefined;
+  return undefined
 }
 
 /**
  * Get token info by address and chain
  */
-export function getTokenInfoByAddress(
-  address: Address,
-  chainId: number,
-): TokenInfo | undefined {
+export function getTokenInfoByAddress(address: Address, chainId: number): TokenInfo | undefined {
   for (const tokenInfo of Object.values(WELL_KNOWN_TOKENS)) {
     if (tokenInfo.addresses[chainId]?.toLowerCase() === address.toLowerCase()) {
-      return tokenInfo;
+      return tokenInfo
     }
   }
-  return undefined;
+  return undefined
 }
 
 /**
@@ -121,20 +115,20 @@ export function getTokenInfoByAddress(
  * @returns Formatted string
  */
 export function formatTokenAmount(amount: bigint, decimals: number): string {
-  const divisor = 10n ** BigInt(decimals);
-  const whole = amount / divisor;
-  const remainder = amount % divisor;
+  const divisor = 10n ** BigInt(decimals)
+  const whole = amount / divisor
+  const remainder = amount % divisor
 
   if (remainder === 0n) {
-    return whole.toString();
+    return whole.toString()
   }
 
   // Format with decimals
-  const remainderStr = remainder.toString().padStart(decimals, "0");
+  const remainderStr = remainder.toString().padStart(decimals, "0")
   // Remove trailing zeros
-  const trimmed = remainderStr.replace(/0+$/, "");
+  const trimmed = remainderStr.replace(/0+$/, "")
 
-  return trimmed ? `${whole}.${trimmed}` : whole.toString();
+  return trimmed ? `${whole}.${trimmed}` : whole.toString()
 }
 
 /**
@@ -143,21 +137,18 @@ export function formatTokenAmount(amount: bigint, decimals: number): string {
  * @param chainId - Chain ID
  * @returns Token info or undefined
  */
-export function getTokenInfoBySymbol(
-  symbol: string,
-  chainId: number,
-): TokenInfo | undefined {
-  const upperSymbol = symbol.toUpperCase();
-  const tokenInfo = WELL_KNOWN_TOKENS[upperSymbol];
-  if (!tokenInfo) return undefined;
+export function getTokenInfoBySymbol(symbol: string, chainId: number): TokenInfo | undefined {
+  const upperSymbol = symbol.toUpperCase()
+  const tokenInfo = WELL_KNOWN_TOKENS[upperSymbol]
+  if (!tokenInfo) return undefined
 
-  const chainInfo = tokenInfo.addresses[chainId];
-  if (!chainInfo) return undefined;
+  const chainInfo = tokenInfo.addresses[chainId]
+  if (!chainInfo) return undefined
 
   return {
     ...tokenInfo,
     addresses: { [chainId]: chainInfo },
-  };
+  }
 }
 
 /**
@@ -169,26 +160,26 @@ export function getTokenInfoBySymbol(
 export function parseTokenAmount(amount: string, decimals: number): bigint {
   // Handle negative amounts
   if (amount.startsWith("-")) {
-    throw new Error("Negative amounts are not supported");
+    throw new Error("Negative amounts are not supported")
   }
 
   // Convert scientific notation to decimal
-  let normalizedAmount = amount;
+  let normalizedAmount = amount
   if (amount.includes("e") || amount.includes("E")) {
-    const num = Number.parseFloat(amount);
+    const num = Number.parseFloat(amount)
     // If the number is an integer after parsing, convert it directly
     if (Number.isInteger(num)) {
-      normalizedAmount = num.toString();
+      normalizedAmount = num.toString()
     } else {
       // For decimals, use appropriate precision
-      const integerDigits = Math.floor(Math.abs(num)).toString().length;
-      const precision = Math.max(decimals, integerDigits + decimals);
-      normalizedAmount = num.toFixed(precision);
+      const integerDigits = Math.floor(Math.abs(num)).toString().length
+      const precision = Math.max(decimals, integerDigits + decimals)
+      normalizedAmount = num.toFixed(precision)
     }
   }
 
-  const [whole, fraction = ""] = normalizedAmount.split(".");
-  const paddedFraction = fraction.padEnd(decimals, "0").slice(0, decimals);
-  const combined = whole + paddedFraction;
-  return BigInt(combined);
+  const [whole, fraction = ""] = normalizedAmount.split(".")
+  const paddedFraction = fraction.padEnd(decimals, "0").slice(0, decimals)
+  const combined = whole + paddedFraction
+  return BigInt(combined)
 }

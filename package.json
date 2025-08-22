@@ -41,6 +41,46 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
       "default": "./dist/server.js"
+    },
+    "./src/adapters/wagmi-adapter": {
+      "types": "./dist/adapters/wagmi-adapter.d.ts",
+      "import": "./dist/adapters/wagmi-adapter.js",
+      "default": "./dist/adapters/wagmi-adapter.js"
+    },
+    "./src/contract-operations": {
+      "types": "./dist/contract-operations.d.ts",
+      "import": "./dist/contract-operations.js",
+      "default": "./dist/contract-operations.js"
+    },
+    "./src/effects/contract-effects": {
+      "types": "./dist/effects/contract-effects.d.ts",
+      "import": "./dist/effects/contract-effects.js",
+      "default": "./dist/effects/contract-effects.js"
+    },
+    "./src/effects/contract-store": {
+      "types": "./dist/effects/contract-store.d.ts",
+      "import": "./dist/effects/contract-store.js",
+      "default": "./dist/effects/contract-store.js"
+    },
+    "./src/effects/file-reader": {
+      "types": "./dist/effects/file-reader.d.ts",
+      "import": "./dist/effects/file-reader.js",
+      "default": "./dist/effects/file-reader.js"
+    },
+    "./src/effects/token-effects": {
+      "types": "./dist/effects/token-effects.d.ts",
+      "import": "./dist/effects/token-effects.js",
+      "default": "./dist/effects/token-effects.js"
+    },
+    "./src/effects/transaction-effects": {
+      "types": "./dist/effects/transaction-effects.d.ts",
+      "import": "./dist/effects/transaction-effects.js",
+      "default": "./dist/effects/transaction-effects.js"
+    },
+    "./src/effects/wallet-effects": {
+      "types": "./dist/effects/wallet-effects.d.ts",
+      "import": "./dist/effects/wallet-effects.js",
+      "default": "./dist/effects/wallet-effects.js"
     }
   },
   "files": [
@@ -49,9 +89,9 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --target node",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "dev": "bun run src/index.ts",
-    "test": "NODE_ENV=test bun test",
+    "test": "node ../../scripts/run-tests.js",
     "test:watch": "NODE_ENV=test bun test --watch",
     "test:coverage": "NODE_ENV=test bun test --coverage --coverage-reporter=lcov --coverage-reporter=text",
     "test:anvil": "USE_REAL_ANVIL=true NODE_ENV=test bun test",
@@ -70,9 +110,11 @@
   "simple-git-hooks": {
     "pre-commit": "bun run typecheck && bun run format && bun run lint"
   },
+  "simple-git-hooks-comment": "These hooks are for standalone wallet-agent repo. In monorepo context, root hooks take precedence.",
   "devDependencies": {
     "@biomejs/biome": "2.1.4",
     "@types/bun": "latest",
+    "cross-env": "^10.0.0",
     "simple-git-hooks": "^2.13.1",
     "solc": "^0.8.12"
   },
@@ -81,6 +123,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.1",
+    "@nktkas/hyperliquid": "^0.24.0",
     "@wagmi/connectors": "^5.9.1",
     "@wagmi/core": "^2.18.1",
     "viem": "2.x",
