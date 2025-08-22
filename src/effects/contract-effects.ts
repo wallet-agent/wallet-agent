@@ -2,6 +2,9 @@ import type { Abi, Address } from "viem"
 import type { ContractAdapter, ContractStore, FileReader } from "../adapters/contract-adapter.js"
 import type { ContractConfig, ContractInfo } from "../core/contracts.js"
 import { getContractInfo, parseWagmiContent } from "../core/contracts.js"
+import { createLogger } from "../logger.js"
+
+const logger = createLogger("contract-effects")
 
 /**
  * Contract effects handler with dependency injection
@@ -22,7 +25,7 @@ export class ContractEffects implements ContractAdapter {
       // If no contracts were parsed safely, we might need to use eval
       // This should be done in a controlled environment
       if (contracts.length === 0) {
-        console.warn("No contracts parsed safely, attempting eval parsing")
+        logger.warn({ msg: "No contracts parsed safely, attempting eval parsing" })
         contracts = this.unsafeParseWagmiContent(content)
       }
 
@@ -52,7 +55,7 @@ export class ContractEffects implements ContractAdapter {
         const abi = eval(abiString) as Abi
         abiMap.set(contractName, abi)
       } catch (error) {
-        console.error(`Failed to parse ABI for ${contractName}:`, error)
+        logger.error({ msg: `Failed to parse ABI for ${contractName}`, error })
       }
     }
 
@@ -70,7 +73,7 @@ export class ContractEffects implements ContractAdapter {
         const addresses = eval(addressString) as Record<number, Address>
         addressMap.set(contractName, addresses)
       } catch (error) {
-        console.error(`Failed to parse addresses for ${contractName}:`, error)
+        logger.error({ msg: `Failed to parse addresses for ${contractName}`, error })
       }
     }
 

@@ -10,7 +10,10 @@ import {
 import { getAllChains } from "./chains.js"
 import { getContainer } from "./container.js"
 import { resolveContract } from "./core/contract-resolution.js"
+import { createLogger } from "./logger.js"
 import { createPrivateKeyWalletClient, getCurrentWalletInfo } from "./wallet-manager.js"
+
+const logger = createLogger("contract-operations")
 
 export interface ContractWriteParams {
   contract: string
@@ -160,7 +163,8 @@ export async function readContract(params: ContractReadParams): Promise<unknown>
 
     // Log error details in test mode for debugging
     if (process.env.NODE_ENV === "test" && process.env.DEBUG_CI) {
-      console.error("Contract read error:", {
+      logger.error({
+        msg: "Contract read error",
         errorMessage,
         functionName: params.function,
         contractAddress,

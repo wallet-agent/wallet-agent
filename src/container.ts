@@ -20,6 +20,7 @@ import { NodeFileReader } from "./effects/file-reader.js"
 import { TokenEffects } from "./effects/token-effects.js"
 import { TransactionEffects } from "./effects/transaction-effects.js"
 import { WalletEffects } from "./effects/wallet-effects.js"
+import { createLogger } from "./logger.js"
 
 // Default mock accounts
 export const DEFAULT_MOCK_ACCOUNTS = [
@@ -58,6 +59,8 @@ export interface ContainerOptions {
   /** Initial private key wallets */
   privateKeyWallets?: Map<Address, `0x${string}`>
 }
+
+const logger = createLogger("container")
 
 /**
  * Dependency injection container
@@ -245,16 +248,14 @@ export class Container {
     ) {
       // Log transport usage in CI for debugging
       if (process.env.CI) {
-        console.log(`[Container] Using test transport for chain ${chain.id} (${chain.name})`)
+        logger.debug(`Using test transport for chain ${chain.id} (${chain.name})`)
       }
 
       // For custom chains with example.com, create a failing transport
       const rpcUrl = chain.rpcUrls.default.http[0]
       if (rpcUrl?.includes("example.com")) {
         if (process.env.CI) {
-          console.log(
-            `[Container] Chain ${chain.id} has example.com URL, using default http transport`,
-          )
+          logger.debug(`Chain ${chain.id} has example.com URL, using default http transport`)
         }
         return http() // Return a default http transport that will fail
       }
@@ -264,9 +265,7 @@ export class Container {
 
     // Log when NOT using test transport in test environment
     if (process.env.NODE_ENV === "test" && process.env.CI) {
-      console.log(
-        `[Container] WARNING: Test transport not available for chain ${chain.id}, using HTTP transport`,
-      )
+      logger.warn(`Test transport not available for chain ${chain.id}, using HTTP transport`)
     }
 
     // Use regular HTTP transport

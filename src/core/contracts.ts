@@ -1,4 +1,7 @@
 import type { Abi, Address } from "viem"
+import { createLogger } from "../logger.js"
+
+const logger = createLogger("contracts")
 
 export interface ContractConfig {
   address: Address
@@ -46,7 +49,7 @@ export function parseWagmiContent(content: string): WagmiContract[] {
 
       abiMap.set(contractName, abi)
     } catch (error) {
-      console.warn(`Failed to parse ABI for ${contractName}:`, error)
+      logger.warn({ msg: `Failed to parse ABI for ${contractName}`, error })
       // For complex ABIs that can't be parsed safely, we'll need eval
       // This should be handled at a higher level with proper security context
     }
@@ -79,7 +82,7 @@ export function parseWagmiContent(content: string): WagmiContract[] {
 
       addressMap.set(contractName, numericAddresses)
     } catch (error) {
-      console.warn(`Failed to parse addresses for ${contractName}:`, error)
+      logger.warn({ msg: `Failed to parse addresses for ${contractName}`, error })
     }
   }
 

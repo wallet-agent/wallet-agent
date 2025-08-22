@@ -127,6 +127,8 @@
     "@nktkas/hyperliquid": "^0.24.0",
     "@wagmi/connectors": "^5.9.1",
     "@wagmi/core": "^2.18.1",
+    "pino": "^9.9.0",
+    "pino-pretty": "^13.1.1",
     "viem": "2.x",
     "zod": "^4.0.14"
   }
