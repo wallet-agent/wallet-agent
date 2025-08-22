@@ -92,7 +92,7 @@
     "build": "rm -rf dist && mkdir -p dist && echo 'export * from \"../src/index.ts\";' > dist/index.js && tsc -p tsconfig.build.json || true",
     "build:types": "tsc -p tsconfig.build.json",
     "dev": "bun run src/index.ts",
-    "test": "node ../../scripts/run-tests.js",
+    "test": "NODE_ENV=test bun test",
     "test:watch": "NODE_ENV=test bun test --watch",
     "test:coverage": "NODE_ENV=test bun test --coverage --coverage-reporter=lcov --coverage-reporter=text",
     "test:anvil": "USE_REAL_ANVIL=true NODE_ENV=test bun test",
