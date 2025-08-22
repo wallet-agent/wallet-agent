@@ -1,5 +1,6 @@
-import { describe, expect, it } from "bun:test"
+import { beforeEach, describe, expect, it } from "bun:test"
 import { mainnet } from "viem/chains"
+import { Container } from "../../src/container.js"
 import {
   clearAllPrivateKeys,
   createPrivateKeyWalletClient,
@@ -11,6 +12,10 @@ const TEST_PRIVATE_KEY_1 = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae
 const TEST_PRIVATE_KEY_2 = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
 
 describe("wallet-manager functions", () => {
+  beforeEach(async () => {
+    // Reset the container to ensure test isolation
+    await Container.resetInstance()
+  })
   describe("clearAllPrivateKeys", () => {
     it("should clear all imported private keys", () => {
       // First import some keys
