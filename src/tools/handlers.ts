@@ -2,6 +2,7 @@ import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js"
 import { toolRegistry } from "./handler-registry.js"
 import { chainHandlers } from "./handlers/chain-handlers.js"
 import { contractHandlers } from "./handlers/contract-handlers.js"
+import { hyperliquidHandlers } from "./handlers/hyperliquid-wrapper.js"
 import { miscHandlers } from "./handlers/misc-handlers.js"
 import { signingHandlers } from "./handlers/signing-handlers.js"
 import { tokenHandlers } from "./handlers/token-handlers.js"
@@ -9,7 +10,6 @@ import { transactionHandlers } from "./handlers/transaction-handlers.js"
 // Import all handler groups
 import { walletHandlers } from "./handlers/wallet-handlers.js"
 import { walletManagementHandlers } from "./handlers/wallet-management-handlers.js"
-import { handleHyperliquidTool } from "./hyperliquid-handlers.js"
 
 // Register all handlers when this module is loaded
 function registerAllHandlers() {
@@ -22,6 +22,7 @@ function registerAllHandlers() {
     ...contractHandlers,
     ...tokenHandlers,
     ...miscHandlers,
+    ...hyperliquidHandlers,
   ])
 }
 
@@ -33,14 +34,7 @@ registerAllHandlers()
  * Now delegates to the registry for clean, maintainable handling
  */
 export async function handleToolCall(request: CallToolRequest) {
-  const { name } = request.params
-
-  // Special case for Hyperliquid tools (until we refactor those too)
-  if (name.startsWith("hyperliquid_")) {
-    return handleHyperliquidTool(request)
-  }
-
-  // Use the registry for all other tools
+  // All tools now use the registry
   return toolRegistry.execute(request)
 }
 
@@ -49,18 +43,5 @@ export async function handleToolCall(request: CallToolRequest) {
  * Useful for documentation and discovery
  */
 export function getAvailableTools(): string[] {
-  const registryTools = toolRegistry.getNames()
-  const hyperliquidTools = [
-    "hyperliquid_get_account_info",
-    "hyperliquid_place_order",
-    "hyperliquid_cancel_order",
-    "hyperliquid_get_open_orders",
-    "hyperliquid_get_all_mids",
-    "hyperliquid_get_user_fills",
-    "hyperliquid_get_open_positions",
-    "hyperliquid_get_user_balance",
-    "hyperliquid_transfer_spot",
-  ]
-
-  return [...registryTools, ...hyperliquidTools].sort()
+  return toolRegistry.getNames().sort()
 }
