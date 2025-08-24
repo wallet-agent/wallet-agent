@@ -1,3 +1,4 @@
+import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
 import { z } from "zod"
 import { getContainer } from "../../container.js"
 import { EnsNameSchema } from "../../schemas.js"
@@ -37,10 +38,16 @@ export class SimulateTransactionHandler extends BaseToolHandler {
   }
 
   async execute(args: unknown) {
+    // Check for missing required fields first
+    const rawArgs = args as Record<string, unknown>
+    if (!rawArgs?.contract || !rawArgs?.function) {
+      throw new McpError(ErrorCode.InvalidParams, "Contract and function are required")
+    }
+
     const params = this.validateArgs(
       z.object({
-        contract: z.string(),
-        function: z.string(),
+        contract: z.string().min(1, "Contract is required"),
+        function: z.string().min(1, "Function is required"),
         address: z.string().optional(),
         args: z.array(z.unknown()).optional(),
         value: z.string().optional(),
@@ -59,11 +66,18 @@ export class SimulateTransactionHandler extends BaseToolHandler {
 
     return this.createTextResponse(
       result.success
-        ? `Transaction simulation successful\n` +
-            `Contract: ${params.contract}\n` +
-            `Function: ${params.function}\n` +
-            `Result: ${JSON.stringify(result.result, null, 2)}`
-        : `Transaction simulation failed\nError: ${result.error}`,
+        ? `Transaction Simulation Successful:\n` +
+            `- Contract: ${params.contract}\n` +
+            `- Function: ${params.function}\n` +
+            `- Result: ${JSON.stringify(result.result, null, 2)}\n` +
+            `- Will Revert: No\n` +
+            `The transaction should execute successfully.`
+        : `Transaction Simulation Failed:\n` +
+            `- Contract: ${params.contract}\n` +
+            `- Function: ${params.function}\n` +
+            `- Error: ${result.error}\n` +
+            `- Will Revert: ${result.willRevert ? "Yes" : "Unknown"}\n` +
+            `The transaction will likely fail if executed.`,
     )
   }
 }

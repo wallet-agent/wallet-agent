@@ -18,7 +18,8 @@ export interface ToolResponse {
 export interface ToolHandler {
   name: string
   description: string
-  execute(args: unknown): Promise<ToolResponse>
+  // biome-ignore lint/suspicious/noExplicitAny: MCP server expects flexible return type
+  execute(args: unknown): Promise<any>
 }
 
 /**
@@ -113,7 +114,7 @@ export class HandlerRegistry {
   /**
    * Execute a tool call using the registry
    */
-  async execute(request: CallToolRequest): Promise<ToolResponse> {
+  async execute(request: CallToolRequest) {
     const { name, arguments: args = {} } = request.params
 
     const handler = this.get(name)

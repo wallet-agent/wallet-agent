@@ -57,16 +57,23 @@ export class EstimateGasHandler extends BaseToolHandler {
   async execute(args: unknown) {
     const params = this.validateArgs(EstimateGasArgsSchema, args)
     const container = getContainer()
-    const estimate = await container.transactionEffects.estimateGas(
+    const result = await container.transactionEffects.estimateGas(
       params.to as `0x${string}`,
       params.value,
       params.data as `0x${string}` | undefined,
       params.from as `0x${string}` | undefined,
     )
 
+    const chainId = container.walletEffects.getChainId()
+    const chain = chainId ? container.chainAdapter.getChain(chainId) : undefined
+    const symbol = chain?.nativeCurrency.symbol || "ETH"
+
     return this.createTextResponse(
-      `Estimated gas: ${estimate.toString()} wei\n` +
-        `Human readable: ${(Number(estimate) / 1e9).toFixed(4)} gwei`,
+      `Gas Estimation:\n` +
+        `- Estimated Gas: ${result.gasEstimate.toString()} units\n` +
+        `- Gas Price: ${(Number(result.gasPrice) / 1e9).toFixed(2)} Gwei\n` +
+        `- Estimated Cost: ${result.estimatedCost} ${symbol}\n` +
+        `- Estimated Cost (Wei): ${result.estimatedCostWei.toString()}`,
     )
   }
 }
@@ -114,7 +121,9 @@ export class GetTransactionReceiptHandler extends BaseToolHandler {
     const receipt = await container.transactionEffects.getTransactionReceipt(hash)
 
     if (!receipt) {
-      return this.createTextResponse("Transaction receipt not found (transaction may be pending)")
+      return this.createTextResponse(
+        `No receipt found for transaction ${hash}. The transaction may be pending or not exist.`,
+      )
     }
 
     const chainId = container.walletEffects.getChainId()

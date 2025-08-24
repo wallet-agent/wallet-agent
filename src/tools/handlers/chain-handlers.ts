@@ -1,3 +1,4 @@
+import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
 import { addCustomChain, removeCustomChain, updateCustomChain } from "../../chains.js"
 import {
   AddCustomChainArgsSchema,
@@ -44,8 +45,33 @@ export class UpdateCustomChainHandler extends BaseToolHandler {
 
   async execute(args: unknown) {
     const validatedArgs = this.validateArgs(UpdateCustomChainArgsSchema, args)
-    updateCustomChain(validatedArgs.chainId, validatedArgs)
-    return this.createTextResponse(`Custom chain ${validatedArgs.chainId} updated successfully`)
+    const updates: Parameters<typeof updateCustomChain>[1] = {}
+    if (validatedArgs.name) updates.name = validatedArgs.name
+    if (validatedArgs.rpcUrl) updates.rpcUrl = validatedArgs.rpcUrl
+    if (validatedArgs.nativeCurrency) updates.nativeCurrency = validatedArgs.nativeCurrency
+    if (validatedArgs.blockExplorerUrl) updates.blockExplorerUrl = validatedArgs.blockExplorerUrl
+
+    try {
+      updateCustomChain(validatedArgs.chainId, updates)
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      // Chain not found errors should be treated as invalid params
+      if (errorMessage.includes("not found")) {
+        throw new McpError(ErrorCode.InvalidParams, errorMessage)
+      }
+      throw error
+    }
+
+    const updatesList = []
+    if (updates.name) updatesList.push(`Name: ${updates.name}`)
+    if (updates.rpcUrl) updatesList.push(`RPC URL: ${updates.rpcUrl}`)
+    if (updates.nativeCurrency)
+      updatesList.push(`Native Currency: ${updates.nativeCurrency.symbol}`)
+    if (updates.blockExplorerUrl) updatesList.push(`Block Explorer: ${updates.blockExplorerUrl}`)
+
+    return this.createTextResponse(
+      `Custom chain ${validatedArgs.chainId} updated successfully:\n${updatesList.map((item) => `- ${item}`).join("\n")}`,
+    )
   }
 }
 
@@ -60,7 +86,7 @@ export class RemoveCustomChainHandler extends BaseToolHandler {
   async execute(args: unknown) {
     const { chainId } = this.validateArgs(RemoveCustomChainArgsSchema, args)
     removeCustomChain(chainId)
-    return this.createTextResponse(`Custom chain ${chainId} removed successfully`)
+    return this.createTextResponse(`Custom chain ${chainId} removed successfully.`)
   }
 }
 

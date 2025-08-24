@@ -1,3 +1,4 @@
+import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
 import {
   ImportPrivateKeyArgsSchema,
   RemovePrivateKeyArgsSchema,
@@ -25,8 +26,42 @@ export class ImportPrivateKeyHandler extends BaseToolHandler {
 
   async execute(args: unknown) {
     const { privateKey } = this.validateArgs(ImportPrivateKeyArgsSchema, args)
-    const address = await importPrivateKey(privateKey)
-    return this.createTextResponse(`Private key imported successfully\nAddress: ${address}`)
+
+    try {
+      const address = importPrivateKey(privateKey)
+
+      // Provide feedback about how the key was loaded
+      let sourceInfo = ""
+      if (privateKey.startsWith("0x")) {
+        sourceInfo = "Direct private key"
+      } else if (privateKey.includes("/") || privateKey.startsWith("~")) {
+        sourceInfo = `File: ${privateKey}`
+      } else {
+        sourceInfo = `Environment variable: ${privateKey}`
+      }
+
+      return this.createTextResponse(
+        `✅ Private key imported successfully!\n\n` +
+          `Source: ${sourceInfo}\n` +
+          `Address: ${address}\n\n` +
+          `🔐 Private key is stored securely in memory only.\n\n` +
+          `Next steps:\n` +
+          `1. Use 'set_wallet_type' with type "privateKey" \n` +
+          `2. Connect to this address to start using your wallet`,
+      )
+    } catch (error) {
+      // Private key validation errors should be treated as invalid params
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (
+        errorMessage.includes("Private key must be 32 bytes") ||
+        errorMessage.includes("Environment variable") ||
+        errorMessage.includes("Invalid private key") ||
+        errorMessage.includes("Failed to import private key")
+      ) {
+        throw new McpError(ErrorCode.InvalidParams, errorMessage)
+      }
+      throw error
+    }
   }
 }
 
@@ -41,9 +76,11 @@ export class ListImportedWalletsHandler extends BaseToolHandler {
   async execute(_args: unknown) {
     const wallets = listImportedWallets()
     if (wallets.length === 0) {
-      return this.createTextResponse("No imported wallets")
+      return this.createTextResponse("No private key wallets imported.")
     }
-    return this.createTextResponse(`Imported wallets:\n${wallets.join("\n")}`)
+    return this.createTextResponse(
+      `Imported wallets:\n${wallets.map((w) => `- ${w.address} (${w.type})`).join("\n")}`,
+    )
   }
 }
 
@@ -57,8 +94,12 @@ export class RemovePrivateKeyHandler extends BaseToolHandler {
 
   async execute(args: unknown) {
     const { address } = this.validateArgs(RemovePrivateKeyArgsSchema, args)
-    removePrivateKey(address)
-    return this.createTextResponse(`Private key removed for address: ${address}`)
+    const removed = removePrivateKey(address)
+    return this.createTextResponse(
+      removed
+        ? `Private key removed for address: ${address}`
+        : `No private key found for address: ${address}`,
+    )
   }
 }
 
