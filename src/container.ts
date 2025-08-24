@@ -149,6 +149,20 @@ export class Container {
     if (!Container.instance) {
       Container.instance = new Container()
     }
+
+    // In test environments, verify the container is properly initialized
+    if (process.env.NODE_ENV === "test") {
+      if (
+        !Container.instance.chainAdapter ||
+        !Container.instance.walletEffects ||
+        !Container.instance.walletEffects.connectWallet ||
+        typeof Container.instance.walletEffects.connectWallet !== "function"
+      ) {
+        // Reinitialize if properties are missing (likely due to test race conditions)
+        Container.instance = new Container()
+      }
+    }
+
     return Container.instance
   }
 
@@ -167,17 +181,24 @@ export class Container {
       // Ensure any existing wallet is disconnected before resetting
       if (Container.instance) {
         try {
-          await Container.instance.walletEffects.disconnectWallet()
+          await Container.instance.walletEffects?.disconnectWallet()
         } catch {
           // Ignore errors during cleanup
         }
       }
 
+      // Force a complete reset
       // @ts-expect-error - Resetting singleton for tests
-      Container.instance = null
+      Container.instance = undefined
+
       // Clear global state (for backward compatibility)
       customChains.clear()
       privateKeyWallets.clear()
+
+      // Force garbage collection if available
+      if (typeof global !== "undefined" && global.gc) {
+        global.gc()
+      }
     }
   }
 

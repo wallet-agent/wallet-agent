@@ -11,7 +11,7 @@ export interface WalletAgentConfig {
 
   // Hyperliquid configuration
   hyperliquidEndpoint?: string
-  hyperliquidNetwork?: "mainnet" | "testnet"
+  hyperliquidNetwork: "mainnet" | "testnet"
 }
 
 /**

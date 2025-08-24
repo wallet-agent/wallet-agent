@@ -1,11 +1,6 @@
-import { mockAccounts } from "../../container.js"
+import { formatEther } from "viem"
+import { getContainer, mockAccounts } from "../../container.js"
 import { ConnectWalletArgsSchema, GetBalanceArgsSchema } from "../../schemas.js"
-import {
-  connectWallet,
-  disconnectWallet,
-  getCurrentAccount,
-  getWalletBalance,
-} from "../../wallet.js"
 import { BaseToolHandler } from "../handler-registry.js"
 
 /**
@@ -18,7 +13,8 @@ export class ConnectWalletHandler extends BaseToolHandler {
 
   async execute(args: unknown) {
     const { address } = this.validateArgs(ConnectWalletArgsSchema, args)
-    const result = await connectWallet(address)
+    const container = getContainer()
+    const result = await container.walletEffects.connectWallet(address)
     return this.createTextResponse(
       `Connected to wallet: ${result.address}\nChain: ${result.chainId}`,
     )
@@ -34,7 +30,8 @@ export class DisconnectWalletHandler extends BaseToolHandler {
   }
 
   async execute(_args: unknown) {
-    await disconnectWallet()
+    const container = getContainer()
+    await container.walletEffects.disconnectWallet()
     return this.createTextResponse("Wallet disconnected")
   }
 }
@@ -61,7 +58,8 @@ export class GetCurrentAccountHandler extends BaseToolHandler {
   }
 
   async execute(_args: unknown) {
-    const account = getCurrentAccount()
+    const container = getContainer()
+    const account = container.walletEffects.getCurrentAccount()
     const text = account.isConnected
       ? `Connected: ${account.address}\nChain ID: ${account.chainId}\nConnector: ${account.connector}`
       : "No wallet connected"
@@ -79,9 +77,11 @@ export class GetBalanceHandler extends BaseToolHandler {
 
   async execute(args: unknown) {
     const { address } = this.validateArgs(GetBalanceArgsSchema, args)
-    const balance = await getWalletBalance(address)
+    const container = getContainer()
+    const result = await container.walletEffects.getBalance(address)
+    const balance = formatEther(result.balance)
     return this.createTextResponse(
-      `Balance: ${balance.balance} ${balance.symbol}\nRaw: ${balance.balanceRaw} wei`,
+      `Balance: ${balance} ${result.symbol}\nRaw: ${result.balance} wei`,
     )
   }
 }
