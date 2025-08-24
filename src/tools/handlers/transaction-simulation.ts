@@ -18,12 +18,6 @@ const SimulateTransactionSchema = z.object({
   data: HexStringSchema.optional(),
   from: AddressSchema.optional(),
   simulate: z.boolean().default(true).describe("Simulate before executing"),
-  confirmThreshold: z
-    .number()
-    .min(0)
-    .max(100)
-    .default(5)
-    .describe("Max gas cost in USD to auto-confirm"),
 })
 
 interface SimulationResult {
@@ -77,30 +71,9 @@ export class SafeSendTransactionHandler extends BaseToolHandler {
       // Check for warnings
       if (simulation.warnings.length > 0) {
         const warnings = simulation.warnings.join("\n")
-        const costInfo = simulation.totalCostUSD
-          ? `${simulation.totalCostEth} ${symbol} (~$${simulation.totalCostUSD})`
-          : `${simulation.totalCostEth} ${symbol}`
+        const costInfo = `${simulation.totalCostEth} ${symbol}`
 
-        // Auto-confirm if below threshold
-        const costUSD = parseFloat(simulation.totalCostUSD || "0")
-        if (costUSD > 0 && costUSD <= params.confirmThreshold) {
-          // Execute transaction
-          const hash = await container.walletEffects.sendTransaction({
-            to: params.to,
-            value: BigInt(params.value),
-            ...(params.data && { data: params.data }),
-          })
-
-          return this.createTextResponse(
-            `✅ Transaction Sent Successfully\n\n` +
-              `Hash: ${hash}\n` +
-              `Gas used: ${simulation.estimatedGas} units\n` +
-              `Total cost: ${costInfo}\n\n` +
-              `Warnings:\n${warnings}`,
-          )
-        }
-
-        // Require confirmation for high-value transactions
+        // Require confirmation when there are warnings
         return this.createTextResponse(
           `⚠️ Transaction Simulation - Confirmation Required\n\n` +
             `The transaction will likely succeed, but please review:\n\n` +
@@ -118,9 +91,7 @@ export class SafeSendTransactionHandler extends BaseToolHandler {
         ...(params.data && { data: params.data }),
       })
 
-      const costInfo = simulation.totalCostUSD
-        ? `${simulation.totalCostEth} ${symbol} (~$${simulation.totalCostUSD})`
-        : `${simulation.totalCostEth} ${symbol}`
+      const costInfo = `${simulation.totalCostEth} ${symbol}`
 
       return this.createTextResponse(
         `✅ Transaction Sent Successfully\n\n` +
@@ -189,11 +160,9 @@ export class SafeSendTransactionHandler extends BaseToolHandler {
         warnings.push(`High gas price detected: ${gasPriceGwei.toFixed(2)} Gwei`)
       }
 
-      // Estimate USD value (would need price oracle in production)
-      // In production, fetch ETH price from an oracle
-      // For now, we'll use a placeholder
-      const ethPriceUSD = 2000 // Placeholder
-      const totalCostUSD = (parseFloat(gasEstimate.estimatedCost) * ethPriceUSD).toFixed(2)
+      // USD estimation is disabled for now as it requires external price oracles
+      // This could be added in the future with a proper price feed integration
+      const totalCostUSD: string | undefined = undefined
 
       return {
         willSucceed: errors.length === 0,
@@ -275,15 +244,30 @@ export class SafeContractWriteHandler extends BaseToolHandler {
       )
     }
 
-    // For now, we don't actually execute contract writes without simulation
-    // This is a safety feature to prevent mistakes
-    return this.createTextResponse(
-      `⚠️ Contract Write (without simulation)\n\n` +
-        `Contract: ${params.contract}\n` +
-        `Function: ${params.function}\n` +
-        `Args: ${JSON.stringify(params.args)}\n\n` +
-        `Note: Actual execution is disabled for safety. Use the standard write_contract tool instead.`,
-    )
+    // Execute without simulation (risky but user requested it)
+    try {
+      const { writeContract } = await import("../../contract-operations.js")
+      const hash = await writeContract({
+        contract: params.contract,
+        function: params.function,
+        args: params.args,
+        value: params.value,
+        address: params.address,
+      })
+
+      return this.createTextResponse(
+        `✅ Contract Write Successful (without simulation)\n\n` +
+          `Transaction Hash: ${hash}\n` +
+          `Contract: ${params.contract}\n` +
+          `Function: ${params.function}\n\n` +
+          `⚠️ Warning: Transaction was executed without simulation`,
+      )
+    } catch (error) {
+      return this.createTextResponse(
+        `⚠️ Contract Write Failed\n\n` +
+          `Error: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
   }
 }
 
@@ -315,37 +299,73 @@ export class SafeTokenTransferHandler extends BaseToolHandler {
         throw new McpError(ErrorCode.InvalidRequest, "No wallet connected")
       }
 
-      // Check token balance
+      // Check token balance and simulate transfer
       try {
         const balanceResult = await container.tokenEffects.getTokenBalance({
           token: params.token,
           address: from,
         })
 
-        // Parse the amount in the token's decimals
-        const amountBigInt = BigInt(params.amount)
+        // Import parseTokenAmount to properly handle decimals
+        const { parseTokenAmount } = await import("../../core/token-registry.js")
 
-        if (balanceResult.balanceRaw < amountBigInt) {
+        // Parse the amount with proper decimal handling
+        const amountWei = parseTokenAmount(params.amount, balanceResult.decimals)
+
+        if (balanceResult.balanceRaw < amountWei) {
           return this.createTextResponse(
             `⚠️ Insufficient Token Balance\n\n` +
-              `Token: ${params.token}\n` +
+              `Token: ${params.token} (${balanceResult.symbol})\n` +
               `Your balance: ${balanceResult.balance} ${balanceResult.symbol}\n` +
-              `Trying to send: ${params.amount}\n\n` +
+              `Trying to send: ${params.amount} ${balanceResult.symbol}\n\n` +
               `The transfer cannot proceed with insufficient balance.`,
           )
         }
 
-        // For now, we'll assume the transfer will succeed if balance is sufficient
-        // In a real implementation, we'd need actual simulation
-        return this.createTextResponse(
-          `✅ Token Transfer Simulation Successful\n\n` +
-            `Token: ${params.token}\n` +
-            `To: ${params.to}\n` +
-            `Amount: ${params.amount}\n` +
-            `Balance: ${balanceResult.balance} ${balanceResult.symbol}\n` +
-            `Simulation passed - transfer should succeed\n\n` +
-            `To execute, run the command again with simulate=false`,
-        )
+        // Try to simulate the actual transfer transaction
+        try {
+          const simulation = await container.transactionEffects.simulateTransaction(
+            params.token,
+            "transfer",
+            [params.to, amountWei],
+            "0",
+            from,
+          )
+
+          if (!simulation.success) {
+            return this.createTextResponse(
+              `⚠️ Token Transfer Simulation Failed\n\n` +
+                `Token: ${params.token} (${balanceResult.symbol})\n` +
+                `Error: ${simulation.error}\n\n` +
+                `The transfer will likely fail. Please check:\n` +
+                `- Recipient address can receive tokens\n` +
+                `- Token contract is not paused\n` +
+                `- No transfer restrictions are in place`,
+            )
+          }
+
+          return this.createTextResponse(
+            `✅ Token Transfer Simulation Successful\n\n` +
+              `Token: ${params.token} (${balanceResult.symbol})\n` +
+              `To: ${params.to}\n` +
+              `Amount: ${params.amount} ${balanceResult.symbol}\n` +
+              `Your balance: ${balanceResult.balance} ${balanceResult.symbol}\n` +
+              `Simulation passed - transfer should succeed\n\n` +
+              `To execute, run the command again with simulate=false`,
+          )
+        } catch (simError) {
+          // If simulation fails, but balance is sufficient, provide a warning
+          return this.createTextResponse(
+            `⚠️ Token Transfer Simulation Warning\n\n` +
+              `Token: ${params.token} (${balanceResult.symbol})\n` +
+              `To: ${params.to}\n` +
+              `Amount: ${params.amount} ${balanceResult.symbol}\n` +
+              `Your balance: ${balanceResult.balance} ${balanceResult.symbol}\n\n` +
+              `Balance is sufficient but simulation encountered an issue:\n` +
+              `${simError instanceof Error ? simError.message : String(simError)}\n\n` +
+              `To proceed anyway, run the command again with simulate=false`,
+          )
+        }
       } catch (error) {
         return this.createTextResponse(
           `⚠️ Token Transfer Simulation Failed\n\n` +

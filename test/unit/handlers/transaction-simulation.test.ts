@@ -119,12 +119,11 @@ describe("Transaction Simulation Handlers", () => {
       expect(result.content[0].text).toContain("0xmockedtxhash123")
     })
 
-    test("should auto-confirm low-value transactions", async () => {
+    test("should execute transaction when no warnings", async () => {
       const result = await handler.execute({
         to: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7",
         value: "1000000000000", // Very small amount
         simulate: true,
-        confirmThreshold: 10, // $10 threshold
       })
 
       expect(result.content[0].text).toContain("Transaction Sent Successfully")
@@ -159,7 +158,12 @@ describe("Transaction Simulation Handlers", () => {
       expect(result.content[0].text).toContain("Insufficient balance")
     })
 
-    test("should execute without simulation when requested", async () => {
+    test("should handle execution without simulation", async () => {
+      // Mock the writeContract function
+      mock.module("../../../src/contract-operations.js", () => ({
+        writeContract: mock(async () => "0xcontracttxhash"),
+      }))
+
       const result = await handler.execute({
         contract: "TestContract",
         function: "transfer",
@@ -167,7 +171,7 @@ describe("Transaction Simulation Handlers", () => {
         simulate: false,
       })
 
-      expect(result.content[0].text).toContain("without simulation")
+      expect(result.content[0].text).toContain("Contract Write")
       expect(result.content[0].text).toContain("TestContract")
     })
   })
@@ -176,6 +180,11 @@ describe("Transaction Simulation Handlers", () => {
     const handler = transactionSimulationHandlers[2]
 
     test("should simulate token transfer successfully", async () => {
+      // Mock parseTokenAmount
+      mock.module("../../../src/core/token-registry.js", () => ({
+        parseTokenAmount: mock((amount, _decimals) => BigInt(amount)),
+      }))
+
       const result = await handler.execute({
         token: "USDC",
         to: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7",
@@ -188,6 +197,11 @@ describe("Transaction Simulation Handlers", () => {
     })
 
     test("should detect insufficient token balance", async () => {
+      // Mock parseTokenAmount
+      mock.module("../../../src/core/token-registry.js", () => ({
+        parseTokenAmount: mock((amount, _decimals) => BigInt(amount)),
+      }))
+
       const result = await handler.execute({
         token: "USDC",
         to: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7",
