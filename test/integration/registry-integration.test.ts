@@ -127,8 +127,9 @@ describe("Registry Integration", () => {
       "hl_get_user_fills",
     ]
 
-    expect(tools.length).toBe(expectedTools.length)
-    expect(tools.length).toBe(42) // Total number of tools
+    // Updated to include 3 new simulation handlers
+    expect(tools.length).toBe(expectedTools.length + 3)
+    expect(tools.length).toBe(45) // Total number of tools (42 + 3 simulation)
   })
 
   test("all tools should be accessible through registry", () => {

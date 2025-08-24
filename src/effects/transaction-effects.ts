@@ -226,6 +226,21 @@ export class TransactionEffects {
   }
 
   /**
+   * Get bytecode at an address
+   */
+  async getCode(address: Address): Promise<`0x${string}` | undefined> {
+    const chain = this.getCurrentChain()
+    const client = this.createPublicClient(chain)
+
+    try {
+      const code = await client.getBytecode({ address })
+      return code
+    } catch (error) {
+      throw new Error(`Failed to get code at address: ${error}`)
+    }
+  }
+
+  /**
    * Resolve ENS name to address
    */
   async resolveEnsName(name: string): Promise<Address | null> {
