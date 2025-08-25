@@ -2,6 +2,7 @@ import { beforeEach, expect } from "bun:test"
 import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js"
 import { TestContainer } from "../../../src/test-container.js"
 import { handleToolCall } from "../../../src/tools/handlers.js"
+import type { TestGlobalThis } from "../../../src/types/test-globals.js"
 import "../../setup-transport.js"
 
 // Test addresses
@@ -76,21 +77,22 @@ export async function expectToolSuccess(
 // Test-specific tool handler that uses isolated container
 async function handleToolCallWithContainer(request: CallToolRequest) {
   const container = getTestContainer()
+  const testGlobal = globalThis as TestGlobalThis
 
   // Store original test container override
-  const originalInstance = (globalThis as any).__walletAgentTestContainer
+  const originalInstance = testGlobal.__walletAgentTestContainer
 
   // Set test container as global override for this tool call
-  ;(globalThis as any).__walletAgentTestContainer = container
+  testGlobal.__walletAgentTestContainer = container
 
   try {
     return await handleToolCall(request)
   } finally {
     // Restore original state
     if (originalInstance) {
-      ;(globalThis as any).__walletAgentTestContainer = originalInstance
+      testGlobal.__walletAgentTestContainer = originalInstance
     } else {
-      delete (globalThis as any).__walletAgentTestContainer
+      delete testGlobal.__walletAgentTestContainer
     }
   }
 }

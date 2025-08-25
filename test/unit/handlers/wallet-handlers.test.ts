@@ -7,6 +7,7 @@ import {
   GetBalanceHandler,
   GetCurrentAccountHandler,
 } from "../../../src/tools/handlers/wallet-handlers.js"
+import type { TestGlobalThis, TestHandler } from "../../../src/types/test-globals.js"
 
 describe("Wallet Handlers", () => {
   let testContainer: TestContainer
@@ -17,21 +18,22 @@ describe("Wallet Handlers", () => {
   })
 
   // Helper to execute handlers with isolated test container
-  async function executeWithTestContainer(handler: any, args: unknown) {
+  async function executeWithTestContainer(handler: TestHandler, args: unknown) {
+    const testGlobal = globalThis as TestGlobalThis
     // Store original singleton instance
-    const originalInstance = (globalThis as any).__walletAgentTestContainer
+    const originalInstance = testGlobal.__walletAgentTestContainer
 
     // Set test container as global override for this test
-    ;(globalThis as any).__walletAgentTestContainer = testContainer
+    testGlobal.__walletAgentTestContainer = testContainer
 
     try {
       return await handler.execute(args)
     } finally {
       // Restore original state
       if (originalInstance) {
-        ;(globalThis as any).__walletAgentTestContainer = originalInstance
+        testGlobal.__walletAgentTestContainer = originalInstance
       } else {
-        delete (globalThis as any).__walletAgentTestContainer
+        delete testGlobal.__walletAgentTestContainer
       }
     }
   }

@@ -3,6 +3,7 @@ import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
 import { TestContainer } from "../../../src/test-container.js"
 import { SimulateTransactionHandler } from "../../../src/tools/handlers/misc-handlers.js"
 import { ImportPrivateKeyHandler } from "../../../src/tools/handlers/wallet-management-handlers.js"
+import type { TestGlobalThis, TestHandler } from "../../../src/types/test-globals.js"
 
 describe("Handler Error Handling and Validation", () => {
   let testContainer: TestContainer
@@ -13,21 +14,22 @@ describe("Handler Error Handling and Validation", () => {
   })
 
   // Helper to execute handlers with isolated test container
-  async function executeWithTestContainer(handler: any, args: unknown) {
+  async function executeWithTestContainer(handler: TestHandler, args: unknown) {
+    const testGlobal = globalThis as TestGlobalThis
     // Store original singleton instance
-    const originalInstance = (globalThis as any).__walletAgentTestContainer
+    const originalInstance = testGlobal.__walletAgentTestContainer
 
     // Set test container as global override for this test
-    ;(globalThis as any).__walletAgentTestContainer = testContainer
+    testGlobal.__walletAgentTestContainer = testContainer
 
     try {
       return await handler.execute(args)
     } finally {
       // Restore original state
       if (originalInstance) {
-        ;(globalThis as any).__walletAgentTestContainer = originalInstance
+        testGlobal.__walletAgentTestContainer = originalInstance
       } else {
-        delete (globalThis as any).__walletAgentTestContainer
+        delete testGlobal.__walletAgentTestContainer
       }
     }
   }

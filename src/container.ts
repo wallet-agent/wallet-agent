@@ -21,6 +21,7 @@ import { TokenEffects } from "./effects/token-effects.js"
 import { TransactionEffects } from "./effects/transaction-effects.js"
 import { WalletEffects } from "./effects/wallet-effects.js"
 import { createLogger } from "./logger.js"
+import type { TestGlobalThis } from "./types/test-globals.js"
 
 // Default mock accounts
 export const DEFAULT_MOCK_ACCOUNTS = [
@@ -297,8 +298,9 @@ export class Container {
 // Export singleton instance getter (for backward compatibility)
 export function getContainer(): Container {
   // Check for test container override first (for test isolation)
-  if (process.env.NODE_ENV === "test" && (globalThis as any).__walletAgentTestContainer) {
-    return (globalThis as any).__walletAgentTestContainer
+  const testGlobal = globalThis as TestGlobalThis
+  if (process.env.NODE_ENV === "test" && testGlobal.__walletAgentTestContainer) {
+    return testGlobal.__walletAgentTestContainer
   }
 
   return Container.getInstance()

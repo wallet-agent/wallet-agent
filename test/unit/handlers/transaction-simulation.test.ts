@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, test } from "bun:test"
+import type { Chain } from "viem"
 import { TestContainer } from "../../../src/test-container.js"
 import { transactionSimulationHandlers } from "../../../src/tools/handlers/transaction-simulation.js"
+import type { TestGlobalThis, TestHandler } from "../../../src/types/test-globals.js"
 
 describe("Transaction Simulation Handlers", () => {
   let testContainer: TestContainer
@@ -15,7 +17,13 @@ describe("Transaction Simulation Handlers", () => {
         id: 1,
         name: "Ethereum",
         nativeCurrency: { symbol: "ETH", decimals: 18, name: "Ether" },
-      } as any,
+        rpcUrls: {
+          default: { http: ["https://ethereum.publicnode.com"] },
+        },
+        blockExplorers: {
+          default: { name: "Etherscan", url: "https://etherscan.io" },
+        },
+      } as Chain,
     ]
 
     testContainer.walletEffects.getChainId = () => 1
@@ -89,21 +97,22 @@ describe("Transaction Simulation Handlers", () => {
   })
 
   // Helper to execute handlers with isolated test container
-  async function executeWithTestContainer(handler: any, args: unknown) {
+  async function executeWithTestContainer(handler: TestHandler, args: unknown) {
+    const testGlobal = globalThis as TestGlobalThis
     // Store original singleton instance
-    const originalInstance = (globalThis as any).__walletAgentTestContainer
+    const originalInstance = testGlobal.__walletAgentTestContainer
 
     // Set test container as global override for this test
-    ;(globalThis as any).__walletAgentTestContainer = testContainer
+    testGlobal.__walletAgentTestContainer = testContainer
 
     try {
       return await handler.execute(args)
     } finally {
       // Restore original state
       if (originalInstance) {
-        ;(globalThis as any).__walletAgentTestContainer = originalInstance
+        testGlobal.__walletAgentTestContainer = originalInstance
       } else {
-        delete (globalThis as any).__walletAgentTestContainer
+        delete testGlobal.__walletAgentTestContainer
       }
     }
   }
