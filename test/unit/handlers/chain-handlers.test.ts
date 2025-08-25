@@ -6,12 +6,35 @@ import {
   RemoveCustomChainHandler,
   UpdateCustomChainHandler,
 } from "../../../src/tools/handlers/chain-handlers.js"
-import { setupContainer } from "../../integration/handlers/setup.js"
+import { TestContainer } from "../../../src/test-container.js"
 
 describe("Chain Handlers", () => {
+  let testContainer: TestContainer
+
   beforeEach(() => {
-    setupContainer()
+    // Create isolated container for each test
+    testContainer = TestContainer.createForTest({})
   })
+
+  // Helper to execute handlers with isolated test container
+  async function executeWithTestContainer(handler: any, args: unknown) {
+    // Store original singleton instance
+    const originalInstance = (globalThis as any).__walletAgentTestContainer
+
+    // Set test container as global override for this test
+    ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+    try {
+      return await handler.execute(args)
+    } finally {
+      // Restore original state
+      if (originalInstance) {
+        ;(globalThis as any).__walletAgentTestContainer = originalInstance
+      } else {
+        delete (globalThis as any).__walletAgentTestContainer
+      }
+    }
+  }
 
   describe("AddCustomChainHandler", () => {
     test("should have correct name and description", () => {
@@ -21,8 +44,7 @@ describe("Chain Handlers", () => {
     })
 
     test("should add custom chain successfully", async () => {
-      const handler = new AddCustomChainHandler()
-      const result = await handler.execute({
+      const result = await executeWithTestContainer(new AddCustomChainHandler(), {
         chainId: 99999,
         name: "Test Chain",
         rpcUrl: "https://test.example.com",
@@ -37,18 +59,16 @@ describe("Chain Handlers", () => {
       expect(result.content[0].text).toContain("Chain ID: 99999")
       expect(result.content[0].text).toContain("Name: Test Chain")
 
-      // Verify chain was added
-      const chains = getAllChains()
+      // Verify chain was added to test container
+      const chains = testContainer.chainAdapter.getAllChains()
       const addedChain = chains.find((c) => c.id === 99999)
       expect(addedChain).toBeDefined()
       expect(addedChain?.name).toBe("Test Chain")
     })
 
     test("should validate required fields", async () => {
-      const handler = new AddCustomChainHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new AddCustomChainHandler(), {
           chainId: 99998,
           name: "Test Chain",
           // Missing rpcUrl and nativeCurrency
@@ -60,10 +80,8 @@ describe("Chain Handlers", () => {
     })
 
     test("should validate RPC URL format", async () => {
-      const handler = new AddCustomChainHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new AddCustomChainHandler(), {
           chainId: 99997,
           name: "Test Chain",
           rpcUrl: "not-a-url",
@@ -80,10 +98,8 @@ describe("Chain Handlers", () => {
     })
 
     test("should reject duplicate chain ID", async () => {
-      const handler = new AddCustomChainHandler()
-
       // Add first chain
-      await handler.execute({
+      await executeWithTestContainer(new AddCustomChainHandler(), {
         chainId: 99996,
         name: "Test Chain",
         rpcUrl: "https://test.example.com",
@@ -96,7 +112,7 @@ describe("Chain Handlers", () => {
 
       // Try to add duplicate
       try {
-        await handler.execute({
+        await executeWithTestContainer(new AddCustomChainHandler(), {
           chainId: 99996,
           name: "Another Chain",
           rpcUrl: "https://another.example.com",
@@ -116,8 +132,7 @@ describe("Chain Handlers", () => {
   describe("UpdateCustomChainHandler", () => {
     beforeEach(async () => {
       // Add a chain to update
-      const addHandler = new AddCustomChainHandler()
-      await addHandler.execute({
+      await executeWithTestContainer(new AddCustomChainHandler(), {
         chainId: 88888,
         name: "Original Chain",
         rpcUrl: "https://original.example.com",
@@ -136,8 +151,7 @@ describe("Chain Handlers", () => {
     })
 
     test("should update chain name", async () => {
-      const handler = new UpdateCustomChainHandler()
-      const result = await handler.execute({
+      const result = await executeWithTestContainer(new UpdateCustomChainHandler(), {
         chainId: 88888,
         name: "Updated Chain",
       })
@@ -146,14 +160,13 @@ describe("Chain Handlers", () => {
       expect(result.content[0].text).toContain("Name: Updated Chain")
 
       // Verify update
-      const chains = getAllChains()
+      const chains = testContainer.chainAdapter.getAllChains()
       const updatedChain = chains.find((c) => c.id === 88888)
       expect(updatedChain?.name).toBe("Updated Chain")
     })
 
     test("should update RPC URL", async () => {
-      const handler = new UpdateCustomChainHandler()
-      const result = await handler.execute({
+      const result = await executeWithTestContainer(new UpdateCustomChainHandler(), {
         chainId: 88888,
         rpcUrl: "https://updated.example.com",
       })
@@ -163,8 +176,7 @@ describe("Chain Handlers", () => {
     })
 
     test("should update multiple properties", async () => {
-      const handler = new UpdateCustomChainHandler()
-      const result = await handler.execute({
+      const result = await executeWithTestContainer(new UpdateCustomChainHandler(), {
         chainId: 88888,
         name: "Multi Update",
         rpcUrl: "https://multi.example.com",
@@ -181,10 +193,8 @@ describe("Chain Handlers", () => {
     })
 
     test("should handle non-existent chain", async () => {
-      const handler = new UpdateCustomChainHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new UpdateCustomChainHandler(), {
           chainId: 77777,
           name: "Doesn't Exist",
         })
@@ -201,8 +211,7 @@ describe("Chain Handlers", () => {
   describe("RemoveCustomChainHandler", () => {
     beforeEach(async () => {
       // Add a chain to remove
-      const addHandler = new AddCustomChainHandler()
-      await addHandler.execute({
+      await executeWithTestContainer(new AddCustomChainHandler(), {
         chainId: 66666,
         name: "To Remove",
         rpcUrl: "https://remove.example.com",
@@ -221,26 +230,24 @@ describe("Chain Handlers", () => {
     })
 
     test("should remove custom chain successfully", async () => {
-      const handler = new RemoveCustomChainHandler()
-
       // Verify chain exists
-      let chains = getAllChains()
+      let chains = testContainer.chainAdapter.getAllChains()
       expect(chains.find((c) => c.id === 66666)).toBeDefined()
 
-      const result = await handler.execute({ chainId: 66666 })
+      const result = await executeWithTestContainer(new RemoveCustomChainHandler(), {
+        chainId: 66666,
+      })
 
       expect(result.content[0].text).toBe("Custom chain 66666 removed successfully.")
 
       // Verify chain was removed
-      chains = getAllChains()
+      chains = testContainer.chainAdapter.getAllChains()
       expect(chains.find((c) => c.id === 66666)).toBeUndefined()
     })
 
     test("should handle removing non-existent chain", async () => {
-      const handler = new RemoveCustomChainHandler()
-
       try {
-        await handler.execute({ chainId: 55555 })
+        await executeWithTestContainer(new RemoveCustomChainHandler(), { chainId: 55555 })
         throw new Error("Should have thrown")
       } catch (error) {
         expect((error as Error).message).toContain("Custom chain with ID 55555 not found")
@@ -248,10 +255,8 @@ describe("Chain Handlers", () => {
     })
 
     test("should prevent removing built-in chain", async () => {
-      const handler = new RemoveCustomChainHandler()
-
       try {
-        await handler.execute({ chainId: 1 }) // Mainnet
+        await executeWithTestContainer(new RemoveCustomChainHandler(), { chainId: 1 }) // Mainnet
         throw new Error("Should have thrown")
       } catch (error) {
         expect((error as Error).message).toContain("Cannot remove built-in chain")

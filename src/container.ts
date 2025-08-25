@@ -296,6 +296,11 @@ export class Container {
 
 // Export singleton instance getter (for backward compatibility)
 export function getContainer(): Container {
+  // Check for test container override first (for test isolation)
+  if (process.env.NODE_ENV === "test" && (globalThis as any).__walletAgentTestContainer) {
+    return (globalThis as any).__walletAgentTestContainer
+  }
+
   return Container.getInstance()
 }
 

@@ -6,12 +6,35 @@ import {
   GetBalanceHandler,
   GetCurrentAccountHandler,
 } from "../../../src/tools/handlers/wallet-handlers.js"
-import { setupContainer } from "../../integration/handlers/setup.js"
+import { TestContainer } from "../../../src/test-container.js"
 
 describe("Wallet Handlers", () => {
+  let testContainer: TestContainer
+
   beforeEach(() => {
-    setupContainer()
+    // Create isolated container for each test
+    testContainer = TestContainer.createForTest({})
   })
+
+  // Helper to execute handlers with isolated test container
+  async function executeWithTestContainer(handler: any, args: unknown) {
+    // Store original singleton instance
+    const originalInstance = (globalThis as any).__walletAgentTestContainer
+
+    // Set test container as global override for this test
+    ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+    try {
+      return await handler.execute(args)
+    } finally {
+      // Restore original state
+      if (originalInstance) {
+        ;(globalThis as any).__walletAgentTestContainer = originalInstance
+      } else {
+        delete (globalThis as any).__walletAgentTestContainer
+      }
+    }
+  }
 
   describe("ConnectWalletHandler", () => {
     test("should have correct name and description", () => {
@@ -21,8 +44,7 @@ describe("Wallet Handlers", () => {
     })
 
     test("should connect to valid address", async () => {
-      const handler = new ConnectWalletHandler()
-      const result = await handler.execute({
+      const result = await executeWithTestContainer(new ConnectWalletHandler(), {
         address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       })
 
@@ -31,10 +53,8 @@ describe("Wallet Handlers", () => {
     })
 
     test("should validate address format", async () => {
-      const handler = new ConnectWalletHandler()
-
       try {
-        await handler.execute({ address: "invalid-address" })
+        await executeWithTestContainer(new ConnectWalletHandler(), { address: "invalid-address" })
         throw new Error("Should have thrown")
       } catch (error) {
         expect((error as Error).message).toContain("Invalid arguments")
@@ -51,14 +71,12 @@ describe("Wallet Handlers", () => {
 
     test("should disconnect wallet", async () => {
       // First connect
-      const connectHandler = new ConnectWalletHandler()
-      await connectHandler.execute({
+      await executeWithTestContainer(new ConnectWalletHandler(), {
         address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       })
 
       // Then disconnect
-      const handler = new DisconnectWalletHandler()
-      const result = await handler.execute({})
+      const result = await executeWithTestContainer(new DisconnectWalletHandler(), {})
 
       expect(result.content[0].text).toBe("Wallet disconnected")
     })
@@ -72,8 +90,7 @@ describe("Wallet Handlers", () => {
     })
 
     test("should return list of mock accounts", async () => {
-      const handler = new GetAccountsHandler()
-      const result = await handler.execute({})
+      const result = await executeWithTestContainer(new GetAccountsHandler(), {})
 
       expect(result.content[0].text).toContain("Available mock accounts:")
       expect(result.content[0].text).toContain("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
@@ -90,13 +107,11 @@ describe("Wallet Handlers", () => {
 
     test("should return current account when connected", async () => {
       // First connect
-      const connectHandler = new ConnectWalletHandler()
-      await connectHandler.execute({
+      await executeWithTestContainer(new ConnectWalletHandler(), {
         address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       })
 
-      const handler = new GetCurrentAccountHandler()
-      const result = await handler.execute({})
+      const result = await executeWithTestContainer(new GetCurrentAccountHandler(), {})
 
       expect(result.content[0].text).toContain(
         "Connected: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -106,8 +121,7 @@ describe("Wallet Handlers", () => {
     })
 
     test("should indicate when no wallet is connected", async () => {
-      const handler = new GetCurrentAccountHandler()
-      const result = await handler.execute({})
+      const result = await executeWithTestContainer(new GetCurrentAccountHandler(), {})
 
       expect(result.content[0].text).toBe("No wallet connected")
     })
@@ -122,35 +136,28 @@ describe("Wallet Handlers", () => {
 
     test("should get balance of connected wallet", async () => {
       // First connect
-      const connectHandler = new ConnectWalletHandler()
-      await connectHandler.execute({
+      await executeWithTestContainer(new ConnectWalletHandler(), {
         address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       })
 
-      const handler = new GetBalanceHandler()
-      const result = await handler.execute({})
+      const result = await executeWithTestContainer(new GetBalanceHandler(), {})
 
       expect(result.content[0].text).toContain("Balance:")
-      expect(result.content[0].text).toContain("ETH")
       expect(result.content[0].text).toContain("ETH")
     })
 
     test("should get balance of specific address", async () => {
-      const handler = new GetBalanceHandler()
-      const result = await handler.execute({
+      const result = await executeWithTestContainer(new GetBalanceHandler(), {
         address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
       })
 
       expect(result.content[0].text).toContain("Balance:")
       expect(result.content[0].text).toContain("ETH")
-      expect(result.content[0].text).toContain("ETH")
     })
 
     test("should validate address format", async () => {
-      const handler = new GetBalanceHandler()
-
       try {
-        await handler.execute({ address: "not-valid" })
+        await executeWithTestContainer(new GetBalanceHandler(), { address: "not-valid" })
         throw new Error("Should have thrown")
       } catch (error) {
         expect((error as Error).message).toContain("Invalid arguments")

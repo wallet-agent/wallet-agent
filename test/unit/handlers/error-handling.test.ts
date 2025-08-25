@@ -2,19 +2,40 @@ import { beforeEach, describe, expect, test } from "bun:test"
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
 import { SimulateTransactionHandler } from "../../../src/tools/handlers/misc-handlers.js"
 import { ImportPrivateKeyHandler } from "../../../src/tools/handlers/wallet-management-handlers.js"
-import { setupContainer } from "../../integration/handlers/setup.js"
+import { TestContainer } from "../../../src/test-container.js"
 
 describe("Handler Error Handling and Validation", () => {
+  let testContainer: TestContainer
+
   beforeEach(() => {
-    setupContainer()
+    // Create isolated container for each test
+    testContainer = TestContainer.createForTest({})
   })
+
+  // Helper to execute handlers with isolated test container
+  async function executeWithTestContainer(handler: any, args: unknown) {
+    // Store original singleton instance
+    const originalInstance = (globalThis as any).__walletAgentTestContainer
+
+    // Set test container as global override for this test
+    ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+    try {
+      return await handler.execute(args)
+    } finally {
+      // Restore original state
+      if (originalInstance) {
+        ;(globalThis as any).__walletAgentTestContainer = originalInstance
+      } else {
+        delete (globalThis as any).__walletAgentTestContainer
+      }
+    }
+  }
 
   describe("Validation Errors", () => {
     test("should validate required fields with custom error messages", async () => {
-      const handler = new SimulateTransactionHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new SimulateTransactionHandler(), {
           // Missing contract
           function: "transfer",
         })
@@ -28,10 +49,8 @@ describe("Handler Error Handling and Validation", () => {
     })
 
     test("should validate missing function field", async () => {
-      const handler = new SimulateTransactionHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new SimulateTransactionHandler(), {
           contract: "0x1234567890123456789012345678901234567890",
           // Missing function
         })
@@ -45,10 +64,8 @@ describe("Handler Error Handling and Validation", () => {
     })
 
     test("should validate both missing fields", async () => {
-      const handler = new SimulateTransactionHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new SimulateTransactionHandler(), {
           // Missing both contract and function
           args: [],
         })
@@ -64,10 +81,8 @@ describe("Handler Error Handling and Validation", () => {
 
   describe("Business Logic Errors", () => {
     test("should handle private key validation errors as InvalidParams", async () => {
-      const handler = new ImportPrivateKeyHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new ImportPrivateKeyHandler(), {
           privateKey: "0xinvalidkey",
         })
         throw new Error("Should have thrown")
@@ -80,10 +95,8 @@ describe("Handler Error Handling and Validation", () => {
     })
 
     test("should handle missing environment variable", async () => {
-      const handler = new ImportPrivateKeyHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new ImportPrivateKeyHandler(), {
           privateKey: "NONEXISTENT_ENV_VAR",
         })
         throw new Error("Should have thrown")
@@ -96,10 +109,8 @@ describe("Handler Error Handling and Validation", () => {
     })
 
     test("should handle file not found", async () => {
-      const handler = new ImportPrivateKeyHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new ImportPrivateKeyHandler(), {
           privateKey: "/nonexistent/file/path.key",
         })
         throw new Error("Should have thrown")
@@ -114,10 +125,8 @@ describe("Handler Error Handling and Validation", () => {
 
   describe("Type Validation", () => {
     test("should validate string types", async () => {
-      const handler = new SimulateTransactionHandler()
-
       try {
-        await handler.execute({
+        await executeWithTestContainer(new SimulateTransactionHandler(), {
           contract: 123, // Should be string
           function: "transfer",
         })
