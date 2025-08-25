@@ -11,6 +11,16 @@ export interface ResolvedContract {
   isBuiltin: boolean
 }
 
+// Cache for resolved contracts to avoid repeated resolution
+const contractResolutionCache = new Map<string, ResolvedContract>()
+
+/**
+ * Clear the contract resolution cache (call when contracts are updated)
+ */
+export function clearContractResolutionCache(): void {
+  contractResolutionCache.clear()
+}
+
 /**
  * Resolve a contract identifier to a contract configuration
  *
@@ -33,83 +43,101 @@ export function resolveContract(
   contractAdapter: ContractAdapter,
   defaultBuiltin: "builtin:ERC20" | "builtin:ERC721" = "builtin:ERC20",
 ): ResolvedContract {
+  // Create cache key
+  const cacheKey = `${contractOrToken}:${address || "noaddr"}:${chainId}:${defaultBuiltin}`
+
+  // Check cache first (disabled in test environment)
+  if (process.env.NODE_ENV !== "test") {
+    const cached = contractResolutionCache.get(cacheKey)
+    if (cached) {
+      return cached
+    }
+  }
+
+  let resolved: ResolvedContract
   // If explicit address provided, use it
   if (address) {
     // Try to get ABI from contract name
     const abi = contractAdapter.getAbi(contractOrToken)
     if (abi) {
-      return {
+      resolved = {
         name: contractOrToken,
         address,
         abi,
         isBuiltin: isBuiltinContract(contractOrToken),
       }
-    }
+    } else {
+      // Fall back to default built-in
+      const builtinAbi = contractAdapter.getAbi(defaultBuiltin)
+      if (!builtinAbi) {
+        throw new Error(`Built-in contract ${defaultBuiltin} not found`)
+      }
 
-    // Fall back to default built-in
-    const builtinAbi = contractAdapter.getAbi(defaultBuiltin)
-    if (!builtinAbi) {
-      throw new Error(`Built-in contract ${defaultBuiltin} not found`)
+      resolved = {
+        name: defaultBuiltin,
+        address,
+        abi: builtinAbi,
+        isBuiltin: true,
+      }
     }
+  } else {
+    // 1. Try user's Wagmi contracts first
+    const userContract = contractAdapter.getContract(contractOrToken, chainId)
+    if (userContract?.address) {
+      resolved = {
+        name: contractOrToken,
+        address: userContract.address,
+        abi: userContract.abi,
+        isBuiltin: false,
+      }
+    } else {
+      // 2. Try well-known token symbols
+      const tokenAddress = resolveTokenAddress(contractOrToken, chainId)
+      if (tokenAddress) {
+        const builtinAbi = contractAdapter.getAbi("builtin:ERC20")
+        if (!builtinAbi) {
+          throw new Error("Built-in ERC20 contract not found")
+        }
 
-    return {
-      name: defaultBuiltin,
-      address,
-      abi: builtinAbi,
-      isBuiltin: true,
+        resolved = {
+          name: contractOrToken,
+          address: tokenAddress,
+          abi: builtinAbi,
+          isBuiltin: true,
+        }
+      } else {
+        // 3. Try built-in contracts (requires address)
+        if (isBuiltinContract(contractOrToken)) {
+          throw new Error(`Built-in contract ${contractOrToken} requires an address parameter`)
+        }
+
+        // 4. If it looks like an address, use it with default built-in
+        if (contractOrToken.startsWith("0x") && contractOrToken.length === 42) {
+          const builtinAbi = contractAdapter.getAbi(defaultBuiltin)
+          if (!builtinAbi) {
+            throw new Error(`Built-in contract ${defaultBuiltin} not found`)
+          }
+
+          resolved = {
+            name: defaultBuiltin,
+            address: contractOrToken as Address,
+            abi: builtinAbi,
+            isBuiltin: true,
+          }
+        } else {
+          throw new Error(
+            `Contract ${contractOrToken} not found. Provide an address or load the contract first.`,
+          )
+        }
+      }
     }
   }
 
-  // 1. Try user's Wagmi contracts first
-  const userContract = contractAdapter.getContract(contractOrToken, chainId)
-  if (userContract?.address) {
-    return {
-      name: contractOrToken,
-      address: userContract.address,
-      abi: userContract.abi,
-      isBuiltin: false,
-    }
+  // Cache the result before returning (disabled in test environment)
+  if (process.env.NODE_ENV !== "test") {
+    contractResolutionCache.set(cacheKey, resolved)
   }
-
-  // 2. Try well-known token symbols
-  const tokenAddress = resolveTokenAddress(contractOrToken, chainId)
-  if (tokenAddress) {
-    const builtinAbi = contractAdapter.getAbi("builtin:ERC20")
-    if (!builtinAbi) {
-      throw new Error("Built-in ERC20 contract not found")
-    }
-
-    return {
-      name: contractOrToken,
-      address: tokenAddress,
-      abi: builtinAbi,
-      isBuiltin: true,
-    }
-  }
-
-  // 3. Try built-in contracts (requires address)
-  if (isBuiltinContract(contractOrToken)) {
-    throw new Error(`Built-in contract ${contractOrToken} requires an address parameter`)
-  }
-
-  // 4. If it looks like an address, use it with default built-in
-  if (contractOrToken.startsWith("0x") && contractOrToken.length === 42) {
-    const builtinAbi = contractAdapter.getAbi(defaultBuiltin)
-    if (!builtinAbi) {
-      throw new Error(`Built-in contract ${defaultBuiltin} not found`)
-    }
-
-    return {
-      name: defaultBuiltin,
-      address: contractOrToken as Address,
-      abi: builtinAbi,
-      isBuiltin: true,
-    }
-  }
-
-  throw new Error(
-    `Contract ${contractOrToken} not found. Provide an address or load the contract first.`,
-  )
+  return resolved
 }
 
 /**

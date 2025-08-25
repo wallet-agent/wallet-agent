@@ -4,6 +4,7 @@ import type { ContractAdapter } from "../adapters/contract-adapter.js"
 import type { ChainAdapter } from "../adapters/wallet-adapter.js"
 import { resolveContract } from "../core/contract-resolution.js"
 import { calculateTransactionCost } from "../core/transaction-helpers.js"
+import { ErrorMessages } from "../utils/error-messages.js"
 import type { WalletEffects } from "./wallet-effects.js"
 
 export interface TransactionStatusResult {
@@ -47,6 +48,8 @@ export interface TransactionSimulationResult {
  * Transaction effects handler with dependency injection
  */
 export class TransactionEffects {
+  private clientCache = new Map<number, PublicClient>()
+
   constructor(
     private walletEffects: WalletEffects,
     private chainAdapter: ChainAdapter,
@@ -54,9 +57,24 @@ export class TransactionEffects {
   ) {}
 
   /**
-   * Create a public client for the current or specified chain
+   * Clear cached clients (call when chains are updated)
+   */
+  clearClientCache(): void {
+    this.clientCache.clear()
+  }
+
+  /**
+   * Create a public client for the current or specified chain with caching
    */
   private createPublicClient(chain: Chain): PublicClient {
+    // Check cache first
+    const cached = this.clientCache.get(chain.id)
+    if (cached) {
+      return cached
+    }
+
+    let client: PublicClient
+
     // In test mode, use the container's configured transport
     if (process.env.NODE_ENV === "test") {
       // Import container here to avoid circular dependency
@@ -64,17 +82,26 @@ export class TransactionEffects {
       const container = getContainer()
       const transportFactory = container.wagmiConfig._internal.transports[chain.id]
       if (transportFactory) {
-        return createPublicClient({
+        client = createPublicClient({
           chain,
           transport: transportFactory,
         })
+      } else {
+        client = createPublicClient({
+          chain,
+          transport: http(chain.rpcUrls.default.http[0]),
+        })
       }
+    } else {
+      client = createPublicClient({
+        chain,
+        transport: http(chain.rpcUrls.default.http[0]),
+      })
     }
 
-    return createPublicClient({
-      chain,
-      transport: http(chain.rpcUrls.default.http[0]),
-    })
+    // Cache the client
+    this.clientCache.set(chain.id, client)
+    return client
   }
 
   /**
@@ -85,14 +112,14 @@ export class TransactionEffects {
     const chain = this.chainAdapter.getChain(chainId)
 
     if (!chain) {
-      throw new Error(`Chain with ID ${chainId} not found`)
+      throw new Error(ErrorMessages.CHAIN_NOT_FOUND(chainId))
     }
 
     return chain
   }
 
   /**
-   * Estimate gas for a transaction
+   * Estimate gas for a transaction with optimized parallel calls
    */
   async estimateGas(
     to: Address,
@@ -103,7 +130,7 @@ export class TransactionEffects {
     const address = from || this.walletEffects.getAddress()
 
     if (!address) {
-      throw new Error("No wallet connected and no from address provided")
+      throw new Error(ErrorMessages.WALLET_NOT_CONNECTED)
     }
 
     const chain = this.getCurrentChain()
@@ -118,9 +145,11 @@ export class TransactionEffects {
       chain,
     }
 
-    // Estimate gas
-    const gasEstimate = await client.estimateGas(transaction)
-    const gasPrice = await client.getGasPrice()
+    // Run gas estimation and gas price fetch in parallel
+    const [gasEstimate, gasPrice] = await Promise.all([
+      client.estimateGas(transaction),
+      client.getGasPrice(),
+    ])
 
     // Calculate costs
     const { totalWei, totalEth } = calculateTransactionCost(gasEstimate, gasPrice)
@@ -304,7 +333,11 @@ export class TransactionEffects {
       )
 
       if (!func) {
-        throw new Error(`Function ${functionName} not found in contract ABI`)
+        return {
+          success: false,
+          error: `Function ${functionName} not found in contract ABI`,
+          willRevert: false,
+        }
       }
 
       // Simulate the contract call

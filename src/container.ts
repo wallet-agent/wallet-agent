@@ -207,6 +207,9 @@ export class Container {
    * Update Wagmi config when chains change
    */
   updateWagmiConfig(): void {
+    // Clear caches when configuration changes
+    this.transactionEffects.clearClientCache()
+
     this.wagmiConfig = this.createWagmiConfig()
     // Update the adapter with new config
     const wagmiAdapter = new WagmiWalletAdapter(this.wagmiConfig)

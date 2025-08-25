@@ -1,6 +1,7 @@
 import type { Address } from "viem"
 import type { ChainAdapter, WalletAdapter, WalletClientFactory } from "../adapters/wallet-adapter"
 import { addressExists } from "../core/validators"
+import { ErrorMessages } from "../utils/error-messages.js"
 
 export type WalletType = "mock" | "privateKey"
 
@@ -69,8 +70,13 @@ export class WalletEffects {
   async connectWallet(address: Address) {
     if (this.currentWalletType === "privateKey") {
       const privateKeyAddresses = this.privateKeyAddresses()
+      if (privateKeyAddresses.length === 0) {
+        throw new Error(
+          `${ErrorMessages.PRIVATE_KEY_NOT_FOUND.replace("The specified address is not in your imported private keys.", "No private keys have been imported.")} Import a private key first using import_private_key.`,
+        )
+      }
       if (!addressExists(address, privateKeyAddresses)) {
-        throw new Error(`Address ${address} is not in the list of imported wallets`)
+        throw new Error(ErrorMessages.PRIVATE_KEY_NOT_FOUND)
       }
       this.connectedAddress = address
       return {
@@ -81,7 +87,7 @@ export class WalletEffects {
 
     // Mock wallet logic
     if (!addressExists(address, this.mockAccounts)) {
-      throw new Error(`Address ${address} is not in the list of mock accounts`)
+      throw new Error(ErrorMessages.MOCK_ACCOUNT_NOT_FOUND)
     }
 
     const result = await this.mockWalletAdapter.connect(address)

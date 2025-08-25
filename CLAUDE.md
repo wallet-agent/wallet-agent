@@ -10,28 +10,43 @@ This document contains project-specific guidelines for AI assistants working on 
 
 ## Architecture Overview
 
-The codebase follows a modular architecture:
+The codebase follows a modular architecture with dependency injection:
 
 ```
 src/
-├── index.ts          # Entry point - minimal orchestration only
-├── server.ts         # MCP server setup and request handlers
-├── chains.ts         # Chain configuration and Wagmi config management
-├── wallet.ts         # Wallet connection and account operations
-├── wallet-manager.ts # Private key wallet management
-├── signing.ts        # Message and typed data signing
-├── transactions.ts   # Transaction sending and chain switching
-└── tools/
-    ├── definitions.ts # Tool schemas for MCP
-    └── handlers.ts    # Tool implementation handlers
+├── index.ts                 # Entry point
+├── server.ts                # MCP server setup and request handlers
+├── container.ts             # Dependency injection container
+├── test-container.ts        # Test-specific container for isolation
+├── core/                    # Business logic
+│   ├── contract-resolution.ts  # Contract and token resolution (cached)
+│   ├── transaction-helpers.ts  # Transaction utilities
+│   └── validators.ts           # Input validation
+├── effects/                 # Side effect handlers
+│   ├── wallet-effects.ts       # Wallet operations
+│   ├── transaction-effects.ts  # Transaction operations (cached clients)
+│   ├── token-effects.ts        # Token operations
+│   └── contract-effects.ts     # Contract ABI management
+├── adapters/                # External service adapters
+│   ├── wallet-adapter.ts       # Wagmi wallet integration
+│   └── contract-adapter.ts     # Contract ABI storage
+├── tools/                   # MCP tool implementations
+│   ├── definitions.ts          # Tool schemas
+│   ├── handlers.js             # Tool orchestration
+│   └── handlers/               # Individual tool handlers
+└── utils/
+    └── error-messages.ts       # Standardized user-friendly errors
 ```
 
 ## Key Design Principles
 
 1. **Separation of Concerns**: Each module has a single responsibility
-2. **Type Safety**: Leverage TypeScript's strict mode and Viem's type system
-3. **Security First**: Private keys are never logged or exposed
-4. **Multi-Chain Support**: All operations should work across any EVM chain
+2. **Dependency Injection**: Container-based architecture for testability and modularity
+3. **Type Safety**: Leverage TypeScript's strict mode and Viem's type system
+4. **Security First**: Private keys are never logged or exposed
+5. **Multi-Chain Support**: All operations should work across any EVM chain
+6. **Performance**: Caching for frequently accessed resources (clients, contracts)
+7. **User Experience**: Standardized, actionable error messages
 
 ## Development Standards
 
@@ -66,19 +81,39 @@ Always check `currentWalletType` before performing wallet operations.
 
 ### Error Handling
 
-Use MCP-specific error codes:
-- `ErrorCode.InvalidParams` - Bad input parameters
+Use standardized error messages from `src/utils/error-messages.ts`:
+- Import: `import { ErrorMessages, createUserFriendlyError } from "../utils/error-messages.js"`
+- Use predefined messages: `throw new Error(ErrorMessages.WALLET_NOT_CONNECTED)`
+- For dynamic errors: `throw new Error(ErrorMessages.CHAIN_NOT_FOUND(chainId))`
+- Wrap execution errors: `throw new Error(createUserFriendlyError(error, "Context"))`
+
+MCP-specific error codes:
+- `ErrorCode.InvalidParams` - Bad input parameters (validation errors)
 - `ErrorCode.InvalidRequest` - Missing prerequisites (e.g., no wallet connected)
 - `ErrorCode.MethodNotFound` - Unknown tool name
-- `ErrorCode.InternalError` - Unexpected errors
+- `ErrorCode.InternalError` - Unexpected execution errors
+
+**Important**: Only wrap execution errors, not validation errors from `validateArgs()`.
 
 ## Testing Guidelines
 
+**Test Isolation**: Use `TestContainer.createForTest()` for isolated test environments:
+```typescript
+import { TestContainer } from "../../../src/test-container.js"
+
+let testContainer: TestContainer
+beforeEach(() => {
+  testContainer = TestContainer.createForTest({})
+})
+```
+
 When testing changes:
-1. Test with both mock and private key wallets
-2. Test on multiple chains (at least Anvil and one testnet)
-3. Verify error messages are helpful and specific
-4. Check that native currency symbols display correctly
+1. **Use isolated containers**: Each test gets its own container instance
+2. **Test both wallet modes**: Mock and private key wallets
+3. **Multi-chain testing**: Test on at least Anvil and one testnet
+4. **Error message verification**: Check messages are helpful and actionable
+5. **Currency symbols**: Verify native currency symbols display correctly
+6. **Cache isolation**: Test container automatically clears caches between tests
 
 ## Security Considerations
 
@@ -121,18 +156,29 @@ if (currentWalletType === "privateKey") {
 
 ## Performance Considerations
 
+**Caching Strategy**:
+- `TransactionEffects` caches public clients per chain
+- `contract-resolution.ts` caches resolved contract information
+- Caches are automatically cleared when configuration changes
+- Test environments disable caching to prevent test interference
+
+**Optimization Guidelines**:
 - Reuse wallet clients when possible
-- Batch RPC calls where appropriate
+- Batch RPC calls with `Promise.all()` where appropriate
 - Keep the main thread responsive during async operations
+- Use parallel gas estimation and price fetching
+- Clear caches when chains or contracts are updated
 
 ## Future Enhancements
 
 Areas for potential improvement:
 - WalletConnect integration for QR code connections
 - Hardware wallet support via WebUSB
-- Transaction simulation before sending
-- Gas estimation and optimization
+- Advanced transaction batching
+- More sophisticated gas optimization
 - Multi-signature wallet support
+- Real-time transaction monitoring
+- Cross-chain bridge integrations
 
 ## Debugging Tips
 

@@ -170,7 +170,7 @@ describe("TransactionEffects", () => {
 
       await expect(
         transactionEffects.estimateGas("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "1.0"),
-      ).rejects.toThrow("No wallet connected and no from address provided")
+      ).rejects.toThrow("No wallet is currently connected")
     })
 
     it("throws error when chain not found", async () => {
@@ -179,7 +179,7 @@ describe("TransactionEffects", () => {
 
       await expect(
         transactionEffects.estimateGas("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", "1.0"),
-      ).rejects.toThrow("Chain with ID 999 not found")
+      ).rejects.toThrow("Chain 999 not found")
     })
   })
 

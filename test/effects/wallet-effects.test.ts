@@ -41,7 +41,7 @@ describe("WalletEffects", () => {
 
     it("throws error for invalid mock address", async () => {
       expect(walletEffects.connectWallet(testAddresses.privateKey1)).rejects.toThrow(
-        "is not in the list of mock accounts",
+        "is not in the list of available mock accounts",
       )
     })
 

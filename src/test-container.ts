@@ -5,6 +5,7 @@
 
 import type { Address } from "viem"
 import { Container, type ContainerOptions } from "./container.js"
+import { clearContractResolutionCache } from "./core/contract-resolution.js"
 
 /**
  * Test container that provides isolated instances for each test
@@ -19,6 +20,9 @@ export class TestContainer extends Container {
    * @param options - Container configuration options
    */
   static createForTest(testContext: object, options: ContainerOptions = {}): TestContainer {
+    // Clear caches before creating new test container
+    clearContractResolutionCache()
+
     // Always create a new instance - no singleton behavior
     const container = new TestContainer({
       // Default test-friendly options

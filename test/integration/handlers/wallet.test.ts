@@ -33,7 +33,7 @@ describe("Wallet Connection Tools Integration", () => {
       await expectToolExecutionError(
         "connect_wallet",
         { address: "0x0000000000000000000000000000000000000000" },
-        "is not in the list of mock accounts",
+        "is not in the list of available mock accounts",
       )
     })
 
