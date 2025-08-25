@@ -77,20 +77,21 @@ export async function expectToolSuccess(
 async function handleToolCallWithContainer(request: CallToolRequest) {
   const container = getTestContainer()
 
-  // Temporarily override the global container for this tool call
-  const originalGetContainer = (await import("../../../src/container.js")).getContainer
-  const containerModule = await import("../../../src/container.js")
+  // Store original test container override
+  const originalInstance = (globalThis as any).__walletAgentTestContainer
 
-  // Monkey patch getContainer to return our test container
-  // @ts-expect-error - Temporarily overriding for test isolation
-  containerModule.getContainer = () => container
+  // Set test container as global override for this tool call
+  ;(globalThis as any).__walletAgentTestContainer = container
 
   try {
     return await handleToolCall(request)
   } finally {
-    // Restore original getContainer
-    // @ts-expect-error - Restoring original function
-    containerModule.getContainer = originalGetContainer
+    // Restore original state
+    if (originalInstance) {
+      ;(globalThis as any).__walletAgentTestContainer = originalInstance
+    } else {
+      delete (globalThis as any).__walletAgentTestContainer
+    }
   }
 }
 
