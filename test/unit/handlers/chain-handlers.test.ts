@@ -1,12 +1,11 @@
 import { beforeEach, describe, expect, test } from "bun:test"
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
-import { getAllChains } from "../../../src/chains.js"
+import { TestContainer } from "../../../src/test-container.js"
 import {
   AddCustomChainHandler,
   RemoveCustomChainHandler,
   UpdateCustomChainHandler,
 } from "../../../src/tools/handlers/chain-handlers.js"
-import { TestContainer } from "../../../src/test-container.js"
 
 describe("Chain Handlers", () => {
   let testContainer: TestContainer

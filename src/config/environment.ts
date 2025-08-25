@@ -30,7 +30,7 @@ export const config: WalletAgentConfig = {
     return !!process.env.WALLET_AGENT_API_KEY
   },
 
-  // Hyperliquid configuration  
+  // Hyperliquid configuration
   get hyperliquidEndpoint() {
     return process.env.HYPERLIQUID_ENDPOINT
   },

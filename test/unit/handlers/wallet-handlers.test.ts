@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test"
+import { TestContainer } from "../../../src/test-container.js"
 import {
   ConnectWalletHandler,
   DisconnectWalletHandler,
@@ -6,7 +7,6 @@ import {
   GetBalanceHandler,
   GetCurrentAccountHandler,
 } from "../../../src/tools/handlers/wallet-handlers.js"
-import { TestContainer } from "../../../src/test-container.js"
 
 describe("Wallet Handlers", () => {
   let testContainer: TestContainer

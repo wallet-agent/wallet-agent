@@ -53,7 +53,8 @@ describe("Environment Configuration", () => {
 
       // hyperliquidEndpoint can be string or undefined
       expect(
-        testConfig.hyperliquidEndpoint === undefined || typeof testConfig.hyperliquidEndpoint === "string",
+        testConfig.hyperliquidEndpoint === undefined ||
+          typeof testConfig.hyperliquidEndpoint === "string",
       ).toBe(true)
 
       // hyperliquidNetwork should be string

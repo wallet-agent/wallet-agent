@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test"
-import { transactionSimulationHandlers } from "../../../src/tools/handlers/transaction-simulation.js"
 import { TestContainer } from "../../../src/test-container.js"
+import { transactionSimulationHandlers } from "../../../src/tools/handlers/transaction-simulation.js"
 
 describe("Transaction Simulation Handlers", () => {
   let testContainer: TestContainer
@@ -54,16 +54,20 @@ describe("Transaction Simulation Handlers", () => {
       return "0x"
     }
 
-    testContainer.transactionEffects.simulateTransaction = async (contract: string, functionName?: string, args?: unknown[]) => {
+    testContainer.transactionEffects.simulateTransaction = async (
+      contract: string,
+      functionName?: string,
+      _args?: unknown[],
+    ) => {
       if (contract === "TestContract") {
         return { success: true, result: null }
       }
       if (contract === "USDC" && functionName === "transfer") {
         return { success: true, result: null }
       }
-      return { 
-        success: false, 
-        error: `Contract ${contract} not found. Provide an address or load the contract first.` 
+      return {
+        success: false,
+        error: `Contract ${contract} not found. Provide an address or load the contract first.`,
       }
     }
 
@@ -78,9 +82,10 @@ describe("Transaction Simulation Handlers", () => {
           symbol: "USDC",
         }
       }
-      throw new Error(`Contract ${params.token} not found. Provide an address or load the contract first.`)
+      throw new Error(
+        `Contract ${params.token} not found. Provide an address or load the contract first.`,
+      )
     }
-
   })
 
   // Helper to execute handlers with isolated test container
@@ -176,7 +181,9 @@ describe("Transaction Simulation Handlers", () => {
 
       expect(result.content[0].text).toContain("Contract Write Simulation Successful")
       expect(result.content[0].text).toContain("Simulation passed")
-      expect(result.content[0].text).toContain("To execute, run the command again with simulate=false")
+      expect(result.content[0].text).toContain(
+        "To execute, run the command again with simulate=false",
+      )
     })
 
     test("should execute without simulation when requested", async () => {
@@ -207,7 +214,9 @@ describe("Transaction Simulation Handlers", () => {
 
       expect(result.content[0].text).toContain("Token Transfer Simulation Successful")
       expect(result.content[0].text).toContain("Simulation passed")
-      expect(result.content[0].text).toContain("To execute, run the command again with simulate=false")
+      expect(result.content[0].text).toContain(
+        "To execute, run the command again with simulate=false",
+      )
     })
 
     test("should execute without simulation when requested", async () => {

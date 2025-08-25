@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from "bun:test"
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
+import { TestContainer } from "../../../src/test-container.js"
 import { SimulateTransactionHandler } from "../../../src/tools/handlers/misc-handlers.js"
 import { ImportPrivateKeyHandler } from "../../../src/tools/handlers/wallet-management-handlers.js"
-import { TestContainer } from "../../../src/test-container.js"
 
 describe("Handler Error Handling and Validation", () => {
   let testContainer: TestContainer
