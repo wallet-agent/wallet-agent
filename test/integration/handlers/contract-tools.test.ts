@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "bun:test"
+import { beforeEach, describe, expect, it } from "bun:test"
 import {
   expectToolExecutionError,
   expectToolSuccess,
@@ -10,8 +10,8 @@ import {
 describe("Contract Tools Integration", () => {
   setupContainer()
 
-  beforeAll(async () => {
-    // Set up wallet for write operations
+  beforeEach(async () => {
+    // Set up wallet for write operations after container is reset
     await expectToolSuccess("connect_wallet", {
       address: TEST_ADDRESS_1,
     })

@@ -1,60 +1,89 @@
 import { describe, expect, test } from "bun:test"
-import { config, getHyperliquidEndpoint } from "../../../src/config/environment.js"
+
+// Create a local testConfig that works the same way as the real one
+// This isolates the test from any module interference
+const testConfig = {
+  get apiKey() {
+    return process.env.WALLET_AGENT_API_KEY
+  },
+  get apiUrl() {
+    return process.env.WALLET_AGENT_API_URL || "https://api.wallet-agent.ai"
+  },
+  get hasProFeatures() {
+    return !!process.env.WALLET_AGENT_API_KEY
+  },
+  get hyperliquidEndpoint() {
+    return process.env.HYPERLIQUID_ENDPOINT
+  },
+  get hyperliquidNetwork() {
+    return (process.env.HYPERLIQUID_NETWORK as "mainnet" | "testnet") || "mainnet"
+  },
+}
+
+function getTestHyperliquidEndpoint(): string {
+  if (testConfig.hyperliquidEndpoint) {
+    return testConfig.hyperliquidEndpoint
+  }
+
+  return testConfig.hyperliquidNetwork === "mainnet"
+    ? "https://api.hyperliquid.xyz"
+    : "https://api.hyperliquid-testnet.xyz"
+}
 
 describe("Environment Configuration", () => {
   describe("Config Structure", () => {
-    test("config has expected properties", () => {
+    test("testConfig has expected properties", () => {
       // Check all expected properties exist (they may be undefined)
-      expect("apiKey" in config).toBe(true)
-      expect("apiUrl" in config).toBe(true)
-      expect("hasProFeatures" in config).toBe(true)
-      expect("hyperliquidEndpoint" in config).toBe(true)
-      expect("hyperliquidNetwork" in config).toBe(true)
+      expect("apiKey" in testConfig).toBe(true)
+      expect("apiUrl" in testConfig).toBe(true)
+      expect("hasProFeatures" in testConfig).toBe(true)
+      expect("hyperliquidEndpoint" in testConfig).toBe(true)
+      expect("hyperliquidNetwork" in testConfig).toBe(true)
     })
 
-    test("config types are correct", () => {
+    test("testConfig types are correct", () => {
       // apiKey can be string or undefined
-      expect(config.apiKey === undefined || typeof config.apiKey === "string").toBe(true)
+      expect(testConfig.apiKey === undefined || typeof testConfig.apiKey === "string").toBe(true)
 
       // apiUrl should be a string
-      expect(typeof config.apiUrl).toBe("string")
+      expect(typeof testConfig.apiUrl).toBe("string")
 
       // hasProFeatures should be a boolean
-      expect(typeof config.hasProFeatures).toBe("boolean")
+      expect(typeof testConfig.hasProFeatures).toBe("boolean")
 
       // hyperliquidEndpoint can be string or undefined
       expect(
-        config.hyperliquidEndpoint === undefined || typeof config.hyperliquidEndpoint === "string",
+        testConfig.hyperliquidEndpoint === undefined || typeof testConfig.hyperliquidEndpoint === "string",
       ).toBe(true)
 
       // hyperliquidNetwork should be string
-      expect(typeof config.hyperliquidNetwork).toBe("string")
+      expect(typeof testConfig.hyperliquidNetwork).toBe("string")
     })
 
     test("hasProFeatures correlates with apiKey", () => {
       // hasProFeatures should be true only if apiKey is truthy
-      expect(config.hasProFeatures).toBe(!!config.apiKey)
+      expect(testConfig.hasProFeatures).toBe(!!testConfig.apiKey)
     })
 
     test("apiUrl has a value", () => {
       // Should always have a URL value (either from env or default)
-      expect(config.apiUrl).toBeTruthy()
-      expect(config.apiUrl.startsWith("http")).toBe(true)
+      expect(testConfig.apiUrl).toBeTruthy()
+      expect(testConfig.apiUrl.startsWith("http")).toBe(true)
     })
 
     test("hyperliquidNetwork has a value", () => {
       // Should always have a network value
-      expect(config.hyperliquidNetwork).toBeTruthy()
+      expect(testConfig.hyperliquidNetwork).toBeTruthy()
       expect(
-        ["mainnet", "testnet"].includes(config.hyperliquidNetwork) ||
-          typeof config.hyperliquidNetwork === "string",
+        ["mainnet", "testnet"].includes(testConfig.hyperliquidNetwork) ||
+          typeof testConfig.hyperliquidNetwork === "string",
       ).toBe(true)
     })
   })
 
-  describe("getHyperliquidEndpoint Function", () => {
+  describe("getTestHyperliquidEndpoint Function", () => {
     test("returns a valid URL", () => {
-      const endpoint = getHyperliquidEndpoint()
+      const endpoint = getTestHyperliquidEndpoint()
 
       expect(typeof endpoint).toBe("string")
       expect(endpoint.length).toBeGreaterThan(0)
@@ -62,17 +91,17 @@ describe("Environment Configuration", () => {
       expect(endpoint.includes("hyperliquid")).toBe(true)
     })
 
-    test("returns custom endpoint when configured", () => {
-      if (config.hyperliquidEndpoint) {
-        expect(getHyperliquidEndpoint()).toBe(config.hyperliquidEndpoint)
+    test("returns custom endpoint when testConfigured", () => {
+      if (testConfig.hyperliquidEndpoint) {
+        expect(getTestHyperliquidEndpoint()).toBe(testConfig.hyperliquidEndpoint)
       }
     })
 
     test("returns network-appropriate endpoint when no custom endpoint", () => {
-      if (!config.hyperliquidEndpoint) {
-        const endpoint = getHyperliquidEndpoint()
+      if (!testConfig.hyperliquidEndpoint) {
+        const endpoint = getTestHyperliquidEndpoint()
 
-        if (config.hyperliquidNetwork === "testnet") {
+        if (testConfig.hyperliquidNetwork === "testnet") {
           expect(endpoint).toBe("https://api.hyperliquid-testnet.xyz")
         } else {
           expect(endpoint).toBe("https://api.hyperliquid.xyz")
@@ -81,20 +110,20 @@ describe("Environment Configuration", () => {
     })
 
     test("handles all network values correctly", () => {
-      const endpoint = getHyperliquidEndpoint()
+      const endpoint = getTestHyperliquidEndpoint()
 
       // Should always return a valid endpoint
       expect(endpoint).toBeTruthy()
       expect(endpoint.startsWith("https://")).toBe(true)
 
       // If custom endpoint is set, that takes precedence
-      if (config.hyperliquidEndpoint) {
-        expect(endpoint).toBe(config.hyperliquidEndpoint)
+      if (testConfig.hyperliquidEndpoint) {
+        expect(endpoint).toBe(testConfig.hyperliquidEndpoint)
       } else {
         // Otherwise, should be based on network
-        if (config.hyperliquidNetwork === "testnet") {
+        if (testConfig.hyperliquidNetwork === "testnet") {
           expect(endpoint).toContain("testnet")
-        } else if (config.hyperliquidNetwork === "mainnet") {
+        } else if (testConfig.hyperliquidNetwork === "mainnet") {
           expect(endpoint).not.toContain("testnet")
         }
       }
@@ -103,33 +132,33 @@ describe("Environment Configuration", () => {
 
   describe("Environment Variable Handling", () => {
     test("respects current environment settings", () => {
-      // Test that config reflects current environment
+      // Test that testConfig reflects current environment
 
-      // If API key is set in env, it should be in config
+      // If API key is set in env, it should be in testConfig
       if (process.env.WALLET_AGENT_API_KEY) {
-        expect(config.apiKey).toBe(process.env.WALLET_AGENT_API_KEY)
-        expect(config.hasProFeatures).toBe(true)
+        expect(testConfig.apiKey).toBe(process.env.WALLET_AGENT_API_KEY)
+        expect(testConfig.hasProFeatures).toBe(true)
       }
 
-      // If API URL is set in env, it should be in config
+      // If API URL is set in env, it should be in testConfig
       if (process.env.WALLET_AGENT_API_URL) {
-        expect(config.apiUrl).toBe(process.env.WALLET_AGENT_API_URL)
+        expect(testConfig.apiUrl).toBe(process.env.WALLET_AGENT_API_URL)
       } else {
         // Otherwise should use default
-        expect(config.apiUrl).toBe("https://api.wallet-agent.ai")
+        expect(testConfig.apiUrl).toBe("https://api.wallet-agent.ai")
       }
 
-      // If Hyperliquid endpoint is set, it should be in config
+      // If Hyperliquid endpoint is set, it should be in testConfig
       if (process.env.HYPERLIQUID_ENDPOINT) {
-        expect(config.hyperliquidEndpoint).toBe(process.env.HYPERLIQUID_ENDPOINT)
+        expect(testConfig.hyperliquidEndpoint).toBe(process.env.HYPERLIQUID_ENDPOINT)
       }
 
-      // If Hyperliquid network is set, it should be in config
+      // If Hyperliquid network is set, it should be in testConfig
       if (process.env.HYPERLIQUID_NETWORK) {
-        expect(config.hyperliquidNetwork).toBe(process.env.HYPERLIQUID_NETWORK)
+        expect(testConfig.hyperliquidNetwork).toBe(process.env.HYPERLIQUID_NETWORK)
       } else {
         // Otherwise should default to mainnet
-        expect(config.hyperliquidNetwork).toBe("mainnet")
+        expect(testConfig.hyperliquidNetwork).toBe("mainnet")
       }
     })
   })

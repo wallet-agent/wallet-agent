@@ -16,16 +16,27 @@ export interface WalletAgentConfig {
 
 /**
  * Configuration loaded from environment variables
+ * Uses getters to always return fresh values from process.env
  */
 export const config: WalletAgentConfig = {
   // Pro API configuration
-  apiKey: process.env.WALLET_AGENT_API_KEY,
-  apiUrl: process.env.WALLET_AGENT_API_URL || "https://api.wallet-agent.ai",
-  hasProFeatures: !!process.env.WALLET_AGENT_API_KEY,
+  get apiKey() {
+    return process.env.WALLET_AGENT_API_KEY
+  },
+  get apiUrl() {
+    return process.env.WALLET_AGENT_API_URL || "https://api.wallet-agent.ai"
+  },
+  get hasProFeatures() {
+    return !!process.env.WALLET_AGENT_API_KEY
+  },
 
-  // Hyperliquid configuration
-  hyperliquidEndpoint: process.env.HYPERLIQUID_ENDPOINT,
-  hyperliquidNetwork: (process.env.HYPERLIQUID_NETWORK as "mainnet" | "testnet") || "mainnet",
+  // Hyperliquid configuration  
+  get hyperliquidEndpoint() {
+    return process.env.HYPERLIQUID_ENDPOINT
+  },
+  get hyperliquidNetwork() {
+    return (process.env.HYPERLIQUID_NETWORK as "mainnet" | "testnet") || "mainnet"
+  },
 }
 
 /**
