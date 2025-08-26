@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2025-08-26
+
+### Fixed
+- **CLI Startup Failure**
+  - Fixed MCP server connection failures (`bunx wallet-agent` failing in claude mcp list)
+  - Updated package.json `bin` field to point to proper CLI entry point (`dist/cli.js`)
+  - Separated library (`index.ts`) and CLI (`cli.ts`) entry points properly
+  - Fixed ES module imports with proper `.js` extensions
+  - Resolved module resolution errors preventing server startup
+
+### Changed
+- Cleaner separation between library and CLI usage
+- Improved build process for both npm package and CLI executable
+
 ## [0.3.0] - 2025-08-26
 
 ### Added
