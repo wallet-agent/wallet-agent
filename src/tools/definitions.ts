@@ -1,6 +1,5 @@
 import type { Tool } from "@modelcontextprotocol/sdk/types.js"
 import { hyperliquidTools } from "./hyperliquid-tools.js"
-import { storageTools } from "./storage-tools.js"
 
 export const toolDefinitions: Tool[] = [
   {
@@ -613,5 +612,4 @@ export const toolDefinitions: Tool[] = [
   },
   // Add Hyperliquid tools
   ...hyperliquidTools,
-  ...storageTools,
 ]

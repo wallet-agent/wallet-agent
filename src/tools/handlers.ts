@@ -5,7 +5,6 @@ import { contractHandlers } from "./handlers/contract-handlers.js"
 import { hyperliquidHandlers } from "./handlers/hyperliquid-wrapper.js"
 import { miscHandlers } from "./handlers/misc-handlers.js"
 import { signingHandlers } from "./handlers/signing-handlers.js"
-import { storageHandlers } from "./handlers/storage-handlers.js"
 import { tokenHandlers } from "./handlers/token-handlers.js"
 import { transactionHandlers } from "./handlers/transaction-handlers.js"
 import { transactionSimulationHandlers } from "./handlers/transaction-simulation.js"
@@ -24,7 +23,6 @@ function registerAllHandlers() {
     ...walletManagementHandlers,
     ...contractHandlers,
     ...tokenHandlers,
-    ...storageHandlers,
     ...miscHandlers,
     ...hyperliquidHandlers,
   ])
