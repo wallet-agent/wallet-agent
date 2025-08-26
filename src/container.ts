@@ -67,7 +67,7 @@ const logger = createLogger("container")
  * Dependency injection container
  */
 export class Container {
-  private static instance: Container
+  private static instance?: Container
 
   public chainAdapter: ChainAdapter
   public walletEffects: WalletEffects
@@ -189,7 +189,6 @@ export class Container {
       }
 
       // Force a complete reset
-      // @ts-expect-error - Resetting singleton for tests
       Container.instance = undefined
 
       // Clear global state (for backward compatibility)

@@ -39,6 +39,8 @@
     "dist",
     "**/*.test.ts",
     "**/*.spec.ts",
-    "**/*.integration.test.ts"
+    "**/*.integration.test.ts",
+    "node_modules/@base-org/**/*",
+    "node_modules/@wagmi/**/*"
   ]
 }

@@ -54,7 +54,15 @@ export class SafeSendTransactionHandler extends BaseToolHandler {
 
     // Step 1: Simulate if requested
     if (params.simulate) {
-      const simulation = await this.simulateTransaction(params)
+      const { simulate: _simulate, ...transactionParams } = params
+      const simulation = await this.simulateTransaction(
+        transactionParams as {
+          to: `0x${string}`
+          value: string
+          data?: `0x${string}`
+          from?: `0x${string}`
+        },
+      )
 
       // Check if simulation failed
       if (!simulation.willSucceed) {

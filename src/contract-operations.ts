@@ -102,7 +102,7 @@ export async function writeContract(params: ContractWriteParams): Promise<Hex> {
   const data = encodeFunctionData({
     abi,
     functionName: params.function,
-    args: params.args || [],
+    args: (params.args || []) as readonly unknown[],
   })
 
   // Send transaction
@@ -111,7 +111,7 @@ export async function writeContract(params: ContractWriteParams): Promise<Hex> {
     to: contractAddress,
     data,
     value: params.value ? parseEther(params.value) : undefined,
-    chain,
+    chain: chain || null,
   })
 
   return hash

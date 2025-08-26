@@ -1,6 +1,6 @@
 {
   "name": "wallet-agent",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MCP server for Web3 wallet interactions on EVM-compatible chains using Wagmi",
   "keywords": [
     "mcp",
@@ -86,6 +86,7 @@
   "files": [
     "dist/**/*",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {

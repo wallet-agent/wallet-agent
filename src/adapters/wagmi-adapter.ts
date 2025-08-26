@@ -70,7 +70,9 @@ export class WagmiWalletAdapter implements WalletAdapter {
   }
 
   async signMessage(message: string): Promise<string> {
-    return await signMessage(this.config, { message })
+    const account = getAccount(this.config)
+    if (!account.address) throw new Error("No account connected")
+    return await signMessage(this.config, { message, account: account.address })
   }
 
   async signTypedData(params: {
@@ -79,7 +81,9 @@ export class WagmiWalletAdapter implements WalletAdapter {
     primaryType: string
     message: Record<string, unknown>
   }): Promise<string> {
-    return await signTypedData(this.config, params)
+    const account = getAccount(this.config)
+    if (!account.address) throw new Error("No account connected")
+    return await signTypedData(this.config, { ...params, account: account.address })
   }
 
   async sendTransaction(params: {
@@ -87,7 +91,8 @@ export class WagmiWalletAdapter implements WalletAdapter {
     value: bigint
     data?: `0x${string}`
   }): Promise<`0x${string}`> {
-    return await sendTransaction(this.config, params)
+    // Type assertion needed due to wagmi type complexity
+    return await sendTransaction(this.config, params as Parameters<typeof sendTransaction>[1])
   }
 
   async switchChain(chainId: number): Promise<void> {

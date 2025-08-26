@@ -23,7 +23,9 @@ export class SendTransactionHandler extends BaseToolHandler {
 
   async execute(args: unknown) {
     const validatedArgs = this.validateArgs(SendTransactionArgsSchema, args)
-    const hash = await sendWalletTransaction(validatedArgs)
+    const hash = await sendWalletTransaction(
+      validatedArgs as { to: `0x${string}`; value: string; data?: `0x${string}` },
+    )
     return this.createTextResponse(`Transaction sent successfully\nHash: ${hash}`)
   }
 }
