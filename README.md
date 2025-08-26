@@ -16,7 +16,7 @@ MCP server enabling Web3 wallet interactions in AI tools such as Claude Code and
 ### Claude Code
 
 ```bash
-claude mcp add wallet-agent bunx wallet-agent
+claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 Verify with `/mcp` in Claude Code.
