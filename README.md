@@ -126,6 +126,60 @@ Add any EVM-compatible chain with the `add_custom_chain` tool:
 ### ENS
 - `resolve_ens_name` - Resolve an ENS name to an Ethereum address (mainnet only)
 
+## User Instructions
+
+Customize wallet behavior using natural language instructions! Create an `instructions.md` file to personalize how Wallet Agent operates.
+
+### Global Instructions
+Create `~/.wallet-agent/instructions.md` for user-wide preferences:
+
+```markdown
+# My Wallet Instructions
+
+## Gas Settings
+- Always use "fast" gas prices for DEX trades
+- Use "standard" gas for simple transfers  
+- Warn me if gas cost exceeds $20
+
+## Security Rules
+- Never approve unlimited token allowances
+- Always simulate high-value transactions first
+- Require confirmation for new contracts
+
+## Multi-chain Preferences
+- Prefer Polygon for small transfers (<$100)
+- Use Arbitrum for DeFi to save fees
+- Default to mainnet for large transfers (>$1000)
+```
+
+### Project Instructions
+Create `.wallet-agent/instructions.md` in your project for context-specific behavior:
+
+```markdown
+# Project Instructions
+
+## For This DApp
+- Use conservative gas settings
+- Always simulate before executing
+- Show detailed transaction breakdowns
+- Prefer Layer 2 networks when possible
+```
+
+### How It Works
+- AI assistants automatically read your instructions via the `wallet://instructions` MCP resource
+- **Project instructions override global instructions** for maximum flexibility
+- Instructions are written in plain English - no code required!
+- Supports gas preferences, security rules, multi-chain settings, error handling, and more
+
+### Example Customizations
+- **Gas Strategy**: "Use slow gas for non-urgent transactions"
+- **Security**: "Always double-check recipient addresses"  
+- **Multi-chain**: "Prefer Polygon for transfers under $50"
+- **Error Handling**: "Auto-retry failed transactions with 10% higher gas"
+- **Display**: "Show both ETH and USD values for all transactions"
+
+The AI assistant will automatically apply your preferences when performing wallet operations!
+
 ## Real Wallets (Development Only)
 
 ⚠️ **NEVER paste private keys in chat!**
