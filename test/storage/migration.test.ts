@@ -1,7 +1,6 @@
-import { beforeEach, describe, expect, it } from "bun:test"
+import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import { existsSync } from "node:fs"
-import { rmdir } from "node:fs/promises"
-import { homedir } from "node:os"
+import { mkdir, rmdir } from "node:fs/promises"
 import { join } from "node:path"
 import type { Address } from "viem"
 import { anvil, mainnet } from "viem/chains"
@@ -13,22 +12,44 @@ import {
 } from "../../src/storage/migration.js"
 import { StorageManager } from "../../src/storage/storage-manager.js"
 
-const TEST_HOME_DIR = join(homedir(), ".wallet-agent-test")
+// Use a unique test directory for each test run
+const TEST_BASE_DIR = `/tmp/wallet-agent-migration-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
 
 describe("Migration", () => {
   let storageManager: StorageManager
+  let originalHome: string | undefined
 
   beforeEach(async () => {
+    // Store original HOME
+    originalHome = process.env.HOME
+
     // Clean up any existing test directory
-    if (existsSync(TEST_HOME_DIR)) {
-      await rmdir(TEST_HOME_DIR, { recursive: true })
+    if (existsSync(TEST_BASE_DIR)) {
+      await rmdir(TEST_BASE_DIR, { recursive: true })
     }
-    // Override home directory for testing
-    // biome-ignore lint/suspicious/noExplicitAny: Test utility function override
-    ;(global as any).homedir = () => TEST_HOME_DIR.replace("/.wallet-agent-test", "")
+
+    // Create the test base directory
+    await mkdir(TEST_BASE_DIR, { recursive: true })
+
+    // Override home directory for testing by modifying process.env.HOME
+    process.env.HOME = TEST_BASE_DIR
 
     storageManager = new StorageManager()
     await storageManager.initialize()
+  })
+
+  afterEach(async () => {
+    // Clean up test directory
+    if (existsSync(TEST_BASE_DIR)) {
+      await rmdir(TEST_BASE_DIR, { recursive: true })
+    }
+
+    // Restore original HOME
+    if (originalHome !== undefined) {
+      process.env.HOME = originalHome
+    } else {
+      delete process.env.HOME
+    }
   })
 
   describe("hasStateToMigrate", () => {

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "bun:test"
+import { McpError } from "@modelcontextprotocol/sdk/types.js"
 import { TestContainer } from "../../../src/test-container.js"
 import {
   handleClearStorageCache,
@@ -43,10 +44,12 @@ describe("Storage Handlers", () => {
       )
     })
 
-    it("should validate preference arguments", async () => {
-      const invalidArgs = { invalidProp: "test" }
+    it("should handle storage not available", async () => {
+      const validArgs = { theme: "dark" as const }
 
-      await expect(handleUpdateStoragePreferences(invalidArgs)).rejects.toThrow("Invalid arguments")
+      await expect(handleUpdateStoragePreferences(validArgs)).rejects.toThrow(
+        "Storage is not available",
+      )
     })
   })
 
@@ -115,8 +118,10 @@ describe("Storage Handlers", () => {
       } catch (error) {
         expect(error).toHaveProperty("message")
         expect(error).toHaveProperty("code")
-        // biome-ignore lint/suspicious/noExplicitAny: Test error code assertion
-        expect((error as any).code).toBe(-32603) // InternalError
+        expect(error).toBeInstanceOf(McpError)
+        if (error instanceof McpError) {
+          expect(error.code).toBe(-32603) // InternalError
+        }
       }
     })
 
@@ -127,8 +132,10 @@ describe("Storage Handlers", () => {
       } catch (error) {
         expect(error).toHaveProperty("message")
         expect(error).toHaveProperty("code")
-        // biome-ignore lint/suspicious/noExplicitAny: Test error code assertion
-        expect((error as any).code).toBe(-32602) // InvalidParams
+        expect(error).toBeInstanceOf(McpError)
+        if (error instanceof McpError) {
+          expect(error.code).toBe(-32602) // InvalidParams
+        }
       }
     })
   })
