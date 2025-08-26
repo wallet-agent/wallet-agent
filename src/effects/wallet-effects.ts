@@ -1,5 +1,9 @@
 import type { Address } from "viem"
-import type { ChainAdapter, WalletAdapter, WalletClientFactory } from "../adapters/wallet-adapter.js"
+import type {
+  ChainAdapter,
+  WalletAdapter,
+  WalletClientFactory,
+} from "../adapters/wallet-adapter.js"
 import { addressExists } from "../core/validators.js"
 import { ErrorMessages } from "../utils/error-messages.js"
 
