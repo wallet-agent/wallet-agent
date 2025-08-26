@@ -21,6 +21,7 @@ import { TokenEffects } from "./effects/token-effects.js"
 import { TransactionEffects } from "./effects/transaction-effects.js"
 import { WalletEffects } from "./effects/wallet-effects.js"
 import { createLogger } from "./logger.js"
+import { StorageManager } from "./storage/storage-manager.js"
 import type { TestGlobalThis } from "./types/test-globals.js"
 
 // Default mock accounts
@@ -59,6 +60,8 @@ export interface ContainerOptions {
   includeBuiltinChains?: boolean
   /** Initial private key wallets */
   privateKeyWallets?: Map<Address, `0x${string}`>
+  /** Whether to enable persistent storage (default: true) */
+  enableStorage?: boolean
 }
 
 const logger = createLogger("container")
@@ -75,6 +78,7 @@ export class Container {
   public tokenEffects: TokenAdapter
   public transactionEffects: TransactionEffects
   public wagmiConfig: ReturnType<typeof createConfig>
+  public storageManager?: StorageManager
 
   // Instance-specific state stores
   public readonly customChains: Map<number, Chain>
@@ -144,6 +148,16 @@ export class Container {
       this.chainAdapter,
       this.contractAdapter,
     )
+
+    // Initialize storage manager (unless disabled for testing)
+    if (options.enableStorage !== false && process.env.NODE_ENV !== "test") {
+      this.storageManager = new StorageManager()
+
+      // Initialize storage asynchronously (don't block container creation)
+      this.initializeStorageAsync().catch((error) => {
+        logger.warn({ msg: "Failed to initialize storage, falling back to in-memory", error })
+      })
+    }
   }
 
   static getInstance(): Container {
@@ -229,6 +243,31 @@ export class Container {
       this.chainAdapter,
       this.contractAdapter,
     )
+  }
+
+  /**
+   * Initialize storage asynchronously
+   */
+  private async initializeStorageAsync(): Promise<void> {
+    if (!this.storageManager) {
+      return
+    }
+
+    try {
+      await this.storageManager.initialize()
+      logger.info("Global storage initialized successfully")
+    } catch (error) {
+      logger.error({ msg: "Failed to initialize storage", error })
+      // Storage failure is not fatal - container continues with in-memory storage
+      this.storageManager = undefined
+    }
+  }
+
+  /**
+   * Get storage manager if available
+   */
+  getStorageManager(): StorageManager | undefined {
+    return this.storageManager
   }
 
   private createWagmiConfig() {
