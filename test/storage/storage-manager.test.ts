@@ -5,40 +5,32 @@ import { join } from "node:path"
 import { StorageManager } from "../../src/storage/storage-manager.js"
 import { DEFAULT_CONFIG, STORAGE_VERSION } from "../../src/storage/types.js"
 
-// Use a unique test directory for each test run
-const TEST_BASE_DIR = `/tmp/wallet-agent-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
-
-// Mock the homedir function
-const originalHomedir = process.env.HOME
-const _mockHomedir = () => TEST_BASE_DIR
-
 describe("StorageManager", () => {
   let storageManager: StorageManager
+  let testBaseDir: string
 
   beforeEach(async () => {
+    // Create unique test directory for each individual test
+    testBaseDir = `/tmp/wallet-agent-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
+
     // Clean up any existing test directory
-    if (existsSync(TEST_BASE_DIR)) {
-      await rmdir(TEST_BASE_DIR, { recursive: true })
+    if (existsSync(testBaseDir)) {
+      await rmdir(testBaseDir, { recursive: true })
     }
 
     // Create the test base directory
-    await mkdir(TEST_BASE_DIR, { recursive: true })
+    await mkdir(testBaseDir, { recursive: true })
 
-    // Override HOME environment variable for testing
-    process.env.HOME = TEST_BASE_DIR
-
-    // Create a new storage manager instance for each test
-    storageManager = new StorageManager()
+    // Create a new storage manager instance with test directory
+    const walletAgentDir = join(testBaseDir, ".wallet-agent")
+    storageManager = new StorageManager(walletAgentDir)
   })
 
   afterEach(async () => {
     // Clean up test directory
-    if (existsSync(TEST_BASE_DIR)) {
-      await rmdir(TEST_BASE_DIR, { recursive: true })
+    if (existsSync(testBaseDir)) {
+      await rmdir(testBaseDir, { recursive: true })
     }
-
-    // Restore original HOME
-    process.env.HOME = originalHomedir
   })
 
   describe("initialization", () => {
@@ -237,7 +229,8 @@ describe("StorageManager", () => {
       await writeFile(layout.configPath, JSON.stringify(oldConfig, null, 2))
 
       // Reinitialize to trigger migration
-      const newStorageManager = new StorageManager()
+      const walletAgentDir = join(testBaseDir, ".wallet-agent")
+      const newStorageManager = new StorageManager(walletAgentDir)
       await newStorageManager.initialize()
 
       const migratedConfig = await newStorageManager.readConfig()

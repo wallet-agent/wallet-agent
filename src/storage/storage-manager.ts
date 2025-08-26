@@ -16,19 +16,19 @@ export class StorageManager {
   private layout: StorageLayout
   private initialized = false
 
-  constructor() {
-    const baseDir = join(homedir(), ".wallet-agent")
+  constructor(baseDir?: string) {
+    const storageBaseDir = baseDir || join(homedir(), ".wallet-agent")
 
     this.layout = {
-      baseDir,
-      configPath: join(baseDir, "config.json"),
-      authDir: join(baseDir, "auth"),
-      walletsDir: join(baseDir, "wallets"),
-      networksDir: join(baseDir, "networks"),
-      contractsDir: join(baseDir, "contracts"),
-      addressBookDir: join(baseDir, "addressbook"),
-      cacheDir: join(baseDir, "cache"),
-      templatesDir: join(baseDir, "templates"),
+      baseDir: storageBaseDir,
+      configPath: join(storageBaseDir, "config.json"),
+      authDir: join(storageBaseDir, "auth"),
+      walletsDir: join(storageBaseDir, "wallets"),
+      networksDir: join(storageBaseDir, "networks"),
+      contractsDir: join(storageBaseDir, "contracts"),
+      addressBookDir: join(storageBaseDir, "addressbook"),
+      cacheDir: join(storageBaseDir, "cache"),
+      templatesDir: join(storageBaseDir, "templates"),
     }
   }
 
@@ -241,7 +241,7 @@ export class StorageManager {
   /**
    * Ensure directory exists with proper permissions
    */
-  private async ensureDirectory(path: string, mode: number): Promise<void> {
+  protected async ensureDirectory(path: string, mode: number): Promise<void> {
     try {
       await mkdir(path, { recursive: true, mode })
     } catch (error) {

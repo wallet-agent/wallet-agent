@@ -21,6 +21,7 @@ import { TokenEffects } from "./effects/token-effects.js"
 import { TransactionEffects } from "./effects/transaction-effects.js"
 import { WalletEffects } from "./effects/wallet-effects.js"
 import { createLogger } from "./logger.js"
+import { ProjectStorageManager, StorageResolver } from "./storage/project-storage.js"
 import { StorageManager } from "./storage/storage-manager.js"
 import type { TestGlobalThis } from "./types/test-globals.js"
 
@@ -151,7 +152,18 @@ export class Container {
 
     // Initialize storage manager (unless disabled for testing)
     if (options.enableStorage !== false && process.env.NODE_ENV !== "test") {
-      this.storageManager = new StorageManager()
+      // Check if we're in a project context first
+      const projectStoragePath = StorageResolver.findProjectStorage()
+
+      if (projectStoragePath) {
+        // Use project storage if available
+        this.storageManager = new ProjectStorageManager(projectStoragePath)
+        logger.info({ msg: `Using project storage at ${projectStoragePath}` })
+      } else {
+        // Fall back to global storage
+        this.storageManager = new StorageManager()
+        logger.info({ msg: "Using global storage (no project detected)" })
+      }
 
       // Initialize storage asynchronously (don't block container creation)
       this.initializeStorageAsync().catch((error) => {
