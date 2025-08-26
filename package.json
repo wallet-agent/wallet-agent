@@ -1,6 +1,6 @@
 {
   "name": "wallet-agent",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "MCP server for Web3 wallet interactions on EVM-compatible chains using Wagmi",
   "keywords": [
     "mcp",
@@ -24,7 +24,7 @@
   "type": "module",
   "types": "dist/index.d.ts",
   "bin": {
-    "wallet-agent": "./dist/index.js"
+    "wallet-agent": "./dist/cli.js"
   },
   "exports": {
     ".": {

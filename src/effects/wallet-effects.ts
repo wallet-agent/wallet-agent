@@ -1,6 +1,6 @@
 import type { Address } from "viem"
-import type { ChainAdapter, WalletAdapter, WalletClientFactory } from "../adapters/wallet-adapter"
-import { addressExists } from "../core/validators"
+import type { ChainAdapter, WalletAdapter, WalletClientFactory } from "../adapters/wallet-adapter.js"
+import { addressExists } from "../core/validators.js"
 import { ErrorMessages } from "../utils/error-messages.js"
 
 export type WalletType = "mock" | "privateKey"
