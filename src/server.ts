@@ -53,6 +53,12 @@ export function createMcpServer() {
           description: "List of supported blockchain networks",
           mimeType: "application/json",
         },
+        {
+          uri: "wallet://instructions",
+          name: "User Instructions",
+          description: "Custom user instructions for wallet behavior and preferences",
+          mimeType: "text/markdown",
+        },
       ],
     }
   })
@@ -101,6 +107,62 @@ export function createMcpServer() {
                 null,
                 2,
               ),
+            },
+          ],
+        }
+      }
+
+      case "wallet://instructions": {
+        const container = getContainer()
+        const storageManager = container.getStorageManager()
+
+        if (!storageManager) {
+          return {
+            contents: [
+              {
+                uri,
+                mimeType: "text/markdown",
+                text: "# User Instructions\n\nNo storage available. Create a `.wallet-agent/instructions.md` file to customize wallet behavior.\n\n## Example:\n```markdown\n# My Wallet Instructions\n\n## Gas Settings\n- Use conservative gas prices by default\n- Warn for transactions over $50\n\n## Security\n- Always confirm high-value transfers\n- Prefer testnets for experimentation\n```",
+              },
+            ],
+          }
+        }
+
+        const instructions = await storageManager.readInstructions()
+        const defaultInstructions = `# User Instructions
+
+This file allows you to customize how the wallet agent behaves. Write your preferences in natural language.
+
+## Examples
+
+### Gas Settings
+- Always use "fast" gas prices for DEX trades  
+- Use "standard" gas for simple transfers
+- Warn me if gas cost exceeds $20
+
+### Security Rules
+- Never approve unlimited token allowances
+- Always simulate high-value transactions first
+- Require confirmation for contracts I haven't used before
+
+### Preferences  
+- Show transaction values in both ETH and USD
+- Prefer Polygon for small transfers (<$100)
+- Auto-retry failed transactions once with higher gas
+
+### Custom Behavior
+- When transferring tokens, always check recipient twice
+- Default to 1 GWEI gas price for non-urgent transactions
+- Show estimated USD costs before any transaction
+
+Edit this file to customize your wallet experience!`
+
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: "text/markdown",
+              text: instructions || defaultInstructions,
             },
           ],
         }

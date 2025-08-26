@@ -29,6 +29,7 @@ export class StorageManager {
       addressBookDir: join(storageBaseDir, "addressbook"),
       cacheDir: join(storageBaseDir, "cache"),
       templatesDir: join(storageBaseDir, "templates"),
+      instructionsPath: join(storageBaseDir, "instructions.md"),
     }
   }
 
@@ -272,6 +273,20 @@ export class StorageManager {
     await writeFile(backupPath, oldContent, { mode: 0o600 })
 
     await this.writeConfig(newConfig)
+  }
+
+  /**
+   * Read user instructions from instructions.md
+   */
+  async readInstructions(): Promise<string | null> {
+    try {
+      if (!existsSync(this.layout.instructionsPath)) {
+        return null
+      }
+      return await readFile(this.layout.instructionsPath, "utf-8")
+    } catch {
+      return null
+    }
   }
 
   /**

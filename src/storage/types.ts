@@ -28,6 +28,7 @@ export interface StorageLayout {
   addressBookDir: string
   cacheDir: string
   templatesDir: string
+  instructionsPath: string
 }
 
 export interface StorageInfo {

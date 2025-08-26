@@ -123,6 +123,7 @@ export class ProjectStorageManager extends StorageManager {
       addressBookDir: join(projectPath, "addressbook"),
       cacheDir: join(projectPath, "cache"),
       templatesDir: join(projectPath, "templates"),
+      instructionsPath: join(projectPath, "instructions.md"),
 
       // Project-specific paths
       projectDir: projectPath,
@@ -344,6 +345,37 @@ cache/
    */
   override getLayout(): StorageLayout {
     return this.projectLayout
+  }
+
+  /**
+   * Read user instructions with inheritance (project overrides global)
+   */
+  override async readInstructions(): Promise<string | null> {
+    // Try project instructions first (read directly from project layout)
+    try {
+      if (!existsSync(this.projectLayout.instructionsPath)) {
+        // No project instructions, fall back to global
+        if (this.globalStorage) {
+          try {
+            return await this.globalStorage.readInstructions()
+          } catch {
+            return null
+          }
+        }
+        return null
+      }
+      return await readFile(this.projectLayout.instructionsPath, "utf-8")
+    } catch {
+      // Error reading project instructions, try global fallback
+      if (this.globalStorage) {
+        try {
+          return await this.globalStorage.readInstructions()
+        } catch {
+          return null
+        }
+      }
+      return null
+    }
   }
 
   /**
