@@ -114,6 +114,17 @@ export async function writeContract(params: ContractWriteParams): Promise<Hex> {
     chain: chain || null,
   })
 
+  // Record transaction in history
+  await recordContractTransaction(
+    hash,
+    account.address,
+    contractAddress,
+    params.value ? parseEther(params.value) : BigInt(0),
+    params.contract,
+    params.function,
+    chainId,
+  )
+
   return hash
 }
 
@@ -190,5 +201,48 @@ export async function readContract(params: ContractReadParams): Promise<unknown>
     }
 
     throw error
+  }
+}
+
+/**
+ * Record a contract transaction in the history
+ */
+async function recordContractTransaction(
+  hash: Hex,
+  from: Address,
+  to: Address,
+  value: bigint,
+  contractName: string,
+  functionName: string,
+  chainId: number,
+) {
+  const container = getContainer()
+  const storageManager = container.getStorageManager()
+
+  if (!storageManager) {
+    return // Skip recording if no storage
+  }
+
+  try {
+    const transactionRecord: import("./storage/types.js").TransactionRecord = {
+      hash,
+      from,
+      to,
+      value: value.toString(),
+      chainId,
+      timestamp: new Date().toISOString(),
+      status: "pending",
+      metadata: {
+        type: "contract_call",
+        contractName,
+        functionName,
+      },
+    }
+
+    const historyManager = storageManager.getTransactionHistory()
+    await historyManager.recordTransaction(transactionRecord)
+  } catch (error) {
+    // Log error but don't fail transaction
+    logger.warn({ msg: "Failed to record contract transaction", error, hash })
   }
 }

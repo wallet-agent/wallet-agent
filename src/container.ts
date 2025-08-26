@@ -116,6 +116,27 @@ export class Container {
     // Initialize private key client factory
     const privateKeyClientFactory = new PrivateKeyWalletClientFactory(this.privateKeyWallets)
 
+    // Initialize storage manager first (unless disabled for testing)
+    if (options.enableStorage !== false && process.env.NODE_ENV !== "test") {
+      // Check if we're in a project context first
+      const projectStoragePath = StorageResolver.findProjectStorage()
+
+      if (projectStoragePath) {
+        // Use project storage if available
+        this.storageManager = new ProjectStorageManager(projectStoragePath)
+        logger.info({ msg: `Using project storage at ${projectStoragePath}` })
+      } else {
+        // Fall back to global storage
+        this.storageManager = new StorageManager()
+        logger.info({ msg: "Using global storage (no project detected)" })
+      }
+
+      // Initialize storage asynchronously (don't block container creation)
+      this.initializeStorageAsync().catch((error) => {
+        logger.warn({ msg: "Failed to initialize storage, falling back to in-memory", error })
+      })
+    }
+
     // Initialize wallet effects
     const accounts = options.mockAccounts || DEFAULT_MOCK_ACCOUNTS
     this.walletEffects = new WalletEffects(
@@ -124,6 +145,7 @@ export class Container {
       this.chainAdapter,
       accounts,
       () => Array.from(this.privateKeyWallets.keys()),
+      this.storageManager,
     )
 
     // Initialize contract adapter
@@ -149,27 +171,6 @@ export class Container {
       this.chainAdapter,
       this.contractAdapter,
     )
-
-    // Initialize storage manager (unless disabled for testing)
-    if (options.enableStorage !== false && process.env.NODE_ENV !== "test") {
-      // Check if we're in a project context first
-      const projectStoragePath = StorageResolver.findProjectStorage()
-
-      if (projectStoragePath) {
-        // Use project storage if available
-        this.storageManager = new ProjectStorageManager(projectStoragePath)
-        logger.info({ msg: `Using project storage at ${projectStoragePath}` })
-      } else {
-        // Fall back to global storage
-        this.storageManager = new StorageManager()
-        logger.info({ msg: "Using global storage (no project detected)" })
-      }
-
-      // Initialize storage asynchronously (don't block container creation)
-      this.initializeStorageAsync().catch((error) => {
-        logger.warn({ msg: "Failed to initialize storage, falling back to in-memory", error })
-      })
-    }
   }
 
   static getInstance(): Container {

@@ -30,6 +30,7 @@ export class StorageManager {
       cacheDir: join(storageBaseDir, "cache"),
       templatesDir: join(storageBaseDir, "templates"),
       instructionsPath: join(storageBaseDir, "instructions.md"),
+      transactionsDir: join(storageBaseDir, "transactions"),
     }
   }
 
@@ -55,6 +56,7 @@ export class StorageManager {
         this.layout.addressBookDir,
         this.layout.cacheDir,
         this.layout.templatesDir,
+        this.layout.transactionsDir,
       ]
 
       for (const dir of subdirs) {
@@ -287,6 +289,15 @@ export class StorageManager {
     } catch {
       return null
     }
+  }
+
+  /**
+   * Get transaction history manager
+   */
+  getTransactionHistory() {
+    // Lazy import to avoid circular dependencies
+    const { TransactionHistoryManager } = require("./transaction-history.js")
+    return new TransactionHistoryManager(this.layout.transactionsDir)
   }
 
   /**

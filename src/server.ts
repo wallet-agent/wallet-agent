@@ -59,6 +59,12 @@ export function createMcpServer() {
           description: "Custom user instructions for wallet behavior and preferences",
           mimeType: "text/markdown",
         },
+        {
+          uri: "wallet://transactions",
+          name: "Transaction History",
+          description: "Recent transaction history (last 7 days for free tier)",
+          mimeType: "application/json",
+        },
       ],
     }
   })
@@ -165,6 +171,96 @@ Edit this file to customize your wallet experience!`
               text: instructions || defaultInstructions,
             },
           ],
+        }
+      }
+
+      case "wallet://transactions": {
+        const container = getContainer()
+        const storageManager = container.getStorageManager()
+
+        if (!storageManager) {
+          return {
+            contents: [
+              {
+                uri,
+                mimeType: "application/json",
+                text: JSON.stringify(
+                  {
+                    error: "No storage available",
+                    transactions: [],
+                    summary: {
+                      totalTransactions: 0,
+                      successfulTransactions: 0,
+                      failedTransactions: 0,
+                      totalValue: "0",
+                      totalGasUsed: "0",
+                      chains: [],
+                      oldestTimestamp: new Date().toISOString(),
+                      newestTimestamp: new Date().toISOString(),
+                    },
+                  },
+                  null,
+                  2,
+                ),
+              },
+            ],
+          }
+        }
+
+        try {
+          const historyManager = storageManager.getTransactionHistory()
+          const [transactions, summary] = await Promise.all([
+            historyManager.getTransactionHistory({ limit: 50 }),
+            historyManager.getTransactionSummary(),
+          ])
+
+          return {
+            contents: [
+              {
+                uri,
+                mimeType: "application/json",
+                text: JSON.stringify(
+                  {
+                    transactions,
+                    summary,
+                    retentionPolicy: {
+                      maxDays: 7,
+                      tier: "free",
+                    },
+                  },
+                  null,
+                  2,
+                ),
+              },
+            ],
+          }
+        } catch (error) {
+          return {
+            contents: [
+              {
+                uri,
+                mimeType: "application/json",
+                text: JSON.stringify(
+                  {
+                    error: `Failed to load transaction history: ${error instanceof Error ? error.message : String(error)}`,
+                    transactions: [],
+                    summary: {
+                      totalTransactions: 0,
+                      successfulTransactions: 0,
+                      failedTransactions: 0,
+                      totalValue: "0",
+                      totalGasUsed: "0",
+                      chains: [],
+                      oldestTimestamp: new Date().toISOString(),
+                      newestTimestamp: new Date().toISOString(),
+                    },
+                  },
+                  null,
+                  2,
+                ),
+              },
+            ],
+          }
         }
       }
 

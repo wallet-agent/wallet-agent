@@ -124,6 +124,7 @@ export class ProjectStorageManager extends StorageManager {
       cacheDir: join(projectPath, "cache"),
       templatesDir: join(projectPath, "templates"),
       instructionsPath: join(projectPath, "instructions.md"),
+      transactionsDir: join(projectPath, "transactions"),
 
       // Project-specific paths
       projectDir: projectPath,
@@ -149,7 +150,7 @@ export class ProjectStorageManager extends StorageManager {
         this.projectLayout.contractsDir,
         this.projectLayout.contractsAbisDir,
         this.projectLayout.walletsDir,
-        join(this.projectLayout.baseDir, "transactions"),
+        this.projectLayout.transactionsDir,
         this.projectLayout.transactionsHistoryDir,
         this.projectLayout.authDir,
         this.projectLayout.networksDir,

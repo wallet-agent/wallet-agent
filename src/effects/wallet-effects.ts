@@ -5,6 +5,8 @@ import type {
   WalletClientFactory,
 } from "../adapters/wallet-adapter.js"
 import { addressExists } from "../core/validators.js"
+import type { StorageManager } from "../storage/storage-manager.js"
+import type { TransactionRecord } from "../storage/types.js"
 import { ErrorMessages } from "../utils/error-messages.js"
 
 export type WalletType = "mock" | "privateKey"
@@ -23,6 +25,7 @@ export class WalletEffects {
     private chainAdapter: ChainAdapter,
     private mockAccounts: readonly Address[],
     private privateKeyAddresses: () => Address[],
+    private storageManager?: StorageManager,
   ) {}
 
   // Getters
@@ -211,6 +214,8 @@ export class WalletEffects {
       throw new Error("No wallet connected")
     }
 
+    let hash: `0x${string}`
+
     if (this.currentWalletType === "privateKey") {
       const chain = this.chainAdapter.getChain(this.currentChainId)
       if (!chain) throw new Error("Chain not found")
@@ -220,15 +225,20 @@ export class WalletEffects {
         chain,
       )
       // @ts-expect-error - Viem types are complex, wallet client has sendTransaction
-      return await walletClient.sendTransaction(params)
+      hash = await walletClient.sendTransaction(params)
+    } else {
+      // In test mode with mock wallet, return a mock transaction hash
+      if (process.env.NODE_ENV === "test") {
+        hash = "0x1234567890123456789012345678901234567890123456789012345678901234" as `0x${string}`
+      } else {
+        hash = await this.mockWalletAdapter.sendTransaction(params)
+      }
     }
 
-    // In test mode with mock wallet, return a mock transaction hash
-    if (process.env.NODE_ENV === "test") {
-      return "0x1234567890123456789012345678901234567890123456789012345678901234" as `0x${string}`
-    }
+    // Record transaction in history
+    await this.recordTransaction(hash, params, "send")
 
-    return await this.mockWalletAdapter.sendTransaction(params)
+    return hash
   }
 
   async switchChain(chainId: number) {
@@ -243,6 +253,41 @@ export class WalletEffects {
     return {
       chainId,
       chainName: chain.name,
+    }
+  }
+
+  private async recordTransaction(
+    hash: `0x${string}`,
+    params: { to: Address; value: bigint; data?: `0x${string}` },
+    type: TransactionRecord["metadata"]["type"],
+    contractName?: string,
+    functionName?: string,
+  ) {
+    if (!this.storageManager || !this.connectedAddress) {
+      return // Skip recording if no storage or wallet
+    }
+
+    try {
+      const transactionRecord: TransactionRecord = {
+        hash,
+        from: this.connectedAddress,
+        to: params.to,
+        value: params.value.toString(),
+        chainId: this.currentChainId,
+        timestamp: new Date().toISOString(),
+        status: "pending",
+        metadata: {
+          type,
+          contractName,
+          functionName,
+        },
+      }
+
+      const historyManager = this.storageManager.getTransactionHistory()
+      await historyManager.recordTransaction(transactionRecord)
+    } catch (error) {
+      // Log error but don't fail transaction
+      console.warn("Failed to record transaction:", error)
     }
   }
 }
