@@ -166,7 +166,7 @@ Create `.wallet-agent/instructions.md` in your project for context-specific beha
 ```
 
 ### How It Works
-- AI assistants automatically read your instructions via the `wallet://instructions` MCP resource
+- AI agents automatically read your instructions via the `wallet://instructions` MCP resource
 - **Project instructions override global instructions** for maximum flexibility
 - Instructions are written in plain English - no code required!
 - Supports gas preferences, security rules, multi-chain settings, error handling, and more
@@ -178,7 +178,7 @@ Create `.wallet-agent/instructions.md` in your project for context-specific beha
 - **Error Handling**: "Auto-retry failed transactions with 10% higher gas"
 - **Display**: "Show both ETH and USD values for all transactions"
 
-The AI assistant will automatically apply your preferences when performing wallet operations!
+The AI agent will automatically apply your preferences when performing wallet operations!
 
 ## Real Wallets (Development Only)
 
