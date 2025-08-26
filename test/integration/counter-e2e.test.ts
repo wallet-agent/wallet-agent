@@ -5,11 +5,12 @@ import { type Address, createPublicClient, createWalletClient, http } from "viem
 import { privateKeyToAccount } from "viem/accounts"
 import { anvil } from "viem/chains"
 import { COUNTER_CONTRACT } from "../contracts/counter-artifacts.js"
-import { expectToolSuccess, TEST_PRIVATE_KEY } from "./handlers/setup.js"
+import { expectToolSuccess, setupContainer, TEST_PRIVATE_KEY } from "./handlers/setup.js"
 
 const useRealAnvil = process.env.USE_REAL_ANVIL === "true"
 
 describe.skipIf(!useRealAnvil)("Counter Contract E2E Tests", () => {
+  setupContainer()
   let counterAddress: Address
 
   beforeAll(async () => {
