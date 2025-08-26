@@ -1,48 +1,30 @@
 /**
- * Storage management tool handler registry
+ * Storage management tool handler registry (consolidated)
  */
 
 import type { ToolHandler } from "../handler-registry.js"
 import {
-  handleClearStorageCache,
-  handleExportStorageConfig,
   handleGetStorageInfo,
-  handleGetStorageLayout,
   handleInitStorage,
+  handleManageStoragePreferences,
   handleMigrateToStorage,
-  handleUpdateStoragePreferences,
 } from "./storage.js"
 
 export const storageHandlers: ToolHandler[] = [
   {
     name: "init_storage",
-    description: "Initialize the global storage system",
+    description: "Initialize the global storage system with optional cache clearing",
     execute: handleInitStorage,
   },
   {
     name: "get_storage_info",
-    description: "Get information about the storage system",
+    description: "Get storage information with optional detailed view and export functionality",
     execute: handleGetStorageInfo,
   },
   {
-    name: "update_storage_preferences",
-    description: "Update user preferences in storage",
-    execute: handleUpdateStoragePreferences,
-  },
-  {
-    name: "clear_storage_cache",
-    description: "Clear all cached data from storage",
-    execute: handleClearStorageCache,
-  },
-  {
-    name: "export_storage_config",
-    description: "Export storage configuration",
-    execute: handleExportStorageConfig,
-  },
-  {
-    name: "get_storage_layout",
-    description: "Get storage directory layout",
-    execute: handleGetStorageLayout,
+    name: "manage_storage_preferences",
+    description: "View or update user preferences in storage",
+    execute: handleManageStoragePreferences,
   },
   {
     name: "migrate_to_storage",

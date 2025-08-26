@@ -1,5 +1,5 @@
 /**
- * Storage management tool handlers
+ * Storage management tool handlers (consolidated)
  */
 
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
@@ -10,17 +10,18 @@ import { createUserFriendlyError } from "../../utils/error-messages.js"
 
 interface InitStorageArgs {
   force?: boolean
+  clearCache?: boolean
 }
 
-interface UpdateStoragePreferencesArgs extends Partial<UserPreferences> {}
-
-interface ClearStorageCacheArgs {
-  confirm: boolean
-}
-
-interface ExportStorageConfigArgs {
+interface GetStorageInfoArgs {
+  detailed?: boolean
+  export?: boolean
+  exportFormat?: "json" | "yaml"
   includePreferences?: boolean
-  format?: "json" | "yaml"
+}
+
+interface ManageStoragePreferencesArgs extends Partial<UserPreferences> {
+  action?: "get" | "update"
 }
 
 interface MigrateToStorageArgs {
@@ -41,6 +42,7 @@ export async function handleInitStorage(args?: InitStorageArgs) {
 
   try {
     const force = args?.force || false
+    const clearCache = args?.clearCache || false
 
     if (!force && storageManager.isInitialized()) {
       const info = await storageManager.getStorageInfo()
@@ -60,13 +62,19 @@ Use force: true to reinitialize.`,
     }
 
     await storageManager.initialize()
+
+    // Clear cache if requested
+    if (clearCache) {
+      await storageManager.clearCache()
+    }
+
     const info = await storageManager.getStorageInfo()
 
     return {
       content: [
         {
           type: "text",
-          text: `✅ Storage initialized successfully!
+          text: `✅ Storage initialized successfully!${clearCache ? " (Cache cleared)" : ""}
 
 Base directory: ${info.baseDir}
 Config file: ${info.configExists ? "Created" : "Already exists"}
@@ -92,7 +100,7 @@ Storage is now ready for use.`,
   }
 }
 
-export async function handleGetStorageInfo() {
+export async function handleGetStorageInfo(args?: GetStorageInfoArgs) {
   const container = getContainer()
   const storageManager = container.getStorageManager()
 
@@ -115,16 +123,17 @@ To enable storage:
   }
 
   try {
+    const detailed = args?.detailed || false
+    const shouldExport = args?.export || false
+    const exportFormat = args?.exportFormat || "json"
+    const includePreferences = args?.includePreferences !== false
+
     const info = await storageManager.getStorageInfo()
     const config = await storageManager.readConfig()
 
     const sizeFormatted = info.totalSize ? `${(info.totalSize / 1024).toFixed(2)} KB` : "Unknown"
 
-    return {
-      content: [
-        {
-          type: "text",
-          text: `📁 Storage Information
+    let response = `📁 Storage Information
 
 **Status:** ${info.initialized ? "✅ Initialized" : "❌ Not initialized"}
 **Base Directory:** ${info.baseDir}
@@ -144,7 +153,12 @@ ${
         .map(([key, value]) => `- ${key}: ${value}`)
         .join("\\n")
     : "- No preferences set"
-}
+}`
+
+    // Add detailed directory layout if requested
+    if (detailed) {
+      const layout = storageManager.getLayout()
+      response += `
 
 **Directory Structure:**
 ${Object.entries(info.directories)
@@ -152,205 +166,9 @@ ${Object.entries(info.directories)
     ([name, dir]) =>
       `- ${name}/: ${dir.exists ? "✅" : "❌"} ${dir.writable ? "(writable)" : "(read-only)"}`,
   )
-  .join("\\n")}`,
-        },
-      ],
-    }
-  } catch (error) {
-    throw new McpError(
-      ErrorCode.InternalError,
-      createUserFriendlyError(error, "getting storage info"),
-    )
-  }
-}
+  .join("\\n")}
 
-export async function handleUpdateStoragePreferences(args: UpdateStoragePreferencesArgs) {
-  const container = getContainer()
-  const storageManager = container.getStorageManager()
-
-  if (!storageManager) {
-    throw new McpError(
-      ErrorCode.InternalError,
-      "Storage is not available. Cannot update preferences without persistent storage.",
-    )
-  }
-
-  try {
-    await storageManager.updatePreferences(args)
-    const config = await storageManager.readConfig()
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `✅ Preferences updated successfully!
-
-Current preferences:
-${
-  config.preferences
-    ? Object.entries(config.preferences)
-        .map(([key, value]) => `- ${key}: ${value}`)
-        .join("\\n")
-    : "- No preferences set"
-}
-
-Changes will take effect immediately and persist across sessions.`,
-        },
-      ],
-    }
-  } catch (error) {
-    throw new McpError(
-      ErrorCode.InternalError,
-      createUserFriendlyError(error, "updating preferences"),
-    )
-  }
-}
-
-export async function handleClearStorageCache(args: ClearStorageCacheArgs) {
-  if (!args.confirm) {
-    throw new McpError(
-      ErrorCode.InvalidParams,
-      "Must confirm cache clearing by setting confirm: true",
-    )
-  }
-
-  const container = getContainer()
-  const storageManager = container.getStorageManager()
-
-  if (!storageManager) {
-    throw new McpError(
-      ErrorCode.InternalError,
-      "Storage is not available. Cannot clear cache without persistent storage.",
-    )
-  }
-
-  try {
-    await storageManager.clearCache()
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `✅ Cache cleared successfully!
-
-All cached data has been removed from ~/.wallet-agent/cache/
-This includes:
-- Contract ABIs cache
-- Network metadata cache  
-- Transaction history cache
-- Other temporary data
-
-The cache will be rebuilt as needed during normal operation.`,
-        },
-      ],
-    }
-  } catch (error) {
-    throw new McpError(ErrorCode.InternalError, createUserFriendlyError(error, "clearing cache"))
-  }
-}
-
-export async function handleExportStorageConfig(args?: ExportStorageConfigArgs) {
-  const container = getContainer()
-  const storageManager = container.getStorageManager()
-
-  if (!storageManager) {
-    throw new McpError(
-      ErrorCode.InternalError,
-      "Storage is not available. Cannot export configuration without persistent storage.",
-    )
-  }
-
-  try {
-    const config = await storageManager.readConfig()
-    const includePreferences = args?.includePreferences !== false
-    const format = args?.format || "json"
-
-    const exportData = {
-      version: config.version,
-      exportedAt: new Date().toISOString(),
-      ...(includePreferences && { preferences: config.preferences }),
-    }
-
-    let formattedOutput: string
-
-    if (format === "yaml") {
-      // Simple YAML formatting (could use a proper YAML library in the future)
-      formattedOutput = Object.entries(exportData)
-        .map(([key, value]) => {
-          if (typeof value === "object" && value !== null) {
-            const nested = Object.entries(value)
-              .map(([k, v]) => `  ${k}: ${JSON.stringify(v)}`)
-              .join("\\n")
-            return `${key}:\\n${nested}`
-          }
-          return `${key}: ${JSON.stringify(value)}`
-        })
-        .join("\\n")
-    } else {
-      formattedOutput = JSON.stringify(exportData, null, 2)
-    }
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `📤 Storage Configuration Export
-
-**Format:** ${format.toUpperCase()}
-**Includes Preferences:** ${includePreferences ? "Yes" : "No"}
-**Exported At:** ${exportData.exportedAt}
-
-\`\`\`${format}
-${formattedOutput}
-\`\`\`
-
-You can save this configuration and use it to restore settings on another system or as a backup.`,
-        },
-      ],
-    }
-  } catch (error) {
-    throw new McpError(
-      ErrorCode.InternalError,
-      createUserFriendlyError(error, "exporting configuration"),
-    )
-  }
-}
-
-export async function handleGetStorageLayout() {
-  const container = getContainer()
-  const storageManager = container.getStorageManager()
-
-  if (!storageManager) {
-    throw new McpError(
-      ErrorCode.InternalError,
-      "Storage is not available. Cannot get layout without persistent storage.",
-    )
-  }
-
-  try {
-    const layout = storageManager.getLayout()
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `📂 Storage Directory Layout
-
-**Base Directory:** ${layout.baseDir}
-
-**Configuration:**
-- Config file: ${layout.configPath}
-
-**Data Directories:**
-- Authentication: ${layout.authDir}
-- Wallets: ${layout.walletsDir}
-- Networks: ${layout.networksDir}
-- Contracts: ${layout.contractsDir}
-- Address Book: ${layout.addressBookDir}
-- Cache: ${layout.cacheDir}
-- Templates: ${layout.templatesDir}
-
-**Directory Structure:**
+**Detailed Layout:**
 \`\`\`
 ${layout.baseDir}/
 ├── config.json
@@ -363,14 +181,155 @@ ${layout.baseDir}/
 └── templates/
 \`\`\`
 
-All directories are created with 0o700 permissions (owner read/write/execute only) for security.`,
+All directories are created with 0o700 permissions (owner read/write/execute only) for security.`
+    }
+
+    // Add export data if requested
+    if (shouldExport) {
+      const exportData = {
+        version: config.version,
+        exportedAt: new Date().toISOString(),
+        ...(includePreferences && { preferences: config.preferences }),
+      }
+
+      let formattedOutput: string
+
+      if (exportFormat === "yaml") {
+        // Simple YAML formatting
+        formattedOutput = Object.entries(exportData)
+          .map(([key, value]) => {
+            if (typeof value === "object" && value !== null) {
+              const nested = Object.entries(value)
+                .map(([k, v]) => `  ${k}: ${JSON.stringify(v)}`)
+                .join("\\n")
+              return `${key}:\\n${nested}`
+            }
+            return `${key}: ${JSON.stringify(value)}`
+          })
+          .join("\\n")
+      } else {
+        formattedOutput = JSON.stringify(exportData, null, 2)
+      }
+
+      response += `
+
+📤 **Storage Configuration Export**
+
+**Format:** ${exportFormat.toUpperCase()}
+**Includes Preferences:** ${includePreferences ? "Yes" : "No"}
+**Exported At:** ${exportData.exportedAt}
+
+\`\`\`${exportFormat}
+${formattedOutput}
+\`\`\`
+
+You can save this configuration and use it to restore settings on another system or as a backup.`
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: response,
         },
       ],
     }
   } catch (error) {
     throw new McpError(
       ErrorCode.InternalError,
-      createUserFriendlyError(error, "getting storage layout"),
+      createUserFriendlyError(error, "getting storage info"),
+    )
+  }
+}
+
+export async function handleManageStoragePreferences(args?: ManageStoragePreferencesArgs) {
+  const container = getContainer()
+  const storageManager = container.getStorageManager()
+
+  if (!storageManager) {
+    throw new McpError(
+      ErrorCode.InternalError,
+      "Storage is not available. Cannot manage preferences without persistent storage.",
+    )
+  }
+
+  try {
+    const action = args?.action || "get"
+
+    if (action === "get") {
+      const config = await storageManager.readConfig()
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `⚙️ Current Storage Preferences
+
+${
+  config.preferences
+    ? Object.entries(config.preferences)
+        .map(([key, value]) => `- **${key}**: ${value}`)
+        .join("\\n")
+    : "- No preferences set"
+}
+
+To update preferences, use: \`manage_storage_preferences({ action: "update", ... })\``,
+          },
+        ],
+      }
+    }
+
+    if (action === "update") {
+      // Extract preference fields from args (exclude action field)
+      const { action: _action, ...preferences } = args || {}
+
+      if (Object.keys(preferences).length === 0) {
+        throw new McpError(
+          ErrorCode.InvalidParams,
+          "No preferences provided for update. Include at least one preference field.",
+        )
+      }
+
+      await storageManager.updatePreferences(preferences)
+      const config = await storageManager.readConfig()
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `✅ Preferences updated successfully!
+
+**Updated preferences:**
+${Object.entries(preferences)
+  .map(([key, value]) => `- **${key}**: ${value}`)
+  .join("\\n")}
+
+**Current preferences:**
+${
+  config.preferences
+    ? Object.entries(config.preferences)
+        .map(([key, value]) => `- **${key}**: ${value}`)
+        .join("\\n")
+    : "- No preferences set"
+}
+
+Changes will take effect immediately and persist across sessions.`,
+          },
+        ],
+      }
+    }
+
+    throw new McpError(
+      ErrorCode.InvalidParams,
+      `Invalid action: ${action}. Must be "get" or "update".`,
+    )
+  } catch (error) {
+    if (error instanceof McpError) {
+      throw error
+    }
+    throw new McpError(
+      ErrorCode.InternalError,
+      createUserFriendlyError(error, "managing preferences"),
     )
   }
 }

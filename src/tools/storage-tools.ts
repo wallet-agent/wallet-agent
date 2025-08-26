@@ -1,5 +1,5 @@
 /**
- * MCP tool definitions for storage management
+ * MCP tool definitions for storage management (consolidated)
  */
 
 import type { Tool } from "@modelcontextprotocol/sdk/types.js"
@@ -16,25 +16,59 @@ export const storageTools: Tool[] = [
           description: "Force initialization even if storage already exists (default: false)",
           default: false,
         },
+        clearCache: {
+          type: "boolean",
+          description: "Clear all cached data during initialization (default: false)",
+          default: false,
+        },
       },
       additionalProperties: false,
     },
   },
   {
     name: "get_storage_info",
-    description: "Get information about the global storage system status and configuration",
+    description:
+      "Get information about the global storage system with optional detailed view and export",
     inputSchema: {
       type: "object",
-      properties: {},
+      properties: {
+        detailed: {
+          type: "boolean",
+          description: "Include detailed directory layout information (default: false)",
+          default: false,
+        },
+        export: {
+          type: "boolean",
+          description: "Export storage configuration for backup (default: false)",
+          default: false,
+        },
+        exportFormat: {
+          type: "string",
+          enum: ["json", "yaml"],
+          description: "Export format when export=true (default: json)",
+          default: "json",
+        },
+        includePreferences: {
+          type: "boolean",
+          description: "Include user preferences in export when export=true (default: true)",
+          default: true,
+        },
+      },
       additionalProperties: false,
     },
   },
   {
-    name: "update_storage_preferences",
-    description: "Update user preferences in global storage",
+    name: "manage_storage_preferences",
+    description: "View or update user preferences in global storage",
     inputSchema: {
       type: "object",
       properties: {
+        action: {
+          type: "string",
+          enum: ["get", "update"],
+          description: "Action to perform: get current preferences or update them",
+          default: "get",
+        },
         autoConnect: {
           type: "boolean",
           description: "Whether to automatically connect to last used wallet",
@@ -57,52 +91,6 @@ export const storageTools: Tool[] = [
           description: "UI theme preference",
         },
       },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "clear_storage_cache",
-    description: "Clear all cached data from global storage",
-    inputSchema: {
-      type: "object",
-      properties: {
-        confirm: {
-          type: "boolean",
-          description: "Confirm that you want to clear all cached data (required)",
-          default: false,
-        },
-      },
-      required: ["confirm"],
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "export_storage_config",
-    description: "Export the current storage configuration for backup or sharing",
-    inputSchema: {
-      type: "object",
-      properties: {
-        includePreferences: {
-          type: "boolean",
-          description: "Include user preferences in export (default: true)",
-          default: true,
-        },
-        format: {
-          type: "string",
-          enum: ["json", "yaml"],
-          description: "Export format (default: json)",
-          default: "json",
-        },
-      },
-      additionalProperties: false,
-    },
-  },
-  {
-    name: "get_storage_layout",
-    description: "Get the storage directory layout and paths",
-    inputSchema: {
-      type: "object",
-      properties: {},
       additionalProperties: false,
     },
   },
