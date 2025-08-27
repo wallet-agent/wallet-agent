@@ -1,6 +1,6 @@
 # Quick Start
 
-Let's get hands-on with Wallet Agent! This guide will walk you through your first Web3 operations using natural language commands.
+Let's get hands-on with Wallet Agent! This guide will walk you through your first Web3 operations using prompts.
 
 ## Your First 10 Minutes with Wallet Agent
 
@@ -89,7 +89,7 @@ Transaction Sent Successfully
 ✅ Transaction confirmed in block 1234
 ```
 
-**Congratulations.** You just sent your first Web3 transaction using natural language.
+**Congratulations.** You just sent your first Web3 transaction using prompts.
 
 ### Step 5: Switch Chains
 
@@ -114,7 +114,7 @@ Switch to Polygon
 
 Let's break down what makes Wallet Agent special:
 
-### Natural Language Interface
+### Prompt Interface
 
 Instead of complex function calls, you use everyday language:
 
@@ -221,7 +221,7 @@ This is **very useful** for development - you can test any contract function wit
 
 In just 10 minutes, you've learned to:
 
-- ✅ Connect to wallets using natural language
+- ✅ Connect to wallets using prompts
 - ✅ Send transactions between addresses  
 - ✅ Switch between different blockchain networks
 - ✅ Transfer tokens with simple commands

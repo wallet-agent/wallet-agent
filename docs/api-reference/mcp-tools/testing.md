@@ -4,7 +4,7 @@ MCP tools for development, testing, and validation with AI agents.
 
 ## Overview
 
-Testing tools enable AI agents to help developers validate transactions, simulate operations, and debug blockchain interactions through natural language prompts. These tools are essential for safe development and testing workflows.
+Testing tools enable AI agents to help developers validate transactions, simulate operations, and debug blockchain interactions through prompts. These tools are essential for safe development and testing workflows.
 
 ## Tools
 

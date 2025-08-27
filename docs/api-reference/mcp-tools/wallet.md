@@ -4,7 +4,7 @@ MCP tools for wallet connection, account management, and basic operations.
 
 ## Overview
 
-Wallet tools provide the foundation for all blockchain interactions. They handle wallet connection, account management, balance queries, and wallet configuration. These tools are designed for AI agents like Claude Code and Cursor, where developers interact using natural language prompts.
+Wallet tools provide the foundation for all blockchain interactions. They handle wallet connection, account management, balance queries, and wallet configuration. These tools are designed for AI agents like Claude Code and Cursor, where developers interact using prompts.
 
 ## Tools
 

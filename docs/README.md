@@ -16,7 +16,7 @@ Wallet Agent enhances AI coding agents with Web3 development capabilities by pro
 - 🔗 **Multi-chain Support** - Works with Ethereum, Polygon, and custom EVM chains
 - 📋 **Wagmi Integration** - Extract, analyze, and test smart contract ABIs
 - 🛡️ **Security First** - Private keys never logged, comprehensive validation
-- 🤖 **AI-Native** - Natural language commands for complex Web3 operations
+- 🤖 **AI-Native** - Prompts for complex Web3 operations
 
 {% hint style="warning" %}
 **Beta Software Warning**
@@ -30,7 +30,7 @@ This is beta software under active development. **DO NOT use on mainnet or with 
 New to Wallet Agent? Start here to set up the MCP server with your AI agent.
 
 ### 👤 [User Guide](user-guide/)
-Learn how to perform wallet operations, send transactions, and manage tokens using natural language.
+Learn how to perform wallet operations, send transactions, and manage tokens using prompts.
 
 ### 🔧 [Developer Guide](developer-guide/)
 Build and test smart contracts, integrate with Wagmi, and extend Wallet Agent's capabilities.
@@ -61,7 +61,7 @@ Encrypted key management, custom chains, Hyperliquid integration, and extending 
 - **Wagmi Integration**: ABI extraction, function analysis, standard detection
 
 ### AI-Optimized Experience
-- **Natural Language**: "Send 100 USDC to 0x..." instead of complex function calls
+- **Prompts**: "Send 100 USDC to 0x..." instead of complex function calls
 - **Rich Feedback**: Detailed transaction previews and error explanations
 - **User Instructions**: Customize behavior with plain English preferences
 - **Context Aware**: Remembers wallet state and provides relevant suggestions
@@ -99,7 +99,7 @@ claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 ### Cursor
-Configure in your MCP settings to enable Web3 operations through natural language commands with Cursor's AI agent.
+Configure in your MCP settings to enable Web3 operations through prompts with Cursor's AI agent.
 
 ## Community & Support
 

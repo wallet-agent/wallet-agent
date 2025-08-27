@@ -4,11 +4,11 @@ Complete reference documentation for Wallet Agent's tools and capabilities for A
 
 ## Overview
 
-Wallet Agent provides blockchain functionality through natural language prompts with AI agents:
+Wallet Agent provides blockchain functionality through prompts with AI agents:
 
 - **[MCP Tools](mcp-tools/README.md)**: Model Context Protocol tools for conversational blockchain operations
 
-This documentation focuses on how developers can interact with AI agents (like Claude Code and Cursor) to perform blockchain operations using natural language prompts.
+This documentation focuses on how developers can interact with AI agents (like Claude Code and Cursor) to perform blockchain operations using prompts.
 
 ## Quick Reference
 
@@ -26,11 +26,11 @@ This documentation focuses on how developers can interact with AI agents (like C
 
 ## Interaction Format
 
-AI agents interact with Wallet Agent through natural language prompts. The underlying MCP protocol handles tool calls automatically based on your conversational requests.
+AI agents interact with Wallet Agent through prompts. The underlying MCP protocol handles tool calls automatically based on your conversational requests.
 
 ### Prompt Structure
 
-When working with AI agents, use natural language to describe blockchain operations:
+When working with AI agents, use prompts to describe blockchain operations:
 
 **Example Prompts:**
 - "Connect to wallet address 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532"
@@ -51,7 +51,7 @@ When working with AI agents, use natural language to describe blockchain operati
 
 ### Error Response Format
 
-When operations fail, AI agents will receive clear error messages that explain what went wrong and how to fix it. The agent will communicate these errors in natural language, helping you understand and resolve issues quickly.
+When operations fail, AI agents will receive clear error messages that explain what went wrong and how to fix it. The agent will communicate these errors clearly, helping you understand and resolve issues quickly.
 
 ## Setup and Security
 
@@ -111,7 +111,7 @@ Wallet Agent implements MCP Protocol version 2024-11-05.
 
 Compatible with Wagmi v2.x and Viem v2.x.
 
-## Natural Language Examples
+## Prompt Examples
 
 ### Basic Wallet Operations
 

@@ -12,13 +12,13 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 **Q:** What exactly is Wallet Agent and how do I use it in development?
 
-**A:** Wallet Agent is an MCP (Model Context Protocol) server that enables AI agents to perform blockchain operations through natural language prompts. Instead of writing blockchain code directly, you use prompts like "Deploy my Counter contract to Sepolia testnet" and the AI agent handles the underlying blockchain interactions.
+**A:** Wallet Agent is an MCP (Model Context Protocol) server that enables AI agents to perform blockchain operations through prompts. Instead of writing blockchain code directly, you use prompts like "Deploy my Counter contract to Sepolia testnet" and the AI agent handles the underlying blockchain interactions.
 
 ### How does this differ from traditional blockchain development?
 
 **Q:** How is using Wallet Agent with AI agents different from normal Web3 development?
 
-**A:** Traditional development requires writing code with libraries like ethers.js or viem. With Wallet Agent, you use natural language: "Transfer 100 USDC to address 0x..." instead of writing transaction code. The AI agent translates your prompts into proper blockchain operations using Wallet Agent's MCP tools.
+**A:** Traditional development requires writing code with libraries like ethers.js or viem. With Wallet Agent, you use prompts: "Transfer 100 USDC to address 0x..." instead of writing transaction code. The AI agent translates your prompts into proper blockchain operations using Wallet Agent's MCP tools.
 
 ### Which AI agents work with Wallet Agent?
 

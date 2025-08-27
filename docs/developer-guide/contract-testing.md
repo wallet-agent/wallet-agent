@@ -1,13 +1,13 @@
 # Contract Testing
 
-This guide covers comprehensive testing strategies for smart contracts integrated with Wallet Agent using natural language prompts for AI agents.
+This guide covers comprehensive testing strategies for smart contracts integrated with Wallet Agent using prompts for AI agents.
 
 ## Overview
 
 Contract testing with Wallet Agent provides:
 - **Isolated Test Environments**: Clean state for each test
 - **Multi-Chain Testing**: Test across different blockchain networks
-- **Natural Language Testing**: Direct prompts to AI agents for test execution
+- **Prompts for Testing**: Direct prompts to AI agents for test execution
 - **Comprehensive Validation**: Transaction receipts, gas estimation, and simulation
 - **Real Blockchain Testing**: Integration with Anvil for realistic conditions
 

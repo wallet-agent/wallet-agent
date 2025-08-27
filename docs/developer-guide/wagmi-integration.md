@@ -1,13 +1,13 @@
 # Wagmi Integration
 
-This guide covers using Wagmi-generated contract configurations with AI agents through natural language prompts.
+This guide covers using Wagmi-generated contract configurations with AI agents through prompts.
 
 ## Overview
 
 Wallet Agent leverages Wagmi's contract configuration system for AI-powered blockchain interactions:
 - **Contract Configuration Loading**: AI agents can load and use Wagmi-generated contract data
 - **Multi-Chain Support**: Chain-specific contract deployments accessible through prompts
-- **Natural Language Interface**: Contract interactions through conversational prompts
+- **Prompt Interface**: Contract interactions through conversational prompts
 - **AI-Native Workflow**: Contract operations without writing code
 
 ## Wagmi Configuration

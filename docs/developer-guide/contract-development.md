@@ -1,13 +1,13 @@
 # Contract Development
 
-This guide covers developing and integrating smart contracts with AI agents using the Wallet Agent through natural language prompts.
+This guide covers developing and integrating smart contracts with AI agents using the Wallet Agent through prompts.
 
 ## Overview
 
 Wallet Agent enables AI-driven smart contract interaction through:
 - Wagmi-generated contract configurations for AI agents
 - Multi-chain deployment and interaction through prompts
-- Built-in contract validation and testing through natural language
+- Built-in contract validation and testing through prompts
 - Conversational contract method calls without coding
 
 ## Setting Up Contract Development

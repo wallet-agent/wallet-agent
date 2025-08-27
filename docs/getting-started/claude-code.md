@@ -97,9 +97,9 @@ claude mcp add wallet-agent bunx wallet-agent@latest \
 
 ## Claude Code Features
 
-### Natural Language Commands
+### Prompts
 
-Claude Code excels at interpreting natural language. You can use conversational commands:
+Claude Code excels at interpreting prompts. You can use conversational commands:
 
 ```
 "I want to send 0.1 ETH to my friend's wallet at 0x742d35Cc..."

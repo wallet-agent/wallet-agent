@@ -4,7 +4,7 @@ Advanced features and specialized use cases for Wallet Agent with AI agents.
 
 ## Overview
 
-This section covers advanced topics for developers who need specialized functionality beyond basic blockchain operations. All features are designed to work with AI agents through natural language prompts.
+This section covers advanced topics for developers who need specialized functionality beyond basic blockchain operations. All features are designed to work with AI agents through prompts.
 
 ## Topics Covered
 

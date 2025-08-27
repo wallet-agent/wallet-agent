@@ -1,6 +1,6 @@
 # Testing
 
-This guide covers comprehensive testing strategies for Wallet Agent applications and integrations using natural language prompts with AI agents.
+This guide covers comprehensive testing strategies for Wallet Agent applications and integrations using prompts with AI agents.
 
 ## Overview
 
@@ -8,7 +8,7 @@ Wallet Agent testing provides:
 - **Safe Testing Environment**: Mock wallets and simulation for risk-free development
 - **Multi-Chain Testing**: Test across different blockchain networks  
 - **Real Blockchain Integration**: Anvil and testnet support
-- **Natural Language Testing**: AI-powered testing workflows through conversational prompts
+- **Prompts for Testing**: AI-powered testing workflows through conversational prompts
 - **Comprehensive Validation**: Transaction testing, gas estimation, and contract simulation
 
 ## Testing Approaches

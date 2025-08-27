@@ -382,8 +382,8 @@ Always know whether you're in Mock or Real mode:
 
 **Problem**: "Wallet Agent not found"
 **Solution**:
-1. Verify installation: `bunx wallet-agent` in terminal
-2. Reinstall if necessary
+1. Check that Wallet Agent is properly configured in your AI agent
+2. Restart your AI agent
 3. Check MCP configuration
 
 ### Address Issues

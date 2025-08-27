@@ -4,7 +4,7 @@ This guide covers key concepts for building Web3 applications with Wallet Agent,
 
 ## Overview
 
-Wallet Agent enables blockchain development through natural language interaction with AI agents. Understanding these core concepts will help you work more effectively and build robust Web3 applications.
+Wallet Agent enables blockchain development through prompts with AI agents. Understanding these core concepts will help you work more effectively and build robust Web3 applications.
 
 ## Development Workflow
 
@@ -29,7 +29,7 @@ Wallet Agent follows a **safety-first** approach to Web3 development:
 
 ### AI-Native Development
 
-**Natural Language Interface**
+**Prompt Interface**
 Instead of complex API calls, use conversational prompts:
 ```
 "Load my Wagmi config from ./src/generated.ts"

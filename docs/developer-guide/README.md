@@ -37,7 +37,7 @@ Wallet Agent follows a **developer-first** approach:
 
 ### AI-Native Development
 
-- **Natural Language Commands** - Code with conversational interfaces
+- **Prompts** - Code with conversational interfaces
 - **Context Awareness** - AI understands your project structure and goals
 - **Intelligent Suggestions** - Get recommendations based on best practices
 - **Error Explanations** - Clear guidance when things go wrong
@@ -54,10 +54,7 @@ Wallet Agent follows a **developer-first** approach:
 ### 1. Setup & Configuration
 
 ```
-# Install Wallet Agent in your AI agent
-claude mcp add wallet-agent bunx wallet-agent@latest
-
-# Verify installation
+# Verify your Wallet Agent installation
 Get wallet info
 ```
 
@@ -302,22 +299,19 @@ Plan deployment strategy
 Ready to start building? Here's your 5-minute setup:
 
 ```
-# 1. Install Wallet Agent
-claude mcp add wallet-agent bunx wallet-agent@latest
-
-# 2. Start local blockchain
+# 1. Start local blockchain
 anvil --host 0.0.0.0
 
-# 3. Connect and verify
+# 2. Connect and verify
 Switch to Anvil
 Get wallet info
 Connect to 0xf39Fd...
 
-# 4. Load your project
+# 3. Load your project
 Load wagmi config from ./src/generated.ts
 List all available contracts
 
-# 5. Start building!
+# 4. Start building!
 Test your first contract function
 ```
 

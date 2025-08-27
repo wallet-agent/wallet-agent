@@ -4,7 +4,7 @@ MCP tools for smart contract interaction and management with AI agents.
 
 ## Overview
 
-Contract tools enable AI agents to interact with smart contracts through natural language prompts. These tools handle contract loading, reading contract state, and executing contract functions.
+Contract tools enable AI agents to interact with smart contracts through prompts. These tools handle contract loading, reading contract state, and executing contract functions.
 
 ## Tools
 

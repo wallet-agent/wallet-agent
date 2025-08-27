@@ -1,6 +1,6 @@
 # Custom Chains
 
-This guide covers adding and managing custom EVM-compatible blockchain networks with Wallet Agent through natural language prompts for AI agents.
+This guide covers adding and managing custom EVM-compatible blockchain networks with Wallet Agent through prompts for AI agents.
 
 ## Overview
 

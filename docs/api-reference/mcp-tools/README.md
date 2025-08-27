@@ -247,7 +247,7 @@ The AI automatically optimizes performance by:
 ## Integration Examples
 
 ### Claude Code Integration
-When using Claude Code, interact with the wallet through natural language:
+When using Claude Code, interact with the wallet through prompts:
 
 **"What's my current balance?"**
 - Claude Code directly calls the wallet tools and shows your balance

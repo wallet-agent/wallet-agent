@@ -4,7 +4,7 @@ Welcome to Wallet Agent! This section will guide you through setting up and conf
 
 ## Overview
 
-Wallet Agent is an MCP (Model Context Protocol) server that enables Web3 wallet interactions in AI coding agents. Whether you're testing smart contracts, managing tokens, or building DApps, Wallet Agent provides a secure and intuitive interface through natural language commands.
+Wallet Agent is an MCP (Model Context Protocol) server that enables Web3 wallet interactions in AI coding agents. Whether you're testing smart contracts, managing tokens, or building DApps, Wallet Agent provides a secure and intuitive interface through prompts.
 
 ## What You'll Learn
 

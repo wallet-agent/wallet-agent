@@ -1,6 +1,6 @@
 # User Guide
 
-Welcome to the Wallet Agent User Guide! This comprehensive guide covers everything you need to know about using Wallet Agent for Web3 operations through natural language commands.
+Welcome to the Wallet Agent User Guide! This comprehensive guide covers everything you need to know about using Wallet Agent for Web3 operations through prompts.
 
 ## What You'll Learn
 
@@ -44,7 +44,7 @@ All examples use mock wallets by default - completely safe for learning and expe
 
 ## Command Style Guide
 
-Wallet Agent understands natural language, but here are patterns that work well:
+Wallet Agent understands prompts, but here are patterns that work well:
 
 ### Action + Object + Details
 ```
