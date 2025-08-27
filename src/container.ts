@@ -21,6 +21,7 @@ import { TokenEffects } from "./effects/token-effects.js"
 import { TransactionEffects } from "./effects/transaction-effects.js"
 import { WalletEffects } from "./effects/wallet-effects.js"
 import { createLogger } from "./logger.js"
+import { EncryptedKeyStoreManager } from "./storage/encrypted-key-store.js"
 import { ProjectStorageManager, StorageResolver } from "./storage/project-storage.js"
 import { StorageManager } from "./storage/storage-manager.js"
 import type { TestGlobalThis } from "./types/test-globals.js"
@@ -80,6 +81,7 @@ export class Container {
   public transactionEffects: TransactionEffects
   public wagmiConfig: ReturnType<typeof createConfig>
   public storageManager?: StorageManager
+  private encryptedKeyStore?: EncryptedKeyStoreManager
 
   // Instance-specific state stores
   public readonly customChains: Map<number, Chain>
@@ -256,6 +258,21 @@ export class Container {
       this.chainAdapter,
       this.contractAdapter,
     )
+  }
+
+  /**
+   * Get encrypted key store manager
+   */
+  getEncryptedKeyStore(): EncryptedKeyStoreManager | undefined {
+    if (!this.storageManager) {
+      return undefined
+    }
+
+    if (!this.encryptedKeyStore) {
+      this.encryptedKeyStore = new EncryptedKeyStoreManager(this.storageManager)
+    }
+
+    return this.encryptedKeyStore
   }
 
   /**

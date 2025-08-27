@@ -15,7 +15,7 @@ export interface WalletInfo {
 /**
  * Securely resolve a private key from various sources
  */
-function resolvePrivateKey(input: string): `0x${string}` {
+export function resolvePrivateKeyInput(input: string): `0x${string}` {
   // Direct private key (starts with 0x and is 66 characters)
   if (input.startsWith("0x")) {
     return PrivateKeySchema.parse(input)
@@ -47,7 +47,7 @@ function resolvePrivateKey(input: string): `0x${string}` {
 
 export function importPrivateKey(input: string): Address {
   try {
-    const validatedKey = resolvePrivateKey(input)
+    const validatedKey = resolvePrivateKeyInput(input)
     const account = privateKeyToAccount(validatedKey)
 
     // Store in container's instance-specific map

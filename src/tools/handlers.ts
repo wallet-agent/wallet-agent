@@ -2,6 +2,7 @@ import type { CallToolRequest } from "@modelcontextprotocol/sdk/types.js"
 import { toolRegistry } from "./handler-registry.js"
 import { chainHandlers } from "./handlers/chain-handlers.js"
 import { contractHandlers } from "./handlers/contract-handlers.js"
+import { encryptedKeyHandlers } from "./handlers/encrypted-key-handlers.js"
 import { hyperliquidHandlers } from "./handlers/hyperliquid-wrapper.js"
 import { miscHandlers } from "./handlers/misc-handlers.js"
 import { signingHandlers } from "./handlers/signing-handlers.js"
@@ -23,6 +24,7 @@ function registerAllHandlers() {
     ...walletManagementHandlers,
     ...contractHandlers,
     ...tokenHandlers,
+    ...encryptedKeyHandlers,
     ...miscHandlers,
     ...hyperliquidHandlers,
   ])

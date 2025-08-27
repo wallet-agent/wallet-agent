@@ -274,6 +274,132 @@ export const toolDefinitions: Tool[] = [
     },
   },
   {
+    name: "create_encrypted_keystore",
+    description: "Create a new encrypted key store with master password protection",
+    inputSchema: {
+      type: "object",
+      properties: {
+        masterPassword: {
+          type: "string",
+          description: "Master password to encrypt the key store (minimum 8 characters)",
+          minLength: 8,
+        },
+      },
+      required: ["masterPassword"],
+    },
+  },
+  {
+    name: "unlock_keystore",
+    description: "Unlock the encrypted key store with master password",
+    inputSchema: {
+      type: "object",
+      properties: {
+        masterPassword: {
+          type: "string",
+          description: "Master password to unlock the key store",
+        },
+      },
+      required: ["masterPassword"],
+    },
+  },
+  {
+    name: "lock_keystore", 
+    description: "Lock the encrypted key store and clear sensitive data from memory",
+    inputSchema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
+    name: "import_encrypted_private_key",
+    description: "Import a private key into the encrypted key store (requires unlocked store)",
+    inputSchema: {
+      type: "object",
+      properties: {
+        privateKey: {
+          type: "string",
+          description: "Private key starting with 0x, OR environment variable name, OR file path",
+        },
+        masterPassword: {
+          type: "string",
+          description: "Master password for encrypting the key",
+        },
+        label: {
+          type: "string",
+          description: "Optional user-friendly label for the key",
+        },
+      },
+      required: ["privateKey", "masterPassword"],
+    },
+  },
+  {
+    name: "list_encrypted_keys",
+    description: "List all keys in the encrypted store (shows addresses and labels, not private keys)",
+    inputSchema: {
+      type: "object", 
+      properties: {},
+    },
+  },
+  {
+    name: "remove_encrypted_key",
+    description: "Remove a private key from the encrypted store",
+    inputSchema: {
+      type: "object",
+      properties: {
+        address: {
+          type: "string",
+          description: "Address of the key to remove",
+        },
+      },
+      required: ["address"],
+    },
+  },
+  {
+    name: "update_key_label",
+    description: "Update the label for an encrypted key",
+    inputSchema: {
+      type: "object",
+      properties: {
+        address: {
+          type: "string", 
+          description: "Address of the key to update",
+        },
+        label: {
+          type: "string",
+          description: "New label for the key",
+        },
+      },
+      required: ["address", "label"],
+    },
+  },
+  {
+    name: "change_keystore_password",
+    description: "Change the master password for the encrypted key store",
+    inputSchema: {
+      type: "object",
+      properties: {
+        currentPassword: {
+          type: "string",
+          description: "Current master password",
+        },
+        newPassword: {
+          type: "string", 
+          description: "New master password (minimum 8 characters)",
+          minLength: 8,
+        },
+      },
+      required: ["currentPassword", "newPassword"],
+    },
+  },
+  {
+    name: "get_keystore_status",
+    description: "Get encrypted key store status and session information",
+    inputSchema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
     name: "get_wallet_info",
     description: "Get current wallet configuration info",
     inputSchema: {
