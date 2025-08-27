@@ -1,6 +1,6 @@
 # Transactions
 
-Learn how to send transactions, manage gas fees, and monitor transaction status using Wallet Agent.
+Learn how to send transactions, manage gas fees, and monitor transaction status using WalletAgent.
 
 ## Sending ETH/Native Tokens
 
@@ -34,7 +34,7 @@ Use abbreviated addresses for convenience:
 Send 0.5 ETH to 0x7099
 ```
 
-Wallet Agent will find the matching address automatically.
+WalletAgent will find the matching address automatically.
 
 ### Send with Custom Gas
 
@@ -262,7 +262,7 @@ Send 0.1 ETH to 0x3C44
 ### Cross-Chain Considerations
 
 {% hint style="warning" %}
-**Important**: Wallet Agent doesn't support cross-chain transfers directly. To send tokens from Ethereum to Polygon, you need:
+**Important**: WalletAgent doesn't support cross-chain transfers directly. To send tokens from Ethereum to Polygon, you need:
 
 1. Use a bridge service (like Polygon PoS Bridge)
 2. Send to your own address on the destination chain
@@ -298,7 +298,7 @@ Send 0.1 ETH to 0x3C44
 🔧 Solutions:
 - Increase gas limit: "Send with gas limit 30000"
 - Use gas estimation: "Estimate gas for this transaction"
-- Try default settings: Let Wallet Agent estimate automatically
+- Try default settings: Let WalletAgent estimate automatically
 ```
 
 **Network Congestion**

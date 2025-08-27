@@ -1,6 +1,6 @@
 # Cursor Setup
 
-This guide covers setting up Wallet Agent for Cursor, the AI-first code editor built on VSCode.
+This guide covers setting up WalletAgent for Cursor, the AI-first code editor built on VSCode.
 
 ## Prerequisites
 
@@ -52,9 +52,9 @@ type nul > "%APPDATA%\Cursor\mcp.json"
 {% endtab %}
 {% endtabs %}
 
-### Step 2: Configure Wallet Agent
+### Step 2: Configure WalletAgent
 
-Add Wallet Agent to your MCP configuration:
+Add WalletAgent to your MCP configuration:
 
 ```json
 {
@@ -110,7 +110,7 @@ For advanced configuration including private keys and debugging:
 
 ### Local Development
 
-If you're developing or contributing to Wallet Agent:
+If you're developing or contributing to WalletAgent:
 
 ```json
 {
@@ -135,8 +135,6 @@ If you're developing or contributing to Wallet Agent:
 | `WALLET_PRIVATE_KEY` | Real wallet private key | `0x123abc...` |
 | `DEBUG` | Enable debug logging | `wallet-agent:*` |
 | `NODE_ENV` | Environment mode | `development` |
-| `RPC_URL_ETHEREUM` | Custom Ethereum RPC | `https://eth-mainnet.g.alchemy.com/v2/...` |
-| `RPC_URL_POLYGON` | Custom Polygon RPC | `https://polygon-mainnet.g.alchemy.com/v2/...` |
 
 ### Security Best Practices
 
@@ -189,11 +187,11 @@ In Cursor, open a new chat and try:
 What MCP servers are available?
 ```
 
-You should see Wallet Agent listed among the available servers.
+You should see WalletAgent listed among the available servers.
 
-### Test Wallet Agent
+### Test WalletAgent
 
-Try a basic Wallet Agent command:
+Try a basic WalletAgent command:
 
 ```
 Get wallet info
@@ -212,7 +210,7 @@ Expected response:
 
 ### Test Tool Access
 
-List available Wallet Agent tools:
+List available WalletAgent tools:
 
 ```
 List all wallet agent tools
@@ -224,7 +222,7 @@ You should see 60+ tools including wallet management, transactions, tokens, and 
 
 ### Code Integration
 
-Cursor excels at integrating Wallet Agent with your code projects:
+Cursor excels at integrating WalletAgent with your code projects:
 
 ```
 "Analyze the smart contract in this file and test its functions"
@@ -273,7 +271,7 @@ Create a `.cursor/mcp.json` file in your project root for project-specific setti
 
 ### Package.json Integration
 
-Add Wallet Agent scripts to your `package.json`:
+Add WalletAgent scripts to your `package.json`:
 
 ```json
 {
@@ -286,7 +284,7 @@ Add Wallet Agent scripts to your `package.json`:
 
 ### TypeScript Integration
 
-If your project uses TypeScript, Wallet Agent provides full type safety and intellisense support for all operations through the AI agent interface.
+If your project uses TypeScript, WalletAgent provides full type safety and intellisense support for all operations through the AI agent interface.
 
 ## Troubleshooting
 
@@ -298,7 +296,7 @@ Check the Cursor output panel for errors:
 1. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
 2. Type "Output" and select "Output"
 3. Select "MCP" from the dropdown
-4. Look for Wallet Agent startup errors
+4. Look for WalletAgent startup errors
 
 Common causes:
 - `bunx` not in PATH: Install Bun or use `npx` instead
@@ -401,19 +399,6 @@ Configure different profiles for different environments:
 }
 ```
 
-### Custom RPC Endpoints
-
-Configure custom blockchain RPC endpoints:
-
-```json
-{
-  "env": {
-    "RPC_URL_ETHEREUM": "https://eth-mainnet.g.alchemy.com/v2/YOUR_API_KEY",
-    "RPC_URL_POLYGON": "https://polygon-mainnet.g.alchemy.com/v2/YOUR_API_KEY",
-    "RPC_URL_ARBITRUM": "https://arb-mainnet.g.alchemy.com/v2/YOUR_API_KEY"
-  }
-}
-```
 
 ## Best Practices
 
@@ -434,12 +419,12 @@ Configure custom blockchain RPC endpoints:
 ### Performance Tips
 
 1. **Local RPC**: Use local Anvil for development
-2. **Cache Results**: Wallet Agent caches contract ABIs and chain data
+2. **Cache Results**: WalletAgent caches contract ABIs and chain data
 3. **Batch Operations**: Combine multiple operations when possible
 
 ## Next Steps
 
-Now that Wallet Agent is configured with Cursor:
+Now that WalletAgent is configured with Cursor:
 
 1. **[Complete the Quick Start](quick-start.md)** - Learn basic operations
 2. **[Explore User Features](../user-guide/)** - Master wallet operations
@@ -455,9 +440,9 @@ Now that Wallet Agent is configured with Cursor:
 
 ### Community
 - **Cursor Discord** - Cursor-specific help and community
-- **GitHub Discussions** - General Wallet Agent discussions
+- **GitHub Discussions** - General WalletAgent discussions
 - **Stack Overflow** - Technical questions tagged with `wallet-agent`
 
 ---
 
-Ready to build Web3 apps with Cursor and Wallet Agent? Let's start coding.
+Ready to build Web3 apps with Cursor and WalletAgent? Let's start coding.

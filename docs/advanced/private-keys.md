@@ -11,7 +11,7 @@ Private keys enable real blockchain transactions with actual assets. This guide 
 ## Private Key Basics
 
 ### Mock vs Private Key Wallets
-Wallet Agent supports two wallet modes:
+WalletAgent supports two wallet modes:
 
 **Mock Wallets (Testing):**
 - Simulated accounts with fake balances

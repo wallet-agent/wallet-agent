@@ -1,10 +1,10 @@
 # Troubleshooting
 
-Common issues and solutions when using Wallet Agent with AI agents.
+Common issues and solutions when using WalletAgent with AI agents.
 
 ## Overview
 
-This guide helps resolve common problems you might encounter when using Wallet Agent with AI agents like Claude Code and Cursor. Issues are organized by category with step-by-step solutions and preventive measures.
+This guide helps resolve common problems you might encounter when using WalletAgent with AI agents like Claude Code and Cursor. Issues are organized by category with step-by-step solutions and preventive measures.
 
 ## Connection and Setup Issues
 
@@ -200,24 +200,24 @@ This guide helps resolve common problems you might encounter when using Wallet A
 
 ---
 
-### Custom Chain Configuration
+### Network Connectivity Issues
 
-**Issue:** Problems with custom chain setup or connectivity.
+**Issue:** Problems connecting to supported blockchain networks.
 
 **AI Agent Troubleshooting:**
-**You:** "My custom chain isn't working properly"
+**You:** "I can't connect to Polygon network"
 
 **AI Agent Response:** The AI will:
-1. Validate chain configuration parameters
-2. Test RPC endpoint connectivity and responsiveness
-3. Verify chain ID and network settings
-4. Help troubleshoot configuration issues
+1. Test connectivity to the network
+2. Check network status and responsiveness  
+3. Verify chain configuration
+4. Suggest alternative networks if needed
 
 **Solutions:**
-- "Verify my custom chain configuration is correct"
-- "Test the RPC endpoint for my custom chain"
-- "Update chain configuration with working parameters"
-- "Remove and re-add my custom chain with correct settings"
+- "Test connectivity to Polygon network"
+- "Switch to Anvil for local development"
+- "Try Sepolia testnet instead"
+- "Check network status for current issues"
 
 ## Balance and Token Issues
 

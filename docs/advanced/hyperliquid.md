@@ -4,7 +4,7 @@ Integration with Hyperliquid decentralized perpetual exchange.
 
 ## Overview
 
-Hyperliquid is a high-performance decentralized exchange focused on perpetual futures trading. Wallet Agent provides seamless integration with Hyperliquid through AI agents, enabling prompt-based trading operations, position management, and portfolio monitoring.
+Hyperliquid is a high-performance decentralized exchange focused on perpetual futures trading. WalletAgent provides seamless integration with Hyperliquid through AI agents, enabling prompt-based trading operations, position management, and portfolio monitoring.
 
 ## Getting Started
 

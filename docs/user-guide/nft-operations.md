@@ -1,6 +1,6 @@
 # NFT Operations
 
-Learn how to manage Non-Fungible Tokens (NFTs) including transfers, ownership verification, and metadata retrieval using Wallet Agent.
+Learn how to manage Non-Fungible Tokens (NFTs) including transfers, ownership verification, and metadata retrieval using WalletAgent.
 
 ## Understanding NFTs
 

@@ -1,10 +1,10 @@
 # MCP Tools
 
-Model Context Protocol (MCP) tools for AI agent integration with Wallet Agent.
+Model Context Protocol (MCP) tools for AI agent integration with WalletAgent.
 
 ## Overview
 
-Wallet Agent provides a comprehensive set of MCP tools that enable AI agents to interact with Ethereum-compatible blockchains. These tools are designed for safe, reliable blockchain operations with built-in validation and error handling.
+WalletAgent provides a comprehensive set of MCP tools that enable AI agents to interact with Ethereum-compatible blockchains. These tools are designed for safe, reliable blockchain operations with built-in validation and error handling.
 
 ## Tool Categories
 
@@ -54,12 +54,10 @@ ERC-20 and ERC-721 token operations.
 - `get_nft_info` - Get NFT metadata
 
 ### [Chain Tools](chains.md)
-Blockchain network management and configuration.
+Blockchain network management and switching.
 
-- `switch_chain` - Switch to different blockchain
-- `add_custom_chain` - Add custom EVM chains
-- `update_custom_chain` - Update chain configuration
-- `remove_custom_chain` - Remove custom chains
+- `switch_chain` - Switch between supported blockchains
+- `get_wallet_info` - Get current chain and wallet information
 
 ### [Testing Tools](testing.md)
 Development and testing utilities.
@@ -194,14 +192,14 @@ For real blockchain operations:
 - The AI will send the token transfer transaction and provide confirmation
 
 ### Multi-Chain Operations
-**"Add a custom chain called 'My Chain' with RPC https://rpc.mychain.com and chain ID 1234"**
-- The AI will add the new chain configuration with the native currency details you specify
+**"Switch to Polygon network"**
+- The AI will change to Polygon for subsequent operations
 
-**"Switch to chain ID 1234"**
-- The AI will change to your custom chain for subsequent operations
+**"Switch to Sepolia testnet"** 
+- The AI will change to Sepolia testnet for testing
 
-**"Check my balance on this new chain"**
-- The AI will show your balance using the new chain's native currency
+**"Check my balance on Polygon"**
+- The AI will show your balance using POL (Polygon's native currency)
 
 ## Testing and Development
 

@@ -1,6 +1,6 @@
 # Chain Management
 
-Master multi-chain operations including switching networks, adding custom chains, and understanding cross-chain considerations.
+Master multi-chain operations including switching networks, working with built-in chains, and understanding cross-chain considerations.
 
 ## Understanding Blockchain Networks
 
@@ -15,7 +15,7 @@ Blockchain networks (or "chains") are independent blockchain systems that:
 
 ### EVM Compatibility
 
-Wallet Agent supports **EVM-compatible** chains that:
+WalletAgent supports **EVM-compatible** chains that:
 - Use Ethereum Virtual Machine
 - Support Ethereum-style addresses (0x...)
 - Allow Solidity smart contracts
@@ -25,7 +25,7 @@ Wallet Agent supports **EVM-compatible** chains that:
 
 ### Built-in Chains
 
-Wallet Agent includes these chains by default:
+WalletAgent includes these chains by default:
 
 | Chain | Chain ID | Native Currency | Purpose |
 |-------|----------|----------------|---------|
@@ -130,8 +130,8 @@ What chain am I on?
 🏠 Your Balance: 10000.0 POL
 
 🌐 Network Details:
-- RPC Endpoint: https://polygon-rpc.com
-- Block Explorer: https://polygonscan.com  
+- Network Type: Layer 2 Scaling Solution
+- Block Time: ~2 seconds
 - Average Gas Price: 30 gwei
 - Current Block: 52,847,291
 
@@ -161,117 +161,44 @@ What chains are supported?
 🧪 Testnet:  
 - Sepolia (11155111) - Ethereum testnet
 
-📊 Custom Chains: 0 added
 
 💡 Use "Switch to [chain name]" to change networks
-💡 Add custom chains with "Add custom chain" command
+💡 Built-in networks are ready to use without setup
 ```
 
-## Adding Custom Chains
+## Built-in Chain Support
 
-### Add EVM-Compatible Chain
+### Supported Networks
 
-Add any EVM chain to Wallet Agent:
+WalletAgent includes built-in support for major EVM networks:
 
-```
-Add custom chain with name "Base" chain ID 8453 RPC "https://mainnet.base.org" and currency ETH
-```
+- **Anvil** (Chain ID: 31337) - Local development network with unlimited test funds
+- **Ethereum** (Chain ID: 1) - Ethereum mainnet (view-only for safety)
+- **Sepolia** (Chain ID: 11155111) - Ethereum testnet
+- **Polygon** (Chain ID: 137) - Polygon PoS mainnet
 
-**Example Output:**
-```
-✅ Custom Chain Added Successfully!
+These networks are pre-configured and ready to use without additional setup.
 
-⛓️ Chain: Base  
-🆔 Chain ID: 8453
-🌐 RPC: https://mainnet.base.org
-💰 Native Currency: ETH (18 decimals)
+## Network Information
 
-📊 Chain Details:
-- Block Explorer: https://basescan.org
-- Network Type: Layer 2 (Optimistic Rollup)
-- Parent Chain: Ethereum
+### Get Network Details
 
-🔄 Available Commands:
-- "Switch to Base" - Change to this chain
-- "Update Base chain settings" - Modify configuration
-- "Remove Base chain" - Delete if no longer needed
-
-💡 Base chain is now available for all operations!
-```
-
-### Add with Block Explorer
-
-Include block explorer for better transaction tracking:
+Check information about available networks:
 
 ```
-Add custom chain "Arbitrum" ID 42161 RPC "https://arb1.arbitrum.io/rpc" currency ETH explorer "https://arbiscan.io"
-```
-
-### Advanced Chain Configuration
-
-Add chain with detailed configuration:
-
-```json
-Add custom chain with config:
-{
-  "name": "Optimism",
-  "chainId": 10,
-  "rpcUrl": "https://mainnet.optimism.io",
-  "nativeCurrency": {
-    "name": "Ether", 
-    "symbol": "ETH",
-    "decimals": 18
-  },
-  "blockExplorerUrl": "https://optimistic.etherscan.io"
-}
-```
-
-## Managing Custom Chains
-
-### Update Chain Configuration
-
-Modify existing custom chain settings:
-
-```
-Update Base chain RPC to "https://base-mainnet.g.alchemy.com/v2/YOUR-API-KEY"
+Get current chain info
 ```
 
 **Example Output:**
 ```
-🔄 Chain Configuration Updated
+📊 Current Network Information
 
-⛓️ Chain: Base (8453)
-🔧 Updated: RPC endpoint
-🌐 Old RPC: https://mainnet.base.org  
-🌐 New RPC: https://base-mainnet.g.alchemy.com/v2/YOUR-API-KEY
+⛓️ Chain: Polygon (Chain ID: 137)
+💰 Native Currency: POL (18 decimals)
+🌐 Network Type: Layer 2 Scaling Solution
+📈 Block Time: ~2 seconds
 
-✅ Changes applied successfully
-💡 New RPC will be used for all Base operations
-🔄 Consider switching chains to test the new endpoint
-```
-
-### Remove Custom Chains
-
-Delete chains you no longer need:
-
-```
-Remove Base chain
-```
-
-**Example Output:**
-```
-🗑️ Custom Chain Removed
-
-⛓️ Chain: Base (8453)  
-📊 Status: Removed from configuration
-
-⚠️ Impact:
-- Can no longer switch to Base
-- Base transactions will not work
-- Custom chain data cleared
-
-💡 You can re-add Base anytime with "Add custom chain" command
-✅ Built-in chains (Ethereum, Polygon, etc.) are unaffected
+✅ Network is operational and ready for transactions
 ```
 
 ## Multi-Chain Operations
@@ -364,7 +291,7 @@ Each chain has different gas characteristics:
 
 🔧 Solutions:
 - Use supported chain: "Switch to Polygon"
-- Add custom chain: "Add custom chain Fantom..."
+- Try available networks: "Switch to Sepolia" or "Switch to Anvil"
 - Check spelling: "Switch to Ethereum"
 ```
 
@@ -408,19 +335,17 @@ Each chain has different gas characteristics:
 💡 Wallet connection is required for chain operations
 ```
 
-**Custom Chain Invalid**
+**Unsupported Chain**
 ```
-❌ Custom chain configuration invalid
+❌ Requested chain is not supported
 
-📋 Issues Found:
-- Chain ID already exists (137 = Polygon)
-- Invalid RPC URL format
-- Missing native currency details
+🔧 Supported Networks:
+- Anvil (31337) - Local development
+- Ethereum (1) - Mainnet (view-only)
+- Sepolia (11155111) - Ethereum testnet
+- Polygon (137) - Polygon mainnet
 
-🔧 Solutions:
-- Use unique chain ID: "Add chain ID 1337"
-- Fix RPC format: "https://rpc.example.com"
-- Specify currency: "currency ETH with 18 decimals"
+💡 Use one of the supported networks for your operations
 ```
 
 ## Best Practices
@@ -449,28 +374,23 @@ Each chain has different gas characteristics:
 3. **Bridge Strategy**: Plan token movement between chains
 4. **Security**: Verify chain configuration before transactions
 
-### Custom Chain Safety
+### Network Safety
 
-1. **Trusted RPC**: Use reputable RPC providers
-2. **Verify Chain ID**: Ensure correct network
-3. **Test First**: Try small operations before large ones
-4. **Documentation**: Keep track of custom chain purposes
+1. **Test First**: Always test on Anvil or testnet before mainnet
+2. **Verify Network**: Confirm you're on the intended network
+3. **Start Small**: Try small operations before large transactions
+4. **Monitor Status**: Check network health before important operations
 
 ## Advanced Features
 
-### RPC Endpoint Management
+### Network Performance
 
-Use custom RPC endpoints for better performance:
+Built-in networks are configured with reliable RPC endpoints:
 
-```
-Update Ethereum RPC to "https://eth-mainnet.g.alchemy.com/v2/YOUR-KEY"
-```
-
-Benefits of custom RPC:
-- Higher rate limits
-- Better reliability  
-- Advanced features (archive data, etc.)
-- Dedicated support
+- **Anvil**: Local network with instant transactions
+- **Built-in Networks**: Pre-configured with reliable public endpoints
+- **Load Balancing**: Automatic failover to backup endpoints when needed
+- **Optimized**: Performance-tuned for common operations
 
 ### Chain Monitoring
 
@@ -485,7 +405,7 @@ Get Polygon network status
 📊 Polygon Network Status
 
 ⛓️ Chain: Polygon (137)
-🌐 RPC: https://polygon-rpc.com ✅ Healthy
+🌐 Network: Polygon PoS ✅ Healthy
 
 📈 Network Metrics:
 - Current Block: 52,847,456
@@ -505,30 +425,30 @@ Get Polygon network status
 
 ### Connection Issues
 
-**RPC Timeout**: Switch to different endpoint
+**Network Timeout**: Try alternative network
 ```
-"Update [chain] RPC to [backup-rpc]"
-"Switch to Anvil temporarily"
-```
-
-**Chain Not Responding**: Try alternative chain
-```
-"Switch to Ethereum instead of Polygon"
-"Use Anvil for immediate testing"
+"Switch to Anvil for immediate testing"
+"Try Sepolia testnet instead"
 ```
 
-### Configuration Problems
-
-**Invalid Chain Data**: Verify configuration
+**Chain Not Responding**: Use backup network
 ```
-"Get [chain] chain info"
-"Remove and re-add custom chain"
+"Switch to Anvil for local testing"
+"Try different supported network"
 ```
 
-**Conflicting Chain IDs**: Use unique identifiers
+### Network Problems
+
+**Network Unavailable**: Switch to working network
 ```
-"List all chains to check for conflicts"
-"Use different chain ID for custom chain"
+"Get current network status"
+"Switch to Anvil for continued development"
+```
+
+**Connection Issues**: Use local development
+```
+"Switch to Anvil for offline development"
+"Check network connectivity"
 ```
 
 ## Next Steps
@@ -546,10 +466,10 @@ Now that you understand chain management, explore advanced topics:
    - Compare balances and gas costs
    - Practice network information retrieval
 
-2. **Custom Chains**
-   - Add a test custom chain
-   - Update chain configuration
-   - Remove unused custom chains
+2. **Development Workflow**
+   - Start development on Anvil
+   - Test on Sepolia testnet
+   - Compare mainnet networks
 
 3. **Multi-Chain Strategy**
    - Plan token distribution across chains

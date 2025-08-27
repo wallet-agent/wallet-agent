@@ -1,6 +1,6 @@
 # Advanced Topics
 
-Advanced features and specialized use cases for Wallet Agent with AI agents.
+Advanced features and specialized use cases for WalletAgent with AI agents.
 
 ## Overview
 
@@ -102,7 +102,7 @@ Special considerations when using AI agents with advanced features:
 ## Common Advanced Workflows
 
 ### Production Deployment
-**Developer:** "Help me set up Wallet Agent for production with encrypted keys and monitoring"
+**Developer:** "Help me set up WalletAgent for production with encrypted keys and monitoring"
 
 **AI Agent Response:** The AI will guide through:
 1. Encrypted key storage configuration

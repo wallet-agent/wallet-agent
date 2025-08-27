@@ -1,10 +1,10 @@
 # User Instructions
 
-Creating custom user instructions and workflows for AI agents using Wallet Agent.
+Creating custom user instructions and workflows for AI agents using WalletAgent.
 
 ## Overview
 
-User instructions enable individual developers to create standardized workflows, custom prompts, and specialized procedures for AI agents. This guide covers creating effective user instructions that leverage Wallet Agent's capabilities while maintaining consistency across different AI agent platforms.
+User instructions enable individual developers to create standardized workflows, custom prompts, and specialized procedures for AI agents. This guide covers creating effective user instructions that leverage WalletAgent's capabilities while maintaining consistency across different AI agent platforms.
 
 **🎯 Customization Goal:** Create reusable, personalized instructions that make AI agents more effective at blockchain operations while reducing repetitive explanations.
 
@@ -242,7 +242,7 @@ Maintenance Phase Instructions:
 New Development Environment Setup:
 
 Week 1 - Setup:
-1. "Set up Wallet Agent with mock wallets for testing"
+1. "Set up WalletAgent with mock wallets for testing"
 2. "Load our project's contract configuration"
 3. "Connect to Anvil development network"
 4. "Practice basic operations with test transactions"
@@ -373,7 +373,7 @@ Recovery Actions (as needed):
 
 **Keeping Instructions Current:**
 - Review instructions monthly for accuracy
-- Update when Wallet Agent features change
+- Update when WalletAgent features change
 - Incorporate lessons learned from operations
 - Test instructions with new development setups
 - Version control all instruction changes

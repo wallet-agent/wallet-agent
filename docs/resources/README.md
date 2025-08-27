@@ -1,15 +1,15 @@
 # Resources
 
-Additional resources, support, and reference materials for Wallet Agent.
+Additional resources, support, and reference materials for WalletAgent.
 
 ## Overview
 
-This section provides supplementary resources to help you get the most out of Wallet Agent with AI assistants, including troubleshooting guides, frequently asked questions, migration information, and project updates.
+This section provides supplementary resources to help you get the most out of WalletAgent with AI assistants, including troubleshooting guides, frequently asked questions, migration information, and project updates.
 
 ## Available Resources
 
 ### [Troubleshooting](troubleshooting.md)
-Common issues and solutions when using Wallet Agent with AI agents.
+Common issues and solutions when using WalletAgent with AI agents.
 
 **What You'll Find:**
 - Connection and setup problems
@@ -25,7 +25,7 @@ Common issues and solutions when using Wallet Agent with AI agents.
 - When debugging complex workflows
 
 ### [FAQ](faq.md)
-Frequently asked questions about Wallet Agent functionality and usage.
+Frequently asked questions about WalletAgent functionality and usage.
 
 **Categories Covered:**
 - General usage and capabilities
@@ -41,7 +41,7 @@ Frequently asked questions about Wallet Agent functionality and usage.
 - "How do I optimize gas costs across different chains?"
 
 ### [Migration](migration.md)
-Migration guides for upgrading between Wallet Agent versions.
+Migration guides for upgrading between WalletAgent versions.
 
 **Migration Topics:**
 - Version upgrade procedures
@@ -51,13 +51,13 @@ Migration guides for upgrading between Wallet Agent versions.
 - Feature deprecation and alternatives
 
 **When You Need This:**
-- Upgrading to a new Wallet Agent version
+- Upgrading to a new WalletAgent version
 - Migrating from other blockchain tools
 - Updating AI agent integrations
 - Changing deployment configurations
 
 ### [Changelog](changelog.md)
-Detailed changelog and release notes for all Wallet Agent versions.
+Detailed changelog and release notes for all WalletAgent versions.
 
 **What's Included:**
 - New features and capabilities
@@ -278,7 +278,7 @@ Detailed changelog and release notes for all Wallet Agent versions.
 
 **AI Agent Integration:**
 - "Report a bug I encountered"
-- "Suggest a new feature for Wallet Agent"
+- "Suggest a new feature for WalletAgent"
 - "Provide feedback on documentation"
 - "Request help with my specific use case"
 

@@ -1,16 +1,16 @@
 # Developer Guide
 
-Welcome to the Wallet Agent Developer Guide! This section is designed for developers who want to build, test, and deploy smart contracts using Wallet Agent's powerful development features.
+Welcome to the WalletAgent Developer Guide! This section is designed for developers who want to build, test, and deploy smart contracts using WalletAgent's powerful development features.
 
 ## What You'll Learn
 
-This guide covers everything you need for Web3 development with Wallet Agent:
+This guide covers everything you need for Web3 development with WalletAgent:
 
 - 🏗️ **[Development Concepts](architecture.md)** - Understanding key development concepts and patterns
 - 📋 **[Contract Development](contract-development.md)** - Building and deploying smart contracts
 - 🔧 **[Wagmi Integration](wagmi-integration.md)** - Working with Wagmi-generated ABIs and hooks
 - 🧪 **[Contract Testing](contract-testing.md)** - Safe testing and simulation tools
-- ⛓️ **[Custom Chains](custom-chains.md)** - Adding and configuring blockchain networks
+- ⛓️ **[Chain Management](../user-guide/chain-management.md)** - Working with supported blockchain networks
 - ✅ **[Testing](testing.md)** - Comprehensive testing strategies and frameworks
 
 ## Who This Guide Is For
@@ -19,14 +19,13 @@ This guide is perfect for:
 
 - **Smart Contract Developers** - Building and deploying contracts
 - **DApp Developers** - Integrating Web3 functionality into applications
-- **DeFi Engineers** - Creating financial protocols and products
 - **Web3 Architects** - Designing multi-chain applications
 - **DevOps Engineers** - Automating Web3 deployment pipelines
 - **Security Auditors** - Testing contract behavior and edge cases
 
 ## Development Philosophy
 
-Wallet Agent follows a **developer-first** approach:
+WalletAgent follows a **developer-first** approach:
 
 ### Safety-First Development
 
@@ -47,14 +46,14 @@ Wallet Agent follows a **developer-first** approach:
 - **Chain Abstraction** - Write code once, deploy everywhere
 - **Network Switching** - Seamlessly move between development and production
 - **Cross-Chain Patterns** - Built-in support for multi-chain architectures
-- **Custom Network Support** - Add any EVM-compatible blockchain
+- **Built-in Network Support** - Work with major EVM-compatible blockchains
 
 ## Development Workflow
 
 ### 1. Setup & Configuration
 
 ```
-# Verify your Wallet Agent installation
+# Verify your WalletAgent installation
 Get wallet info
 ```
 
@@ -158,7 +157,7 @@ Estimate deployment costs
 # Start Anvil for local testing
 anvil --host 0.0.0.0 --port 8545
 
-# Connect Wallet Agent
+# Connect WalletAgent
 Switch to Anvil
 Get test wallets from faucet
 ```
@@ -192,7 +191,7 @@ Plan deployment strategy
 - **AI Agent** - Claude Code or Cursor with MCP support
 
 {% hint style="info" %}
-**Pro Tip**: Wallet Agent integrates with your existing development tools. You don't need to change your workflow - just add AI capabilities.
+**Pro Tip**: WalletAgent integrates with your existing development tools. You don't need to change your workflow - just add AI capabilities.
 {% endhint %}
 
 ## Common Development Patterns
@@ -209,7 +208,7 @@ Plan deployment strategy
 2. **Implementation**
    ```
    # Write contracts using your favorite tools
-   # Use Wallet Agent for testing and validation
+   # Use WalletAgent for testing and validation
    ```
 
 3. **Testing**
@@ -287,12 +286,12 @@ Plan deployment strategy
 ### Intermediate Developers  
 1. **[Wagmi Integration](wagmi-integration.md)** - Advanced ABI management
 2. **[Contract Testing](contract-testing.md)** - Automated testing tools
-3. **[Custom Chains](custom-chains.md)** - Multi-chain development
+3. **[Chain Management](../user-guide/chain-management.md)** - Multi-chain development
 
 ### Advanced Developers
 1. **[Advanced Topics](../advanced/)** - Real wallets and production deployment
 2. **[API Reference](../api-reference/)** - Complete tool documentation
-3. **[Contributing](../contributing/)** - Extend Wallet Agent capabilities
+3. **[Contributing](../contributing/)** - Extend WalletAgent capabilities
 
 ## Quick Start for Developers
 

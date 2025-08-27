@@ -1,6 +1,6 @@
 # Security
 
-Learn essential security practices for safe Web3 operations, private key management, and protecting your assets when using Wallet Agent.
+Learn essential security practices for safe Web3 operations, private key management, and protecting your assets when using WalletAgent.
 
 ## Security Fundamentals
 
@@ -13,9 +13,9 @@ Web3 security is **your responsibility**. Unlike traditional banking, there's no
 - **Smart Contracts are Immutable** - Code flaws can be permanent
 - **You are the Bank** - Complete responsibility for asset security
 
-### Wallet Agent Security Features
+### WalletAgent Security Features
 
-Wallet Agent includes multiple security layers:
+WalletAgent includes multiple security layers:
 
 - **Mock Mode Default** - Safe testing environment
 - **Transaction Previews** - See exactly what will happen
@@ -57,7 +57,7 @@ Get wallet info
 ### When Mock Mode is Sufficient
 
 Use mock mode for:
-- Learning Wallet Agent commands
+- Learning WalletAgent commands
 - Testing smart contract interactions
 - Experimenting with DeFi protocols
 - Developing applications
@@ -67,7 +67,7 @@ Use mock mode for:
 
 ### Encrypted Key Management
 
-Wallet Agent provides secure private key storage:
+WalletAgent provides secure private key storage:
 
 ```
 Create encrypted keystore with master password
@@ -227,19 +227,15 @@ What chain am I on?
 - Using wrong network for DApp interaction
 - Paying high Ethereum fees for simple operations
 
-### Custom Chain Security
+### Network Security
 
-When adding custom chains:
+When working with different networks:
 
-```
-Add custom chain with name "TrustedChain" ID 1234 RPC "https://trusted-rpc.com"
-```
-
-**Verification Steps:**
-- ✅ **Official RPC** - Use only official or reputable RPC endpoints
-- ✅ **Correct Chain ID** - Verify against official documentation
-- ✅ **Secure Connection** - Ensure HTTPS endpoints
-- ✅ **Reputation** - Research the chain's security track record
+**Built-in Network Safety:**
+- ✅ **Pre-configured** - Built-in networks use trusted endpoints
+- ✅ **Verified Chain IDs** - All networks properly configured
+- ✅ **Secure Connections** - HTTPS endpoints for all networks
+- ✅ **Tested** - Networks verified for security and reliability
 
 ## Phishing Protection
 
@@ -304,7 +300,7 @@ Recognize these warning signs:
 ```
 ❌ Red Flags:
 - Connection to unknown RPC endpoints
-- Requests to add suspicious custom chains
+- Requests involving unknown or suspicious networks
 - Network switches to unfamiliar chains
 - SSL certificate warnings
 ```
@@ -437,7 +433,7 @@ If you lose access to your wallet:
 
 ### Built-in Security Features
 
-Wallet Agent provides these security tools:
+WalletAgent provides these security tools:
 
 ```
 # Security commands:

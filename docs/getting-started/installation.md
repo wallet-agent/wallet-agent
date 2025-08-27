@@ -1,6 +1,6 @@
 # Installation
 
-Install Wallet Agent as an MCP server in your AI agent. The process is simple and takes just a few minutes.
+Install WalletAgent as an MCP server in your AI agent. The process is simple and takes just a few minutes.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ Install Wallet Agent as an MCP server in your AI agent. The process is simple an
 
 {% tabs %}
 {% tab title="Claude Code" %}
-The easiest way to install Wallet Agent:
+The easiest way to install WalletAgent:
 
 ```bash
 claude mcp add wallet-agent bunx wallet-agent@latest
@@ -20,7 +20,7 @@ claude mcp add wallet-agent bunx wallet-agent@latest
 
 ### Verify Installation
 
-Check that Wallet Agent is running:
+Check that WalletAgent is running:
 
 ```
 /mcp
@@ -49,7 +49,7 @@ claude mcp add wallet-agent bunx wallet-agent@latest
 {% endtab %}
 
 {% tab title="Cursor" %}
-Add Wallet Agent to your Cursor MCP configuration:
+Add WalletAgent to your Cursor MCP configuration:
 
 ### 1. Open MCP Configuration
 
@@ -63,7 +63,7 @@ Edit your MCP configuration file:
 %APPDATA%\Cursor\mcp.json
 ```
 
-### 2. Add Wallet Agent
+### 2. Add WalletAgent
 
 ```json
 {
@@ -87,7 +87,7 @@ In Cursor, try a simple command:
 List available MCP tools
 ```
 
-You should see Wallet Agent tools in the response.
+You should see WalletAgent tools in the response.
 
 ### Troubleshooting Cursor
 
@@ -105,7 +105,7 @@ You should see Wallet Agent tools in the response.
 
 ## Advanced Setup
 
-For advanced users or contributors who want to customize Wallet Agent behavior, see the [Developer Guide](../developer-guide/) for detailed setup instructions.
+For advanced users or contributors who want to customize WalletAgent behavior, see the [Developer Guide](../developer-guide/) for detailed setup instructions.
 
 ## Advanced Configuration
 
@@ -113,7 +113,7 @@ For advanced configuration including private key management and custom settings,
 
 ## Verification
 
-Test that Wallet Agent is working correctly:
+Test that WalletAgent is working correctly:
 
 ### 1. Basic Connection Test
 
@@ -158,7 +158,7 @@ Expected response:
 
 ## Next Steps
 
-Great! Wallet Agent is now installed and running. Let's try some basic operations:
+Great! WalletAgent is now installed and running. Let's try some basic operations:
 
 👉 **[Continue to Quick Start →](quick-start.md)**
 
@@ -176,7 +176,7 @@ Great! Wallet Agent is now installed and running. Let's try some basic operation
 
 **MCP server startup failures**:
 - Check that your AI agent supports MCP
-- Verify Wallet Agent was installed correctly
+- Verify WalletAgent was installed correctly
 - Restart your AI agent
 
 ### Getting Help

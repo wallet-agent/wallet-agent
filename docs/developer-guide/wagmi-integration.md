@@ -4,7 +4,7 @@ This guide covers using Wagmi-generated contract configurations with AI agents t
 
 ## Overview
 
-Wallet Agent leverages Wagmi's contract configuration system for AI-powered blockchain interactions:
+WalletAgent leverages Wagmi's contract configuration system for AI-powered blockchain interactions:
 - **Contract Configuration Loading**: AI agents can load and use Wagmi-generated contract data
 - **Multi-Chain Support**: Chain-specific contract deployments accessible through prompts
 - **Prompt Interface**: Contract interactions through conversational prompts
@@ -74,7 +74,7 @@ The generated file will include:
 "Load my Wagmi-generated contract configuration from ./src/generated.ts into the wallet agent and show me which contracts and chains were loaded."
 
 **What happens:**
-- Wallet Agent parses your generated configuration file
+- WalletAgent parses your generated configuration file
 - Extracts contract ABIs and deployment addresses
 - Loads all contract definitions for use with AI prompts
 - Returns summary of loaded contracts and supported chains
@@ -322,5 +322,5 @@ The generated file will include:
 ## Next Steps
 
 - [Contract Testing](contract-testing.md) - Testing strategies for Wagmi-integrated contracts
-- [Custom Chains](custom-chains.md) - Adding custom EVM chains
+- [Chain Management](../user-guide/chain-management.md) - Working with supported chains
 - [API Reference](../api-reference/mcp-tools/contracts.md) - Complete contract tools reference

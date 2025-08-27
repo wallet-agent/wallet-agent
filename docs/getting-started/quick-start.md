@@ -1,14 +1,14 @@
 # Quick Start
 
-Let's get hands-on with Wallet Agent! This guide will walk you through your first Web3 operations using prompts.
+Let's get hands-on with WalletAgent! This guide will walk you through your first Web3 operations using prompts.
 
-## Your First 10 Minutes with Wallet Agent
+## Your First 10 Minutes with WalletAgent
 
-Follow along with these examples to understand how Wallet Agent works. All commands use safe mock wallets - no real funds involved!
+Follow along with these examples to understand how WalletAgent works. All commands use safe mock wallets - no real funds involved!
 
 ### Step 1: Check Your Setup
 
-First, let's verify Wallet Agent is working:
+First, let's verify WalletAgent is working:
 
 ```
 Get wallet info
@@ -26,7 +26,7 @@ Get wallet info
 ```
 
 {% hint style="info" %}
-**Mock Mode**: Wallet Agent starts in mock mode by default. This uses pre-configured test wallets that are completely safe for learning and development.
+**Mock Mode**: WalletAgent starts in mock mode by default. This uses pre-configured test wallets that are completely safe for learning and development.
 {% endhint %}
 
 ### Step 2: Connect to a Wallet
@@ -93,7 +93,7 @@ Transaction Sent Successfully
 
 ### Step 5: Switch Chains
 
-Wallet Agent supports multiple blockchain networks. Let's switch to Polygon:
+WalletAgent supports multiple blockchain networks. Let's switch to Polygon:
 
 ```
 Switch to Polygon
@@ -112,7 +112,7 @@ Switch to Polygon
 
 ## Understanding the Commands
 
-Let's break down what makes Wallet Agent special:
+Let's break down what makes WalletAgent special:
 
 ### Prompt Interface
 
@@ -125,7 +125,7 @@ Instead of complex function calls, you use everyday language:
 
 ### Intelligent Context
 
-Wallet Agent remembers your state:
+WalletAgent remembers your state:
 - Current wallet connection
 - Active blockchain network  
 - Recent transactions
@@ -184,7 +184,7 @@ Transfer 100 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 ## Smart Contract Interaction
 
-One of Wallet Agent's most powerful features is contract interaction. Let's explore:
+One of WalletAgent's most powerful features is contract interaction. Let's explore:
 
 ### Load Contract Configuration
 
@@ -266,7 +266,7 @@ What chains are supported?
 You've been using **mock wallets** - completely safe test accounts. When you're ready for testnet development, you can switch to **real wallets**:
 
 {% hint style="warning" %}
-**Only use testnets!** Never use real wallets with mainnet funds. Wallet Agent is beta software.
+**Only use testnets!** Never use real wallets with mainnet funds. WalletAgent is beta software.
 {% endhint %}
 
 ### Mock Wallets (Current)
@@ -292,7 +292,7 @@ You now have the basics! Here's where to go next:
 👉 **[Developer Guide](../developer-guide/)** - Smart contract development and testing
 
 ### For Advanced Users
-👉 **[Advanced Topics](../advanced/)** - Real wallets, custom chains, and extensions
+👉 **[Advanced Topics](../advanced/)** - Real wallets, private keys, and advanced features
 
 ## Quick Reference
 
@@ -322,4 +322,4 @@ Get [token] balance      # Check token balance
 
 ---
 
-**Congratulations.** You've completed the Wallet Agent quick start. You're now ready to explore the full capabilities of Web3 development with Wallet Agent.
+**Congratulations.** You've completed the WalletAgent quick start. You're now ready to explore the full capabilities of Web3 development with WalletAgent.

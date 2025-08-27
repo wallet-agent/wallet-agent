@@ -1,10 +1,10 @@
 # Contract Testing
 
-This guide covers comprehensive testing strategies for smart contracts integrated with Wallet Agent using prompts for AI agents.
+This guide covers comprehensive testing strategies for smart contracts integrated with WalletAgent using prompts for AI agents.
 
 ## Overview
 
-Contract testing with Wallet Agent provides:
+Contract testing with WalletAgent provides:
 - **Isolated Test Environments**: Clean state for each test
 - **Multi-Chain Testing**: Test across different blockchain networks
 - **Prompts for Testing**: Direct prompts to AI agents for test execution
@@ -261,6 +261,6 @@ The AI will execute the event-emitting function, retrieve the transaction receip
 
 ## Next Steps
 
-- [Testing Guide](testing.md) - General testing strategies for Wallet Agent
-- [Custom Chains](custom-chains.md) - Testing on custom blockchain networks
+- [Testing Guide](testing.md) - General testing strategies for WalletAgent
+- [Testing](testing.md) - Comprehensive testing strategies
 - [API Reference](../api-reference/mcp-tools/testing.md) - Testing tool reference

@@ -1,6 +1,6 @@
 # Basic Operations
 
-Master the fundamental operations of Wallet Agent. These are the building blocks for all Web3 interactions.
+Master the fundamental operations of WalletAgent. These are the building blocks for all Web3 interactions.
 
 ## Wallet Information
 
@@ -86,7 +86,7 @@ You can use just the first few characters:
 Connect to 0xf39F
 ```
 
-Wallet Agent will find the matching address automatically.
+WalletAgent will find the matching address automatically.
 
 ### Get Current Account
 
@@ -200,7 +200,7 @@ Mock wallets are **completely safe** test accounts that:
 ### When to Use Mock vs Real Wallets
 
 **Use Mock Wallets For:**
-- ✅ Learning Wallet Agent commands
+- ✅ Learning WalletAgent commands
 - ✅ Testing smart contract interactions
 - ✅ Experimenting with DeFi protocols
 - ✅ Training and education
@@ -213,7 +213,7 @@ Mock wallets are **completely safe** test accounts that:
 - ❌ **Never for mainnet with real funds**
 
 {% hint style="warning" %}
-**Mainnet Warning**: Wallet Agent is beta software. Never use real wallets with mainnet funds or valuable assets.
+**Mainnet Warning**: WalletAgent is beta software. Never use real wallets with mainnet funds or valuable assets.
 {% endhint %}
 
 ## Common Operations
@@ -228,7 +228,7 @@ What's my current status?
 
 **Example Output:**
 ```
-📊 Wallet Agent Status
+📊 WalletAgent Status
 
 👤 Account: 0xf39Fd...2266 (Connected)
 💰 Balance: 9999.0 ETH  
@@ -304,7 +304,7 @@ Switch to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **"Chain not supported"**
 ```
-❌ Chain "MyCustomChain" not found
+❌ Chain "SomeChain" not found
 
 🔧 Supported chains:
 - Anvil (31337) - Local development  
@@ -312,10 +312,10 @@ Switch to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 - Sepolia (11155111) - Ethereum testnet
 - Polygon (137) - Polygon mainnet
 
-💡 Want to add a custom chain? Use "Add custom chain" command
+💡 Use one of the supported chain names above
 ```
 
-**Solution**: Use supported chain names or add custom chains.
+**Solution**: Use supported chain names from the built-in networks.
 
 ## Best Practices
 
@@ -362,7 +362,7 @@ Instead of typing full addresses:
 ✅ Connect to 0xf39F
 ```
 
-Wallet Agent will find the match automatically.
+WalletAgent will find the match automatically.
 
 ### 5. Understand Your Mode
 
@@ -377,12 +377,12 @@ Always know whether you're in Mock or Real mode:
 **Problem**: "MCP server not responding"
 **Solution**: 
 1. Restart your AI agent
-2. Check that Wallet Agent is properly installed
+2. Check that WalletAgent is properly installed
 3. Try: "Get wallet info" to test connection
 
-**Problem**: "Wallet Agent not found"
+**Problem**: "WalletAgent not found"
 **Solution**:
-1. Check that Wallet Agent is properly configured in your AI agent
+1. Check that WalletAgent is properly configured in your AI agent
 2. Restart your AI agent
 3. Check MCP configuration
 
@@ -438,4 +438,4 @@ Try these practice exercises:
 
 ---
 
-You now know the fundamentals of Wallet Agent. These basic operations are the foundation for all Web3 interactions.
+You now know the fundamentals of WalletAgent. These basic operations are the foundation for all Web3 interactions.

@@ -1,10 +1,10 @@
 # API Reference
 
-Complete reference documentation for Wallet Agent's tools and capabilities for AI agent interactions.
+Complete reference documentation for WalletAgent's tools and capabilities for AI agent interactions.
 
 ## Overview
 
-Wallet Agent provides blockchain functionality through prompts with AI agents:
+WalletAgent provides blockchain functionality through prompts with AI agents:
 
 - **[MCP Tools](mcp-tools/README.md)**: Model Context Protocol tools for conversational blockchain operations
 
@@ -20,13 +20,13 @@ This documentation focuses on how developers can interact with AI agents (like C
 | [Transaction Tools](mcp-tools/transactions.md) | Transaction operations and monitoring | `send_transaction`, `get_transaction_status`, `estimate_gas` |
 | [Contract Tools](mcp-tools/contracts.md) | Smart contract interaction | `read_contract`, `write_contract`, `load_wagmi_config` |
 | [Token Tools](mcp-tools/tokens.md) | ERC-20 and ERC-721 operations | `transfer_token`, `get_token_balance`, `transfer_nft` |
-| [Chain Tools](mcp-tools/chains.md) | Blockchain network management | `switch_chain`, `add_custom_chain`, `get_wallet_info` |
+| [Chain Tools](mcp-tools/chains.md) | Blockchain network management | `switch_chain`, `get_wallet_info` |
 | [Testing Tools](mcp-tools/testing.md) | Development and testing utilities | `simulate_transaction`, `get_transaction_receipt` |
 
 
 ## Interaction Format
 
-AI agents interact with Wallet Agent through prompts. The underlying MCP protocol handles tool calls automatically based on your conversational requests.
+AI agents interact with WalletAgent through prompts. The underlying MCP protocol handles tool calls automatically based on your conversational requests.
 
 ### Prompt Structure
 
@@ -57,7 +57,7 @@ When operations fail, AI agents will receive clear error messages that explain w
 
 ### Wallet Types
 
-Wallet Agent supports two wallet modes that you can request through conversational prompts:
+WalletAgent supports two wallet modes that you can request through conversational prompts:
 
 - **Mock Wallets**: For testing and development
 - **Private Key Wallets**: For real blockchain interactions
@@ -95,7 +95,7 @@ When working with AI agents for blockchain operations:
 
 ### MCP Protocol Version
 
-Wallet Agent implements MCP Protocol version 2024-11-05.
+WalletAgent implements MCP Protocol version 2024-11-05.
 
 ### Supported Chains
 
@@ -105,7 +105,7 @@ Wallet Agent implements MCP Protocol version 2024-11-05.
 | Sepolia Testnet | 11155111 | ETH | ✅ Built-in |
 | Polygon | 137 | POL | ✅ Built-in |
 | Anvil Local | 31337 | ETH | ✅ Built-in |
-| Custom Chains | Any | Configurable | ✅ Via `add_custom_chain` |
+| Built-in Chains | Ethereum, Polygon, Sepolia, Anvil | Pre-configured | ✅ Ready to use |
 
 ### Wagmi Integration
 
@@ -148,10 +148,10 @@ Compatible with Wagmi v2.x and Viem v2.x.
 - "Change to Ethereum mainnet"
 - "What chain am I currently connected to?"
 
-**Custom Chain Setup:**
-- "Add a custom chain with ID 1234 called 'My Chain' using RPC https://rpc.mychain.com"
-- "Set up a custom blockchain with native currency 'MT' (My Token) with 18 decimals"
-- "Remove the custom chain with ID 1234"
+**Multi-Chain Support:**
+- "Switch to Polygon network for lower gas costs"
+- "Switch to Sepolia testnet for development"
+- "Use Anvil for local testing"
 
 ### Token Operations
 

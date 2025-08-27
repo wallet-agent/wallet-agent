@@ -1,16 +1,16 @@
 # User Guide
 
-Welcome to the Wallet Agent User Guide! This comprehensive guide covers everything you need to know about using Wallet Agent for Web3 operations through prompts.
+Welcome to the WalletAgent User Guide! This comprehensive guide covers everything you need to know about using WalletAgent for Web3 operations through prompts.
 
 ## What You'll Learn
 
-This guide covers all the essential operations you can perform with Wallet Agent:
+This guide covers all the essential operations you can perform with WalletAgent:
 
 - 🔐 **[Basic Operations](basic-operations.md)** - Wallet connection, balance checking, account management
 - 💸 **[Transactions](transactions.md)** - Sending ETH, gas management, transaction monitoring
 - 🪙 **[Token Operations](token-operations.md)** - ERC-20 transfers, approvals, balance management
 - 🎨 **[NFT Operations](nft-operations.md)** - ERC-721 transfers, metadata, collections
-- ⛓️ **[Chain Management](chain-management.md)** - Multi-chain support, custom networks
+- ⛓️ **[Chain Management](chain-management.md)** - Multi-chain support, built-in networks
 - 🛡️ **[Security](security.md)** - Best practices, private key management, safety tips
 
 ## Who This Guide Is For
@@ -19,14 +19,12 @@ This guide is perfect for:
 
 - **Web3 Beginners** - New to blockchain and want to learn safely
 - **Developers** - Building DApps and need efficient Web3 operations  
-- **DeFi Users** - Managing tokens and interacting with protocols
-- **NFT Enthusiasts** - Collecting and managing digital assets
 - **Researchers** - Testing and analyzing blockchain interactions
 
 ## How to Use This Guide
 
 ### Start Here
-If you're new to Wallet Agent, begin with [Basic Operations](basic-operations.md) to understand fundamental concepts.
+If you're new to WalletAgent, begin with [Basic Operations](basic-operations.md) to understand fundamental concepts.
 
 ### Find What You Need
 Use the navigation menu or search to find specific operations. Each section includes:
@@ -39,12 +37,12 @@ Use the navigation menu or search to find specific operations. Each section incl
 All examples use mock wallets by default - completely safe for learning and experimentation.
 
 {% hint style="info" %}
-**Learning Tip**: Try each command as you read. Wallet Agent's mock mode makes it safe to experiment!
+**Learning Tip**: Try each command as you read. WalletAgent's mock mode makes it safe to experiment!
 {% endhint %}
 
 ## Command Style Guide
 
-Wallet Agent understands prompts, but here are patterns that work well:
+WalletAgent understands prompts, but here are patterns that work well:
 
 ### Action + Object + Details
 ```
@@ -69,7 +67,7 @@ Show me available contracts
 
 ## Understanding Outputs
 
-Wallet Agent provides rich, detailed responses. Here's how to read them:
+WalletAgent provides rich, detailed responses. Here's how to read them:
 
 ### Success Indicators
 - ✅ **Green checkmarks** - Operations completed successfully
@@ -94,7 +92,7 @@ Wallet Agent provides rich, detailed responses. Here's how to read them:
 
 ## Safety Features
 
-Wallet Agent includes multiple safety features to protect you:
+WalletAgent includes multiple safety features to protect you:
 
 ### Mock Mode Default
 - Starts in safe mock mode automatically
@@ -174,7 +172,7 @@ Polygon (137)      # Polygon mainnet
 ### Interactive Help
 ```
 Help me with [specific operation]
-What can I do with Wallet Agent?
+What can I do with WalletAgent?
 Show me examples of [operation type]
 ```
 

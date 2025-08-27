@@ -1,16 +1,16 @@
 # Development Concepts
 
-This guide covers key concepts for building Web3 applications with Wallet Agent, focusing on development patterns and workflows that help you build better applications.
+This guide covers key concepts for building Web3 applications with WalletAgent, focusing on development patterns and workflows that help you build better applications.
 
 ## Overview
 
-Wallet Agent enables blockchain development through prompts with AI agents. Understanding these core concepts will help you work more effectively and build robust Web3 applications.
+WalletAgent enables blockchain development through prompts with AI agents. Understanding these core concepts will help you work more effectively and build robust Web3 applications.
 
 ## Development Workflow
 
 ### Safe-First Development
 
-Wallet Agent follows a **safety-first** approach to Web3 development:
+WalletAgent follows a **safety-first** approach to Web3 development:
 
 **Mock Mode by Default**
 - All operations start in mock mode for safe testing
@@ -38,7 +38,7 @@ Instead of complex API calls, use conversational prompts:
 ```
 
 **Context-Aware Operations**
-Wallet Agent remembers your:
+WalletAgent remembers your:
 - Current wallet connection
 - Active blockchain network  
 - Loaded contract configurations
@@ -94,9 +94,9 @@ Work with multiple blockchains seamlessly:
 
 **Network Configuration**
 ```
-"Add Base network as a custom chain"
+"Switch to Polygon for mainnet testing"
 "Switch to Sepolia testnet for testing"
-"Configure custom RPC endpoint for private network"
+"Use Anvil for local development"
 ```
 
 ### Testing Strategies
@@ -124,7 +124,7 @@ Work with multiple blockchains seamlessly:
 # Start local blockchain
 anvil --host 0.0.0.0 --port 8545
 
-# Connect Wallet Agent
+# Connect WalletAgent
 "Switch to Anvil network"
 "Connect to test wallet 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 ```
@@ -307,15 +307,15 @@ anvil --host 0.0.0.0 --port 8545
 
 ### Intermediate Developers
 1. Explore multi-chain development
-2. Implement complex DeFi interactions
+2. Implement advanced Web3 interactions
 3. Build automated testing workflows
 4. Optimize gas usage and performance
 
 ### Advanced Developers
-1. Design custom blockchain integrations
+1. Design multi-chain blockchain integrations
 2. Build production deployment pipelines
 3. Implement advanced security patterns
-4. Contribute to Wallet Agent development
+4. Contribute to WalletAgent development
 
 ## Next Steps
 
@@ -324,8 +324,8 @@ Ready to start building? Here's your path forward:
 **[Contract Development →](contract-development.md)** - Learn smart contract development patterns
 **[Wagmi Integration →](wagmi-integration.md)** - Master ABI management and integration
 **[Contract Testing →](contract-testing.md)** - Build comprehensive test suites
-**[Custom Chains →](custom-chains.md)** - Add support for new blockchain networks
+**[Chain Management →](../user-guide/chain-management.md)** - Work with supported blockchain networks
 
 ---
 
-These development concepts form the foundation for building robust Web3 applications with Wallet Agent. Focus on safety, testing, and clear communication with your AI agent for the best development experience.
+These development concepts form the foundation for building robust Web3 applications with WalletAgent. Focus on safety, testing, and clear communication with your AI agent for the best development experience.

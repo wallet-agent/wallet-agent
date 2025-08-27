@@ -4,7 +4,7 @@ Enhanced security options for private key management in AI-assisted blockchain d
 
 ## Overview
 
-Encrypted key storage provides an additional security layer when using private keys with AI agents. This guide covers encrypted key management, security enhancements, and production deployment considerations for Wallet Agent.
+Encrypted key storage provides an additional security layer when using private keys with AI agents. This guide covers encrypted key management, security enhancements, and production deployment considerations for WalletAgent.
 
 **🔐 Security Enhancement:** Encrypted keys add protection against unauthorized access while maintaining the convenience of AI-assisted blockchain operations.
 

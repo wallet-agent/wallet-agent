@@ -1,6 +1,6 @@
 # Claude Code Setup
 
-This guide covers setting up Wallet Agent specifically for Claude Code, Anthropic's official CLI for Claude.
+This guide covers setting up WalletAgent specifically for Claude Code, Anthropic's official CLI for Claude.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ This guide covers setting up Wallet Agent specifically for Claude Code, Anthropi
 
 ## Installation
 
-Add Wallet Agent to Claude Code using bunx (or npx as fallback):
+Add WalletAgent to Claude Code using bunx (or npx as fallback):
 
 ```bash
 # Using bunx (recommended)
@@ -20,7 +20,7 @@ claude mcp add wallet-agent npx wallet-agent@latest
 ```
 
 This command:
-- Downloads the latest version of Wallet Agent
+- Downloads the latest version of WalletAgent
 - Configures it as an MCP server  
 - Makes it available in all Claude Code sessions
 
@@ -30,7 +30,7 @@ This command:
 
 ### Check MCP Status
 
-Verify Wallet Agent is installed and running:
+Verify WalletAgent is installed and running:
 
 ```
 /mcp
@@ -89,7 +89,6 @@ claude mcp add wallet-agent bunx wallet-agent@latest \
 | `WALLET_PRIVATE_KEY` | Real wallet private key | `0x123abc...` |
 | `DEBUG` | Enable debug logging | `wallet-agent:*` |
 | `NODE_ENV` | Environment mode | `development` |
-| `RPC_URL_ETHEREUM` | Custom Ethereum RPC | `https://eth-mainnet.g.alchemy.com/v2/...` |
 
 {% hint style="warning" %}
 **Private Key Security**: Never commit private keys to code. Use environment variables or encrypted key storage instead.
@@ -136,7 +135,7 @@ Would you like me to proceed with a smaller test amount first?
 
 ### With Code Projects
 
-Claude Code can help integrate Wallet Agent into your development workflow:
+Claude Code can help integrate WalletAgent into your development workflow:
 
 ```
 "Load the wagmi config from my project and analyze the contracts"
@@ -180,7 +179,7 @@ which claude
 node --version
 bun --version
 
-# Try reinstalling Wallet Agent
+# Try reinstalling WalletAgent
 claude mcp remove wallet-agent
 claude mcp add wallet-agent bunx wallet-agent@latest
 ```
@@ -200,7 +199,7 @@ Check Claude Code's output for detailed error messages and debug information.
 If you need to start fresh:
 
 ```bash
-# Remove Wallet Agent
+# Remove WalletAgent
 claude mcp remove wallet-agent
 
 # Clear any cached data
@@ -214,7 +213,7 @@ claude mcp add wallet-agent bunx wallet-agent@latest
 
 ### Custom Instructions
 
-Create a `~/.claude/instructions.md` file to customize Wallet Agent behavior:
+Create a `~/.claude/instructions.md` file to customize WalletAgent behavior:
 
 ```markdown
 # My Wallet Instructions
@@ -273,7 +272,7 @@ Please:
 
 ## Next Steps
 
-Now that Wallet Agent is configured with Claude Code:
+Now that WalletAgent is configured with Claude Code:
 
 1. **[Try the Quick Start Guide](quick-start.md)** - Learn basic operations
 2. **[Explore User Operations](../user-guide/)** - Master wallet management  
@@ -294,4 +293,4 @@ Now that Wallet Agent is configured with Claude Code:
 
 ---
 
-Ready to explore Web3 with Claude Code and Wallet Agent? Let's begin.
+Ready to explore Web3 with Claude Code and WalletAgent? Let's begin.

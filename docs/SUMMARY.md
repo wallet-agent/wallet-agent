@@ -24,7 +24,6 @@
 * [Contract Development](developer-guide/contract-development.md)
 * [Wagmi Integration](developer-guide/wagmi-integration.md)
 * [Contract Testing](developer-guide/contract-testing.md)
-* [Custom Chains](developer-guide/custom-chains.md)
 * [Testing](developer-guide/testing.md)
 
 ## API Reference

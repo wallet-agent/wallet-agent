@@ -4,7 +4,7 @@ MCP tools for blockchain network management and multi-chain operations with AI a
 
 ## Overview
 
-Chain tools enable AI agents to manage blockchain networks, switch between chains, and configure custom EVM-compatible networks through prompts. These tools support multi-chain development and operations.
+Chain tools enable AI agents to manage blockchain networks and switch between supported chains through prompts. These tools support multi-chain development and operations with built-in networks.
 
 ## Tools
 
@@ -28,8 +28,7 @@ Switch to a different blockchain network.
 - "Switch to Ethereum mainnet"
 - "Change to Polygon network (chain ID 137)"
 - "Switch to the Sepolia testnet"
-- "Move to chain ID 31337 for local testing"
-- "Switch to Arbitrum"
+- "Move to chain ID 31337 for local testing (Anvil)"
 
 **AI Agent Response:**
 The AI agent will switch to the specified blockchain network and confirm the change, showing the new network name and native currency information.
@@ -40,105 +39,6 @@ The AI agent will switch to the specified blockchain network and confirm the cha
 
 ---
 
-### add_custom_chain
-
-Add a custom EVM-compatible blockchain network.
-
-**Tool Name:** `mcp__wallet-agent__add_custom_chain`
-
-**What you provide:**
-- Unique chain ID for the new network
-- Network name (e.g., "MyChain Mainnet")
-- RPC endpoint URL for connecting to the network
-- Native currency configuration (name, symbol, decimals - usually 18)
-- Block explorer URL (optional, for viewing transactions)
-
-**What the AI returns:**
-- Confirmation that the custom chain was added successfully
-- Chain ID and name of the new network
-- Native currency details that were configured
-- RPC URL and block explorer URL (if provided)
-- Availability status for immediate use
-
-**Example Prompts:**
-- "Add Avalanche C-Chain with RPC https://api.avax.network/ext/bc/C/rpc"
-- "Set up a custom chain called 'MyChain' with ID 1234 and RPC https://rpc.mychain.com"
-- "Add Fantom Opera network with native token FTM"
-- "Configure BNB Smart Chain with chain ID 56"
-- "Add my local development chain running on localhost:8545"
-
-**AI Agent Response:**
-The AI agent will add the custom chain configuration and confirm it's available for use, showing all the configured parameters.
-
-**Errors:**
-- `InvalidParams`: Invalid chain configuration (missing required fields, invalid URLs)
-- `InternalError`: Failed to add chain
-
----
-
-### update_custom_chain
-
-Update configuration for an existing custom chain.
-
-**Tool Name:** `mcp__wallet-agent__update_custom_chain`
-
-**What you provide:**
-- Chain ID of the custom chain you want to update
-- New network name (optional)
-- New RPC endpoint URL (optional)
-- Updated native currency configuration (optional)
-- New block explorer URL (optional)
-
-**What the AI returns:**
-- Chain ID that was updated
-- Confirmation that the update was successful
-- List of fields that were changed during the update
-
-**Example Prompts:**
-- "Update chain ID 1234 to use RPC endpoint https://new-rpc.mychain.com"
-- "Change the name of my custom chain to 'Production Chain'"
-- "Update the block explorer URL for chain 1234"
-- "Switch my development chain to use the new RPC server"
-
-**AI Agent Response:**
-The AI agent will update the specified chain configuration and report which fields were changed.
-
-**Errors:**
-- `InvalidParams`: Invalid chain ID or configuration parameters
-- `InvalidRequest`: Chain ID not found in custom chains
-- `InternalError`: Update failed
-
----
-
-### remove_custom_chain
-
-Remove a previously added custom chain.
-
-**Tool Name:** `mcp__wallet-agent__remove_custom_chain`
-
-**What you provide:**
-- Chain ID of the custom chain you want to remove
-
-**What the AI returns:**
-- Chain ID that was removed
-- Confirmation that the removal was successful
-- Name of the chain that was removed
-
-**Example Prompts:**
-- "Remove the custom chain with ID 1234"
-- "Delete my test chain configuration"
-- "Remove the old development chain"
-- "Clean up unused custom chains"
-
-**AI Agent Response:**
-The AI agent will remove the custom chain and confirm the removal. Note that built-in chains (Mainnet, Polygon, etc.) cannot be removed.
-
-**Errors:**
-- `InvalidParams`: Invalid chain ID
-- `InvalidRequest`: Chain not found or is a built-in chain
-- `InternalError`: Removal failed
-
----
 
 ### get_wallet_info
 
@@ -153,7 +53,7 @@ Get comprehensive wallet and chain configuration information.
 - Connected wallet address (if connected)
 - Active chain ID and human-readable name
 - Native currency details for the current chain
-- Complete list of all supported chains with their configurations
+- Complete list of all supported chains (both built-in and any configured chains)
 - Current wallet type (mock for testing or privateKey for real transactions)
 - List of available wallet addresses you can connect to
 
@@ -172,12 +72,12 @@ The AI agent will provide a comprehensive overview of the current wallet connect
 ## Common Workflows
 
 ### Multi-Chain Development Setup
-**Developer:** "Set up my development environment for Ethereum mainnet, Polygon, and my local test chain"
+**Developer:** "Set up my development environment for Ethereum mainnet, Polygon, and Anvil for local testing"
 
 **AI Agent Response:** The AI will:
-1. Confirm built-in chains: "Ethereum mainnet and Polygon are already available"
-2. Add custom chain: "Adding your local test chain with ID 31337..."
-3. Summary: "Development environment ready with 3 chains available"
+1. Confirm available chains: "Ethereum mainnet, Polygon, and Anvil are all available"
+2. Current status: "All networks ready for development"
+3. Summary: "Development environment ready with built-in chain support"
 
 ### Chain Switching for Operations
 **Developer:** "Switch to Polygon, check my USDC balance, then switch back to Ethereum"
@@ -188,18 +88,18 @@ The AI agent will provide a comprehensive overview of the current wallet connect
 3. Switch back: "Switched to Ethereum mainnet"
 4. Final status: "Back on Ethereum mainnet"
 
-### Custom Network Integration
-**Developer:** "Add the Arbitrum Nova network with chain ID 42170"
+### Network Information
+**Developer:** "Show me all available networks for development"
 
-**AI Agent Response:** The AI will configure Arbitrum Nova with the correct RPC endpoint, native currency (ETH), and block explorer, then confirm it's ready for use.
+**AI Agent Response:** The AI will display all built-in networks including Anvil (local development), Ethereum mainnet, Sepolia testnet, and Polygon, along with their chain IDs and native currencies.
 
 ### Network Troubleshooting
-**Developer:** "My custom chain isn't working. Help me fix the configuration"
+**Developer:** "I'm having issues connecting to Polygon. Help me troubleshoot"
 
 **AI Agent Response:** The AI will:
-1. Check current config: "Chain ID 1234 uses RPC https://old-rpc.example.com"
-2. Test connectivity: "RPC endpoint appears unreachable"
-3. Suggest fix: "Would you like to update to a different RPC endpoint?"
+1. Check current config: "Currently on Polygon (Chain ID: 137)"
+2. Test connectivity: "Testing network connectivity..."
+3. Suggest alternatives: "Try switching to Anvil for local development while Polygon resolves"
 
 ## Multi-Chain Operations
 
@@ -239,84 +139,87 @@ The AI agent will provide a comprehensive overview of the current wallet connect
 
 ## Advanced Chain Configuration
 
-### High-Availability RPC Setup
-**Developer:** "Configure my custom chain with a backup RPC endpoint"
+### Network Status Checking
+**Developer:** "Check the status of all available networks"
 
-**AI Agent Response:** The AI will set up the primary RPC and provide guidance on switching to backup endpoints if the primary fails.
+**AI Agent Response:** The AI will test connectivity to all built-in networks and report their operational status.
 
-### Environment-Specific Chains
-**Developer:** "Use different RPC endpoints for development vs production"
+### Environment-Specific Networks
+**Developer:** "What networks should I use for development vs production?"
 
-**AI Agent Response:** The AI will help configure environment-specific settings and ensure the correct endpoints are used based on the current environment.
+**AI Agent Response:** The AI will recommend:
+- Development: Anvil (local) for fast testing
+- Staging: Sepolia testnet for integration testing  
+- Production: Ethereum mainnet or Polygon based on requirements
 
-### Performance Optimization
-**Developer:** "Find the fastest RPC endpoint for Polygon"
+### Performance Comparison
+**Developer:** "Compare transaction costs across available networks"
 
-**AI Agent Response:** The AI will test multiple Polygon RPC endpoints and configure the fastest one for optimal performance.
+**AI Agent Response:** The AI will show gas costs and transaction speeds for operations across Ethereum, Polygon, and other available networks.
 
-### Custom Chain Validation
-**Developer:** "Verify my custom chain configuration is correct"
+### Network Validation
+**Developer:** "Verify I can connect to all supported networks"
 
 **AI Agent Response:** The AI will:
-1. Test RPC connectivity: "RPC endpoint responding correctly"
-2. Validate chain ID: "Chain ID 1234 is unique and valid"
-3. Check currency: "Native currency CUSTOM configured properly"
-4. Test transactions: "Test transaction simulation successful"
+1. Test Anvil: "Local development network ready"
+2. Check Ethereum: "Ethereum mainnet accessible"
+3. Verify testnets: "Sepolia testnet operational"
+4. Test Polygon: "Polygon network responding normally"
 
 ## Security and Best Practices
 
-### Secure RPC Configuration
-**Developer:** "Add my production chain but ensure I'm using HTTPS endpoints"
+### Network Security
+**Developer:** "Ensure I'm using secure connections to all networks"
 
-**AI Agent Response:** "I'll configure your production chain with HTTPS RPC for security. HTTP endpoints are not recommended for production use."
+**AI Agent Response:** "All built-in networks are pre-configured with secure HTTPS endpoints. Anvil uses localhost for local development, which is safe for testing."
 
-### Chain ID Validation
-**Developer:** "Make sure my custom chain ID doesn't conflict with existing networks"
+### Network Safety
+**Developer:** "How do I avoid accidentally using mainnet during development?"
 
-**AI Agent Response:** The AI will verify the chain ID is unique and doesn't conflict with known blockchain networks.
+**AI Agent Response:** The AI will explain the safety features and recommend starting with Anvil for development, then Sepolia for testnet testing before any mainnet operations.
 
-### Network Isolation
-**Developer:** "Set up isolated test networks that won't affect my mainnet operations"
+### Development Isolation
+**Developer:** "Set up a safe development environment that won't affect real funds"
 
-**AI Agent Response:** The AI will configure separate test networks with clear naming and safeguards to prevent accidental mainnet transactions.
+**AI Agent Response:** The AI will guide you to use Anvil (local) with mock wallets for completely safe development, isolated from any real networks.
 
 ## Error Handling and Recovery
 
 ### Network Connectivity Issues
-**Developer:** "My custom chain stopped working. What's wrong?"
+**Developer:** "Polygon network seems to be down. What should I do?"
 
-**AI Agent Response:** The AI will diagnose:
-1. Test RPC connectivity
-2. Check chain configuration
-3. Verify network status
-4. Suggest solutions or alternative endpoints
+**AI Agent Response:** The AI will:
+1. Test network connectivity
+2. Check network status
+3. Suggest alternatives like switching to Anvil for continued development
+4. Provide updates on network recovery
 
-### Chain Switch Failures
-**Developer:** "I can't switch to my custom chain"
+### Chain Switch Issues
+**Developer:** "I can't switch to Ethereum mainnet"
 
-**AI Agent Response:** The AI will troubleshoot the chain configuration, test the RPC endpoint, and help resolve connection issues.
+**AI Agent Response:** The AI will troubleshoot the connection, test network accessibility, and suggest alternative networks if there are connectivity issues.
 
-### Configuration Recovery
-**Developer:** "I accidentally removed my custom chain. How do I restore it?"
+### Development Continuity
+**Developer:** "How can I continue development when external networks are unavailable?"
 
-**AI Agent Response:** The AI will guide you through re-adding the chain with the previous configuration parameters.
+**AI Agent Response:** The AI will guide you to use Anvil for local development, which works offline and provides the same development experience.
 
 ## Performance Monitoring
 
 ### Network Performance Testing
-**Developer:** "Test the performance of all my configured chains"
+**Developer:** "Test the performance of all available networks"
 
-**AI Agent Response:** The AI will test each chain's RPC response time and suggest optimizations for better performance.
+**AI Agent Response:** The AI will test response times for built-in networks and provide performance comparisons to help choose the best network for your use case.
 
 ### Gas Price Monitoring
-**Developer:** "Monitor gas prices across Ethereum, Polygon, and Arbitrum"
+**Developer:** "Compare gas prices across Ethereum and Polygon"
 
-**AI Agent Response:** The AI will provide real-time gas price comparisons and recommend the most cost-effective network for transactions.
+**AI Agent Response:** The AI will provide real-time gas price comparisons between supported networks and recommend the most cost-effective option for your transactions.
 
-### Chain Health Monitoring
-**Developer:** "Check if all my configured chains are healthy and responsive"
+### Network Health Monitoring
+**Developer:** "Check if all supported networks are healthy and responsive"
 
-**AI Agent Response:** The AI will test each chain's connectivity, block production, and overall health status.
+**AI Agent Response:** The AI will test connectivity and responsiveness for all built-in networks and report their operational status.
 
 ## Related Tools
 

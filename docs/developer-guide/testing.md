@@ -1,10 +1,10 @@
 # Testing
 
-This guide covers comprehensive testing strategies for Wallet Agent applications and integrations using prompts with AI agents.
+This guide covers comprehensive testing strategies for WalletAgent applications and integrations using prompts with AI agents.
 
 ## Overview
 
-Wallet Agent testing provides:
+WalletAgent testing provides:
 - **Safe Testing Environment**: Mock wallets and simulation for risk-free development
 - **Multi-Chain Testing**: Test across different blockchain networks  
 - **Real Blockchain Integration**: Anvil and testnet support
@@ -15,7 +15,7 @@ Wallet Agent testing provides:
 
 ### Safe Development Testing
 
-Wallet Agent prioritizes safety in testing workflows. When working with an AI agent, you can request safe testing setups with prompts like:
+WalletAgent prioritizes safety in testing workflows. When working with an AI agent, you can request safe testing setups with prompts like:
 
 **Setting up safe testing environments:**
 - "Use mock wallets for testing these contract functions"
@@ -95,7 +95,7 @@ When testing complete wallet workflows that involve multiple components working 
 - "Connect to a wallet, switch chains, and confirm that balance queries work on the new chain"
 - "Test that wallet info reflects the correct chain ID after switching"
 - "Verify that chain-specific operations like gas estimation work after chain changes"
-- "Test error handling when switching to unsupported or custom chain IDs"
+- "Test error handling when switching to unsupported chain IDs"
 
 **State Management Integration:**
 - "Test that wallet state persists correctly across multiple operations"
@@ -167,7 +167,7 @@ For testing across multiple blockchain networks, use these cross-chain testing p
 - "Log balance information for each tested chain to verify different network states"
 
 **Network Configuration Testing:**
-- "Test adding custom chain configurations and switching to them"
+- "Test switching between all supported chains (Ethereum, Polygon, Sepolia, Anvil)"
 - "Verify that chain metadata like native currency symbols are correct for each network"
 - "Test error handling when attempting to switch to unsupported chain IDs"
 - "Test that RPC endpoints respond correctly for all configured chains"

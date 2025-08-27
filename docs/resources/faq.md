@@ -1,28 +1,28 @@
 # FAQ
 
-Frequently asked questions about Wallet Agent for developers using AI agents.
+Frequently asked questions about WalletAgent for developers using AI agents.
 
 ## Overview
 
-Common questions developers have when using Wallet Agent with AI agents like Claude Code and Cursor for blockchain development workflows.
+Common questions developers have when using WalletAgent with AI agents like Claude Code and Cursor for blockchain development workflows.
 
 ## General Development Questions
 
-### What is Wallet Agent?
+### What is WalletAgent?
 
-**Q:** What exactly is Wallet Agent and how do I use it in development?
+**Q:** What exactly is WalletAgent and how do I use it in development?
 
-**A:** Wallet Agent is an MCP (Model Context Protocol) server that enables AI agents to perform blockchain operations through prompts. Instead of writing blockchain code directly, you use prompts like "Deploy my Counter contract to Sepolia testnet" and the AI agent handles the underlying blockchain interactions.
+**A:** WalletAgent is an MCP (Model Context Protocol) server that enables AI agents to perform blockchain operations through prompts. Instead of writing blockchain code directly, you use prompts like "Deploy my Counter contract to Sepolia testnet" and the AI agent handles the underlying blockchain interactions.
 
 ### How does this differ from traditional blockchain development?
 
-**Q:** How is using Wallet Agent with AI agents different from normal Web3 development?
+**Q:** How is using WalletAgent with AI agents different from normal Web3 development?
 
-**A:** Traditional development requires writing code with libraries like ethers.js or viem. With Wallet Agent, you use prompts: "Transfer 100 USDC to address 0x..." instead of writing transaction code. The AI agent translates your prompts into proper blockchain operations using Wallet Agent's MCP tools.
+**A:** Traditional development requires writing code with libraries like ethers.js or viem. With WalletAgent, you use prompts: "Transfer 100 USDC to address 0x..." instead of writing transaction code. The AI agent translates your prompts into proper blockchain operations using WalletAgent's MCP tools.
 
-### Which AI agents work with Wallet Agent?
+### Which AI agents work with WalletAgent?
 
-**Q:** What AI agents can I use with Wallet Agent?
+**Q:** What AI agents can I use with WalletAgent?
 
 **A:** Currently optimized for:
 - **Claude Code** - Terminal-based blockchain operations
@@ -33,10 +33,10 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### How do I get started with development?
 
-**Q:** What's the quickest way to start developing with Wallet Agent?
+**Q:** What's the quickest way to start developing with WalletAgent?
 
 **A:** 
-1. Follow the installation guide to set up Wallet Agent
+1. Follow the installation guide to set up WalletAgent
 2. Configure your AI agent (Claude Code or Cursor) to connect
 3. Start with: "Show me all available mock accounts for testing"
 4. Begin development with: "Connect to the first mock account and check balance"
@@ -51,7 +51,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 **Q:** How do I develop smart contracts with this setup?
 
-**A:** Smart contract development (Solidity) remains the same. Wallet Agent helps with:
+**A:** Smart contract development (Solidity) remains the same. WalletAgent helps with:
 - Contract deployment: "Deploy my Counter contract to Anvil"  
 - Contract interaction: "Call the increment function on my Counter contract"
 - Testing: "Read the current number from my deployed contract"
@@ -77,7 +77,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### Is private key management secure?
 
-**Q:** How secure is private key handling in Wallet Agent?
+**Q:** How secure is private key handling in WalletAgent?
 
 **A:** Very secure:
 - Private keys stored only in memory, never logged
@@ -99,7 +99,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### How do I work with contract ABIs?
 
-**Q:** How does ABI management work with Wallet Agent?
+**Q:** How does ABI management work with WalletAgent?
 
 **A:** Use Wagmi for ABI generation, then:
 1. "Generate Wagmi configuration for my contracts"
@@ -123,10 +123,9 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 **Q:** What blockchain networks can I use?
 
-**A:** All EVM-compatible networks:
-- Built-in: Ethereum, Polygon, Arbitrum, Optimism, Base, and testnets
-- Custom networks: "Add custom chain with RPC https://api.example.com"
-- Local: Anvil for development
+**A:** All major EVM-compatible networks:
+- Built-in: Ethereum, Polygon, and their testnets (Sepolia, etc.)
+- Local development: Anvil for testing
 
 ### How do I switch networks?
 
@@ -170,7 +169,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### What about NFTs?
 
-**Q:** Does Wallet Agent support NFT operations?
+**Q:** Does WalletAgent support NFT operations?
 
 **A:** Full ERC-721 support:
 - "Transfer NFT #123 from my collection to address 0x..."
@@ -181,7 +180,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### How do I test my applications?
 
-**Q:** What's the testing approach with Wallet Agent?
+**Q:** What's the testing approach with WalletAgent?
 
 **A:** Use isolated testing environments for clean state:
 1. "Create fresh testing environment for wallet testing"
@@ -191,7 +190,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### Can I use this in CI/CD?
 
-**Q:** How do I integrate Wallet Agent into automated pipelines?
+**Q:** How do I integrate WalletAgent into automated pipelines?
 
 **A:** Yes, through environment configuration:
 - Set environment variables for private keys
@@ -245,7 +244,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### What are the security best practices?
 
-**Q:** How do I use Wallet Agent securely in development?
+**Q:** How do I use WalletAgent securely in development?
 
 **A:**
 - Never use private keys in development - use mock wallets
@@ -257,7 +256,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 **Q:** How should I handle transaction failures and errors?
 
-**A:** Wallet Agent provides clear error messages:
+**A:** WalletAgent provides clear error messages:
 - Check wallet connection: "Get current wallet connection status"
 - Validate before executing: "Simulate this transaction before sending"
 - Monitor execution: "Check status of transaction 0x..."
@@ -265,7 +264,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 
 ### Should I use this in production?
 
-**Q:** Is Wallet Agent suitable for production applications?
+**Q:** Is WalletAgent suitable for production applications?
 
 **A:** Yes, with proper precautions:
 - Use encrypted private key storage

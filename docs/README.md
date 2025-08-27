@@ -1,19 +1,19 @@
-# Wallet Agent Documentation
+# WalletAgent Documentation
 
 ![WalletAgent](https://wallet-agent.ai/og-image.png)
 
 [![CI](https://github.com/wallet-agent/wallet-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/wallet-agent/wallet-agent/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/wallet-agent/wallet-agent/graph/badge.svg)](https://codecov.io/gh/wallet-agent/wallet-agent)
 
-**Wallet Agent** is an MCP (Model Context Protocol) server that enables Web3 wallet interactions in AI tools like Claude Code and Cursor. It provides safe testing with mock wallets and real wallet support via secure private key management.
+**WalletAgent** is an MCP (Model Context Protocol) server that enables Web3 wallet interactions in AI tools like Claude Code and Cursor. It provides safe testing with mock wallets and real wallet support via secure private key management.
 
-## What is Wallet Agent?
+## What is WalletAgent?
 
-Wallet Agent enhances AI coding agents with Web3 development capabilities by providing:
+WalletAgent enhances AI coding agents with Web3 development capabilities by providing:
 
 - 🔐 **Secure Wallet Management** - Mock wallets for testing, encrypted private keys for real use
 - ⛽ **Gas-free Contract Testing** - Simulate contract calls without spending gas
-- 🔗 **Multi-chain Support** - Works with Ethereum, Polygon, and custom EVM chains
+- 🔗 **Multi-chain Support** - Works with Ethereum, Polygon, and major EVM chains
 - 📋 **Wagmi Integration** - Extract, analyze, and test smart contract ABIs
 - 🛡️ **Security First** - Private keys never logged, comprehensive validation
 - 🤖 **AI-Native** - Prompts for complex Web3 operations
@@ -27,19 +27,19 @@ This is beta software under active development. **DO NOT use on mainnet or with 
 ## Quick Navigation
 
 ### 🚀 [Getting Started](getting-started/)
-New to Wallet Agent? Start here to set up the MCP server with your AI agent.
+New to WalletAgent? Start here to set up the MCP server with your AI agent.
 
 ### 👤 [User Guide](user-guide/)
 Learn how to perform wallet operations, send transactions, and manage tokens using prompts.
 
 ### 🔧 [Developer Guide](developer-guide/)
-Build and test smart contracts, integrate with Wagmi, and extend Wallet Agent's capabilities.
+Build and test smart contracts, integrate with Wagmi, and extend WalletAgent's capabilities.
 
 ### 📚 [API Reference](api-reference/)
 Complete reference for all AI agent tools and conversational commands.
 
 ### ⚡ [Advanced Topics](advanced/)
-Encrypted key management, custom chains, Hyperliquid integration, and extending functionality.
+Encrypted key management, advanced features, Hyperliquid integration, and extending functionality.
 
 ## Key Features
 
@@ -54,7 +54,7 @@ Encrypted key management, custom chains, Hyperliquid integration, and extending 
 - **Environment Variables**: Secure private key loading from files or env vars
 
 ### Comprehensive Web3 Toolkit
-- **Multi-chain Support**: Ethereum, Polygon, custom EVM chains
+- **Multi-chain Support**: Ethereum, Polygon, major EVM chains
 - **Token Operations**: ERC-20 transfers, approvals, balance checks
 - **NFT Management**: ERC-721 transfers and metadata
 - **Contract Testing**: Automated scenario generation and validation
@@ -110,7 +110,7 @@ Configure in your MCP settings to enable Web3 operations through prompts with Cu
 
 ## What's Next?
 
-1. **[Install Wallet Agent](getting-started/installation.md)** in your AI agent
+1. **[Install WalletAgent](getting-started/installation.md)** in your AI agent
 2. **[Follow the Quick Start](getting-started/quick-start.md)** guide
 3. **[Explore the User Guide](user-guide/)** for common operations
 4. **[Dive into Development](developer-guide/)** for advanced features
