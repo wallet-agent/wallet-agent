@@ -194,7 +194,7 @@ If you have contract configuration files:
 Load my contract configuration for AI interactions
 ```
 
-### Simulate Contract Calls (Gas-Free!)
+### Simulate Contract Calls (Gas-Free)
 
 Test contract functions without spending gas:
 
@@ -215,7 +215,7 @@ Simulate balanceOf function for USDC with account 0xf39Fd6e51aad88F6F4ce6aB88272
 - No gas cost for simulations
 ```
 
-This is **incredibly powerful** for development - you can test any contract function without spending gas or affecting blockchain state!
+This is **incredibly powerful** for development - you can test any contract function without spending gas or affecting blockchain state.
 
 ## What You've Learned
 
@@ -322,4 +322,4 @@ Get [token] balance      # Check token balance
 
 ---
 
-**Congratulations!** You've completed the Wallet Agent quick start. You're now ready to explore the full power of Web3 development with AI assistance! 🚀
+**Congratulations** You've completed the Wallet Agent quick start. You're now ready to explore the full power of Web3 development with WalletAgent.
