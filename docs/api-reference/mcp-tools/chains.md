@@ -14,26 +14,15 @@ Switch to a different blockchain network.
 
 **Tool Name:** `mcp__wallet-agent__switch_chain`
 
-**Parameters:**
-```typescript
-{
-  chainId: number;      // Chain ID to switch to
-}
-```
+**What you provide:**
+- Chain ID number for the blockchain network you want to switch to
 
-**Response:**
-```typescript
-{
-  chainId: number;      // Current chain ID
-  chainName: string;    // Human-readable chain name
-  nativeCurrency: {
-    name: string;       // Currency name
-    symbol: string;     // Currency symbol
-    decimals: number;   // Decimal places
-  };
-  switched: boolean;    // Whether switch was successful
-}
-```
+**What the AI returns:**
+- Confirmation of successful chain switch
+- New chain ID you're now connected to
+- Human-readable chain name
+- Native currency information (name, symbol, decimal places)
+- Network connection status
 
 **Example Prompts:**
 - "Switch to Ethereum mainnet"
@@ -57,36 +46,19 @@ Add a custom EVM-compatible blockchain network.
 
 **Tool Name:** `mcp__wallet-agent__add_custom_chain`
 
-**Parameters:**
-```typescript
-{
-  chainId: number;      // Unique chain ID
-  name: string;         // Network name
-  rpcUrl: string;       // RPC endpoint URL
-  nativeCurrency: {     // Native currency configuration
-    name: string;       // Currency name
-    symbol: string;     // Currency symbol
-    decimals: number;   // Decimal places (usually 18)
-  };
-  blockExplorerUrl?: string; // Optional block explorer URL
-}
-```
+**What you provide:**
+- Unique chain ID for the new network
+- Network name (e.g., "MyChain Mainnet")
+- RPC endpoint URL for connecting to the network
+- Native currency configuration (name, symbol, decimals - usually 18)
+- Block explorer URL (optional, for viewing transactions)
 
-**Response:**
-```typescript
-{
-  chainId: number;
-  name: string;
-  added: boolean;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  rpcUrl: string;
-  blockExplorerUrl?: string;
-}
-```
+**What the AI returns:**
+- Confirmation that the custom chain was added successfully
+- Chain ID and name of the new network
+- Native currency details that were configured
+- RPC URL and block explorer URL (if provided)
+- Availability status for immediate use
 
 **Example Prompts:**
 - "Add Avalanche C-Chain with RPC https://api.avax.network/ext/bc/C/rpc"
@@ -110,29 +82,17 @@ Update configuration for an existing custom chain.
 
 **Tool Name:** `mcp__wallet-agent__update_custom_chain`
 
-**Parameters:**
-```typescript
-{
-  chainId: number;      // Chain ID to update
-  name?: string;        // New network name (optional)
-  rpcUrl?: string;      // New RPC endpoint URL (optional)
-  nativeCurrency?: {    // New currency configuration (optional)
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  blockExplorerUrl?: string; // New block explorer URL (optional)
-}
-```
+**What you provide:**
+- Chain ID of the custom chain you want to update
+- New network name (optional)
+- New RPC endpoint URL (optional)
+- Updated native currency configuration (optional)
+- New block explorer URL (optional)
 
-**Response:**
-```typescript
-{
-  chainId: number;
-  updated: boolean;
-  changes: string[];    // List of updated fields
-}
-```
+**What the AI returns:**
+- Chain ID that was updated
+- Confirmation that the update was successful
+- List of fields that were changed during the update
 
 **Example Prompts:**
 - "Update chain ID 1234 to use RPC endpoint https://new-rpc.mychain.com"
@@ -156,21 +116,13 @@ Remove a previously added custom chain.
 
 **Tool Name:** `mcp__wallet-agent__remove_custom_chain`
 
-**Parameters:**
-```typescript
-{
-  chainId: number;      // Chain ID to remove
-}
-```
+**What you provide:**
+- Chain ID of the custom chain you want to remove
 
-**Response:**
-```typescript
-{
-  chainId: number;
-  removed: boolean;
-  chainName: string;    // Name of removed chain
-}
-```
+**What the AI returns:**
+- Chain ID that was removed
+- Confirmation that the removal was successful
+- Name of the chain that was removed
 
 **Example Prompts:**
 - "Remove the custom chain with ID 1234"
@@ -196,33 +148,14 @@ Get comprehensive wallet and chain configuration information.
 
 **Parameters:** None
 
-**Response:**
-```typescript
-{
-  isConnected: boolean;
-  address?: string;
-  currentChain: number;
-  currentChainName: string;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  supportedChains: Array<{
-    id: number;
-    name: string;
-    nativeCurrency: {
-      name: string;
-      symbol: string;
-      decimals: number;
-    };
-    rpcUrl?: string;
-    blockExplorerUrl?: string;
-  }>;
-  walletType: "mock" | "privateKey";
-  availableWallets: string[];
-}
-```
+**What the AI returns:**
+- Current wallet connection status
+- Connected wallet address (if connected)
+- Active chain ID and human-readable name
+- Native currency details for the current chain
+- Complete list of all supported chains with their configurations
+- Current wallet type (mock for testing or privateKey for real transactions)
+- List of available wallet addresses you can connect to
 
 **Example Prompts:**
 - "Show me my current wallet and chain information"

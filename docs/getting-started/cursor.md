@@ -286,15 +286,7 @@ Add Wallet Agent scripts to your `package.json`:
 
 ### TypeScript Integration
 
-If your project uses TypeScript, you can import Wallet Agent types:
-
-```typescript
-// Install types (when available)
-npm install --save-dev @wallet-agent/types
-
-// Use in your code
-import type { WalletConfig } from '@wallet-agent/types'
-```
+If your project uses TypeScript, Wallet Agent provides full type safety and intellisense support for all operations through the AI agent interface.
 
 ## Troubleshooting
 

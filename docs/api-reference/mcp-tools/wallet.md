@@ -16,15 +16,10 @@ List all available mock accounts for testing.
 
 **Parameters:** None
 
-**Response:**
-```typescript
-{
-  accounts: Array<{
-    address: string;
-    balance: string;
-  }>
-}
-```
+**What the AI returns:**
+- List of all available mock accounts for testing
+- Each account includes its wallet address and current balance
+- Safe test accounts with pre-funded ETH for development
 
 **Example Prompts:**
 - "Show me all available mock accounts for testing"
@@ -42,21 +37,13 @@ Connect to a wallet using the specified address.
 
 **Tool Name:** `mcp__wallet-agent__connect_wallet`
 
-**Parameters:**
-```typescript
-{
-  address: string; // Ethereum address to connect to
-}
-```
+**What you provide:**
+- Ethereum wallet address you want to connect to
 
-**Response:**
-```typescript
-{
-  address: string;
-  isConnected: boolean;
-  chainId?: number;
-}
-```
+**What the AI returns:**
+- Connected wallet address
+- Confirmation that connection was successful
+- Current chain ID you're connected to
 
 **Example Prompts:**
 - "Connect to wallet address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -78,13 +65,9 @@ Disconnect the currently connected wallet.
 
 **Parameters:** None
 
-**Response:**
-```typescript
-{
-  success: boolean;
-  message: string;
-}
-```
+**What the AI returns:**
+- Confirmation that wallet was disconnected successfully
+- Status message about the disconnection
 
 **Example Prompts:**
 - "Disconnect the current wallet"
@@ -104,15 +87,11 @@ Get information about the currently connected account.
 
 **Parameters:** None
 
-**Response:**
-```typescript
-{
-  address: string;
-  isConnected: boolean;
-  chainId: number;
-  walletType: "mock" | "privateKey";
-}
-```
+**What the AI returns:**
+- Currently connected wallet address
+- Connection status confirmation
+- Active chain ID you're operating on
+- Wallet type (mock for testing or privateKey for real transactions)
 
 **Example Prompts:**
 - "What wallet am I currently connected to?"
@@ -130,21 +109,14 @@ Get the native token balance for an address.
 
 **Tool Name:** `mcp__wallet-agent__get_balance`
 
-**Parameters:**
-```typescript
-{
-  address?: string; // Optional - defaults to connected wallet
-}
-```
+**What you provide:**
+- Wallet address to check balance for (optional - defaults to your connected wallet)
 
-**Response:**
-```typescript
-{
-  balance: string; // Balance in native token units (e.g., ETH)
-  address: string;
-  symbol: string;  // Native token symbol (ETH, MATIC, etc.)
-}
-```
+**What the AI returns:**
+- Native token balance in readable format (e.g., "10.5 ETH")
+- Address that was checked
+- Native token symbol for the current blockchain (ETH, MATIC, etc.)
+- Clear balance information
 
 **Example Prompts:**
 - "What's my current wallet balance?"
@@ -167,33 +139,15 @@ Get comprehensive wallet and chain configuration information.
 
 **Parameters:** None
 
-**Response:**
-```typescript
-{
-  isConnected: boolean;
-  address?: string;
-  currentChain: number;
-  currentChainName: string;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  supportedChains: Array<{
-    id: number;
-    name: string;
-    nativeCurrency: {
-      name: string;
-      symbol: string;
-      decimals: number;
-    };
-    rpcUrl?: string;
-    blockExplorerUrl?: string;
-  }>;
-  walletType: "mock" | "privateKey";
-  availableWallets: string[];
-}
-```
+**What the AI returns:**
+- Current wallet connection status
+- Connected wallet address (if connected)
+- Active chain ID and readable chain name
+- Native currency details for the current blockchain
+- Complete list of all supported chains with their configurations
+- Current wallet type (mock for safe testing or privateKey for real transactions)
+- List of available wallet addresses you can connect to
+- Comprehensive wallet and chain configuration overview
 
 **Example Prompts:**
 - "Show me complete wallet configuration and chain information"
@@ -212,21 +166,13 @@ Import a private key for use with real blockchain transactions.
 
 **Tool Name:** `mcp__wallet-agent__import_private_key`
 
-**Parameters:**
-```typescript
-{
-  privateKey: string; // Private key (0x...), env var name, or file path
-}
-```
+**What you provide:**
+- Private key (starting with 0x), environment variable name, or secure file path
 
-**Response:**
-```typescript
-{
-  address: string;
-  imported: boolean;
-  walletType: string;
-}
-```
+**What the AI returns:**
+- Wallet address derived from the private key
+- Confirmation that the key was imported successfully
+- Current wallet type status
 
 **Example Prompts:**
 - "Import my private key from the WALLET_PRIVATE_KEY environment variable"
@@ -253,15 +199,10 @@ List all imported private key wallets.
 
 **Parameters:** None
 
-**Response:**
-```typescript
-{
-  wallets: Array<{
-    address: string;
-    imported: string; // ISO timestamp
-  }>
-}
-```
+**What the AI returns:**
+- List of all imported private key wallets
+- Each wallet includes its address and import timestamp
+- Overview of your real wallet configurations
 
 **Example Prompts:**
 - "Show me all the private key wallets I've imported"
@@ -279,20 +220,12 @@ Remove an imported private key wallet.
 
 **Tool Name:** `mcp__wallet-agent__remove_private_key`
 
-**Parameters:**
-```typescript
-{
-  address: string; // Address of wallet to remove
-}
-```
+**What you provide:**
+- Wallet address of the private key you want to remove
 
-**Response:**
-```typescript
-{
-  removed: boolean;
-  address: string;
-}
-```
+**What the AI returns:**
+- Confirmation that the private key was removed successfully
+- Address of the wallet that was removed
 
 **Example Prompts:**
 - "Remove the imported wallet 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -311,21 +244,14 @@ Switch between mock and private key wallet types.
 
 **Tool Name:** `mcp__wallet-agent__set_wallet_type`
 
-**Parameters:**
-```typescript
-{
-  type: "mock" | "privateKey";
-}
-```
+**What you provide:**
+- Wallet type to switch to ("mock" for safe testing or "privateKey" for real transactions)
 
-**Response:**
-```typescript
-{
-  walletType: string;
-  switched: boolean;
-  availableWallets: string[];
-}
-```
+**What the AI returns:**
+- Confirmation of the new wallet type
+- Success status of the switch
+- List of available wallets for the new type
+- Updated wallet configuration
 
 **Example Prompts:**
 - "Switch to using private key wallets instead of mock wallets"

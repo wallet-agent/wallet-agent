@@ -45,17 +45,11 @@ List all available contracts from the loaded configuration.
 
 **Parameters:** None
 
-**Response:**
-```typescript
-{
-  contracts: Array<{
-    name: string;        // Contract name
-    address: string;     // Contract address
-    chain: number;       // Chain ID where deployed
-    chainName: string;   // Human-readable chain name
-  }>
-}
-```
+**What the AI returns:**
+- List of all loaded contracts with their names, addresses, and chain information
+- Chain ID and human-readable chain name for each contract
+- Summary of where each contract is deployed
+- Confirmation of successful contract loading
 
 **Example Prompts:**
 - "Show me all available contracts"
@@ -77,26 +71,18 @@ Read data from a smart contract function.
 
 **Tool Name:** `mcp__wallet-agent__read_contract`
 
-**Parameters:**
-```typescript
-{
-  contract: string;     // Contract name from loaded config
-  function: string;     // Function name to call
-  args?: any[];        // Function arguments (optional)
-  address?: string;    // Custom contract address (optional)
-}
-```
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name you want to call
+- Function arguments (optional, depending on the function)
+- Custom contract address (optional, if different from configuration)
 
-**Response:**
-```typescript
-{
-  result: any;         // Function return value
-  contract: string;    // Contract name used
-  function: string;    // Function called
-  address: string;     // Contract address
-  chain: number;       // Chain ID
-}
-```
+**What the AI returns:**
+- The function's return value in human-readable format
+- Contract name that was used
+- Function name that was called
+- Contract address that was queried
+- Chain ID where the contract exists
 
 **Example Prompts:**
 - "Read the current number from my Counter contract"
@@ -121,30 +107,22 @@ Execute a state-changing function on a smart contract.
 
 **Tool Name:** `mcp__wallet-agent__write_contract`
 
-**Parameters:**
-```typescript
-{
-  contract: string;     // Contract name from loaded config
-  function: string;     // Function name to call
-  args?: any[];        // Function arguments (optional)
-  value?: string;      // ETH value to send (optional)
-  address?: string;    // Custom contract address (optional)
-}
-```
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name you want to execute
+- Function arguments (optional, depending on the function)
+- ETH value to send with the transaction (optional, for payable functions)
+- Custom contract address (optional, if different from configuration)
 
-**Response:**
-```typescript
-{
-  txHash: string;      // Transaction hash
-  contract: string;    // Contract name used
-  function: string;    // Function called
-  args?: any[];       // Arguments passed
-  value?: string;     // ETH sent (if any)
-  gasEstimate?: string; // Estimated gas
-  address: string;     // Contract address
-  chain: number;       // Chain ID
-}
-```
+**What the AI returns:**
+- Transaction hash for tracking the execution
+- Contract name that was used
+- Function name that was called
+- Arguments that were passed to the function
+- ETH amount sent (if any)
+- Gas estimate and actual usage information
+- Contract address that was called
+- Chain ID where the transaction occurred
 
 **Example Prompts:**
 - "Increment the counter in my Counter contract"

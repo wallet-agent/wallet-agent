@@ -14,27 +14,19 @@ Transfer ERC-20 tokens to another address.
 
 **Tool Name:** `mcp__wallet-agent__transfer_token`
 
-**Parameters:**
-```typescript
-{
-  token: string;        // Token contract name, symbol, or address
-  to: string;          // Recipient address
-  amount: string;      // Amount in token units (e.g., "100" for 100 USDC)
-}
-```
+**What you provide:**
+- Token identifier (contract name, symbol like "USDC", or contract address)
+- Recipient's wallet address
+- Amount to transfer in token units
 
-**Response:**
-```typescript
-{
-  txHash: string;      // Transaction hash
-  from: string;        // Sender address
-  to: string;         // Recipient address
-  amount: string;     // Amount transferred
-  token: string;      // Token identifier used
-  symbol: string;     // Token symbol
-  decimals: number;   // Token decimals
-}
-```
+**What the AI returns:**
+- Transaction hash for tracking the transfer
+- Sender address (your wallet)
+- Recipient address where tokens were sent
+- Amount that was transferred
+- Token identifier that was used
+- Token symbol and decimal configuration
+- Confirmation of successful transfer
 
 **Example Prompts:**
 - "Send 100 USDC to Alice at 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532"
@@ -58,26 +50,18 @@ Approve another address to spend ERC-20 tokens on your behalf.
 
 **Tool Name:** `mcp__wallet-agent__approve_token`
 
-**Parameters:**
-```typescript
-{
-  token: string;        // Token contract name, symbol, or address
-  spender: string;      // Address to approve for spending
-  amount: string;       // Amount to approve ("max" for unlimited)
-}
-```
+**What you provide:**
+- Token identifier (contract name, symbol like "USDC", or contract address)
+- Spender's wallet address (who will be allowed to spend your tokens)
+- Amount to approve (use "max" for unlimited approval)
 
-**Response:**
-```typescript
-{
-  txHash: string;      // Transaction hash
-  owner: string;       // Token owner (your address)
-  spender: string;     // Approved spender address
-  amount: string;      // Approved amount
-  token: string;       // Token identifier
-  symbol: string;      // Token symbol
-}
-```
+**What the AI returns:**
+- Transaction hash for tracking the approval
+- Token owner address (your wallet)
+- Spender address that was approved
+- Amount that was approved for spending
+- Token identifier and symbol
+- Confirmation of successful approval
 
 **Example Prompts:**
 - "Approve the DEX contract to spend 500 USDC"
@@ -101,25 +85,17 @@ Get the ERC-20 token balance for an address.
 
 **Tool Name:** `mcp__wallet-agent__get_token_balance`
 
-**Parameters:**
-```typescript
-{
-  token: string;        // Token contract name, symbol, or address
-  address?: string;     // Address to check (defaults to connected wallet)
-}
-```
+**What you provide:**
+- Token identifier (contract name, symbol like "USDC", or contract address)
+- Wallet address to check balance for (optional, defaults to your connected wallet)
 
-**Response:**
-```typescript
-{
-  balance: string;      // Token balance in human-readable format
-  balanceRaw: string;   // Raw balance (with full decimals)
-  address: string;      // Address checked
-  token: string;        // Token identifier
-  symbol: string;       // Token symbol
-  decimals: number;     // Token decimals
-}
-```
+**What the AI returns:**
+- Token balance in human-readable format (e.g., "1,234.56 USDC")
+- Raw balance with full decimal precision
+- Address that was checked
+- Token identifier and symbol
+- Decimal configuration for the token
+- Clear balance summary
 
 **Example Prompts:**
 - "Check my USDC balance"
@@ -143,23 +119,15 @@ Get metadata information about an ERC-20 token.
 
 **Tool Name:** `mcp__wallet-agent__get_token_info`
 
-**Parameters:**
-```typescript
-{
-  token: string;        // Token contract name, symbol, or address
-}
-```
+**What you provide:**
+- Token identifier (contract name, symbol like "USDC", or contract address)
 
-**Response:**
-```typescript
-{
-  name: string;         // Token name
-  symbol: string;       // Token symbol
-  decimals: number;     // Decimal places
-  address: string;      // Contract address
-  totalSupply?: string; // Total supply (if available)
-}
-```
+**What the AI returns:**
+- Token name (e.g., "USD Coin")
+- Token symbol (e.g., "USDC")
+- Decimal places used by the token
+- Contract address on the blockchain
+- Total supply information (if available)
 
 **Example Prompts:**
 - "Tell me about the USDC token"
@@ -183,26 +151,19 @@ Transfer an ERC-721 NFT to another address.
 
 **Tool Name:** `mcp__wallet-agent__transfer_nft`
 
-**Parameters:**
-```typescript
-{
-  nft: string;          // NFT contract name or address
-  to: string;          // Recipient address
-  tokenId: string;     // Token ID to transfer
-}
-```
+**What you provide:**
+- NFT contract identifier (name or contract address)
+- Recipient's wallet address
+- Token ID of the specific NFT to transfer
 
-**Response:**
-```typescript
-{
-  txHash: string;      // Transaction hash
-  from: string;        // Sender address
-  to: string;         // Recipient address
-  tokenId: string;    // Token ID transferred
-  nft: string;        // NFT contract identifier
-  name?: string;      // Collection name
-}
-```
+**What the AI returns:**
+- Transaction hash for tracking the transfer
+- Sender address (your wallet)
+- Recipient address where the NFT was sent
+- Token ID that was transferred
+- NFT contract identifier
+- Collection name (if available)
+- Confirmation of successful transfer
 
 **Example Prompts:**
 - "Transfer NFT #123 to Alice at 0x742d35..."
@@ -226,23 +187,16 @@ Get the current owner of an ERC-721 NFT.
 
 **Tool Name:** `mcp__wallet-agent__get_nft_owner`
 
-**Parameters:**
-```typescript
-{
-  nft: string;          // NFT contract name or address
-  tokenId: string;     // Token ID to check
-}
-```
+**What you provide:**
+- NFT contract identifier (name or contract address)
+- Token ID of the NFT to check ownership for
 
-**Response:**
-```typescript
-{
-  owner: string;        // Current owner address
-  tokenId: string;     // Token ID
-  nft: string;         // NFT contract identifier
-  exists: boolean;     // Whether the token exists
-}
-```
+**What the AI returns:**
+- Current owner's wallet address
+- Token ID that was checked
+- NFT contract identifier
+- Confirmation that the token exists
+- Ownership verification
 
 **Example Prompts:**
 - "Who owns CryptoPunk #123?"
@@ -266,25 +220,17 @@ Get metadata information about an ERC-721 NFT.
 
 **Tool Name:** `mcp__wallet-agent__get_nft_info`
 
-**Parameters:**
-```typescript
-{
-  nft: string;          // NFT contract name or address
-  tokenId?: string;     // Token ID (optional for collection info)
-}
-```
+**What you provide:**
+- NFT contract identifier (name or contract address)
+- Token ID (optional - provide for specific NFT info, omit for collection info)
 
-**Response:**
-```typescript
-{
-  name: string;         // Collection name
-  symbol: string;       // Collection symbol
-  address: string;      // Contract address
-  tokenId?: string;     // Token ID (if specified)
-  tokenURI?: string;    // Metadata URI (if token ID provided)
-  owner?: string;       // Current owner (if token ID provided)
-}
-```
+**What the AI returns:**
+- Collection name and symbol
+- Contract address on the blockchain
+- Token ID (if you specified one)
+- Metadata URI for the specific NFT (if token ID provided)
+- Current owner address (if token ID provided)
+- Comprehensive NFT or collection information
 
 **Example Prompts:**
 - "Tell me about the CryptoPunks collection"

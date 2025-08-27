@@ -14,27 +14,19 @@ Send native token transactions on the current blockchain.
 
 **Tool Name:** `mcp__wallet-agent__send_transaction`
 
-**Parameters:**
-```typescript
-{
-  to: string;           // Recipient address
-  value: string;        // Amount in native token units (e.g., "0.1" for 0.1 ETH)
-  data?: string;        // Optional transaction data (hex string)
-}
-```
+**What you provide:**
+- Recipient's wallet address
+- Amount in native token units (e.g., "0.1" for 0.1 ETH)
+- Optional transaction data (for advanced use cases)
 
-**Response:**
-```typescript
-{
-  txHash: string;       // Transaction hash
-  from: string;         // Sender address
-  to: string;          // Recipient address
-  value: string;       // Amount sent
-  gasLimit: string;    // Gas limit used
-  gasPrice: string;    // Gas price used
-  chainId: number;     // Chain ID
-}
-```
+**What the AI returns:**
+- Transaction hash for tracking the transfer
+- Sender address (your wallet)
+- Recipient address where funds were sent
+- Amount that was sent
+- Gas limit and price information
+- Chain ID where the transaction occurred
+- Complete transaction details
 
 **Example Prompts:**
 - "Send 0.1 ETH to address 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532"
@@ -54,25 +46,18 @@ Estimate gas cost for a transaction before execution.
 
 **Tool Name:** `mcp__wallet-agent__estimate_gas`
 
-**Parameters:**
-```typescript
-{
-  to: string;           // Recipient address
-  value?: string;       // Amount in native token units (optional)
-  data?: string;        // Transaction data (optional)
-  from?: string;        // Sender address (optional, defaults to connected wallet)
-}
-```
+**What you provide:**
+- Recipient's wallet address
+- Amount in native token units (optional)
+- Transaction data (optional, for contract interactions)
+- Sender address (optional, defaults to your connected wallet)
 
-**Response:**
-```typescript
-{
-  gasEstimate: string;  // Estimated gas units
-  gasPrice: string;     // Current gas price
-  estimatedCost: string; // Total estimated cost in native token
-  currency: string;     // Native currency symbol
-}
-```
+**What the AI returns:**
+- Estimated gas units needed for the transaction
+- Current gas price on the network
+- Total estimated cost in native currency (ETH, MATIC, etc.)
+- Native currency symbol for the current blockchain
+- Complete cost breakdown
 
 **Example Prompts:**
 - "Estimate gas cost for sending 1.0 ETH to 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532"
@@ -91,22 +76,15 @@ Get the current status of a transaction by hash.
 
 **Tool Name:** `mcp__wallet-agent__get_transaction_status`
 
-**Parameters:**
-```typescript
-{
-  hash: string;         // Transaction hash (0x...)
-}
-```
+**What you provide:**
+- Transaction hash (starting with 0x) that you want to check
 
-**Response:**
-```typescript
-{
-  status: "pending" | "success" | "failed";
-  blockNumber?: number;  // Block number (if mined)
-  confirmations?: number; // Number of confirmations
-  gasUsed?: string;      // Gas actually used (if mined)
-}
-```
+**What the AI returns:**
+- Current transaction status (pending, success, or failed)
+- Block number where the transaction was mined (if completed)
+- Number of network confirmations received
+- Actual gas used by the transaction (if mined)
+- Real-time status information
 
 **Example Prompts:**
 - "Check the status of transaction 0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
@@ -127,35 +105,17 @@ Get detailed transaction receipt information.
 
 **Tool Name:** `mcp__wallet-agent__get_transaction_receipt`
 
-**Parameters:**
-```typescript
-{
-  hash: string;         // Transaction hash (0x...)
-}
-```
+**What you provide:**
+- Transaction hash (starting with 0x) for the completed transaction
 
-**Response:**
-```typescript
-{
-  transactionHash: string;
-  blockNumber: number;
-  blockHash: string;
-  transactionIndex: number;
-  from: string;
-  to: string;
-  gasUsed: string;
-  gasPrice: string;
-  status: "success" | "failed";
-  logs: Array<{
-    address: string;
-    topics: string[];
-    data: string;
-    logIndex: number;
-  }>;
-  value: string;
-  confirmations: number;
-}
-```
+**What the AI returns:**
+- Complete transaction details including hash and block information
+- Sender and recipient addresses
+- Gas usage and pricing details
+- Transaction status (success or failed)
+- Event logs from contract interactions
+- Transaction value and confirmations
+- Comprehensive receipt information
 
 **Example Prompts:**
 - "Get the detailed receipt for transaction 0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
@@ -176,27 +136,20 @@ Simulate a contract transaction before execution to predict success/failure.
 
 **Tool Name:** `mcp__wallet-agent__simulate_transaction`
 
-**Parameters:**
-```typescript
-{
-  contract: string;     // Contract name from loaded config
-  function: string;     // Function name to call
-  args?: any[];        // Function arguments (optional)
-  value?: string;      // ETH value to send (optional)
-  address?: string;    // Custom contract address (optional)
-}
-```
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name you want to simulate
+- Function arguments (optional, depending on the function)
+- ETH value to send with the call (optional)
+- Custom contract address (optional, if different from configuration)
 
-**Response:**
-```typescript
-{
-  success: boolean;
-  result?: any;        // Function return value (if successful)
-  error?: string;      // Error message (if failed)
-  gasEstimate?: string; // Estimated gas usage
-  revertReason?: string; // Revert reason (if contract reverted)
-}
-```
+**What the AI returns:**
+- Success status of the simulation
+- Function return value (if the simulation succeeded)
+- Error message explaining any failures
+- Estimated gas usage for the actual transaction
+- Revert reason if the contract would reject the call
+- Complete simulation results without executing on-chain
 
 **Example Prompts:**
 - "Simulate calling the increment function on the Counter contract"
@@ -218,21 +171,14 @@ Sign an arbitrary message with the connected wallet.
 
 **Tool Name:** `mcp__wallet-agent__sign_message`
 
-**Parameters:**
-```typescript
-{
-  message: string;      // Message to sign
-}
-```
+**What you provide:**
+- Text message you want to sign with your wallet
 
-**Response:**
-```typescript
-{
-  signature: string;    // Hex-encoded signature
-  message: string;      // Original message
-  address: string;      // Signer address
-}
-```
+**What the AI returns:**
+- Cryptographic signature in hex format
+- Original message that was signed
+- Wallet address that created the signature
+- Proof of message authenticity
 
 **Example Prompts:**
 - "Sign the message 'Hello, blockchain!' with my wallet"
@@ -252,32 +198,17 @@ Sign EIP-712 structured data with the connected wallet.
 
 **Tool Name:** `mcp__wallet-agent__sign_typed_data`
 
-**Parameters:**
-```typescript
-{
-  domain: {             // EIP-712 domain
-    name?: string;
-    version?: string;
-    chainId?: number;
-    verifyingContract?: string;
-  };
-  types: Record<string, Array<{  // Type definitions
-    name: string;
-    type: string;
-  }>>;
-  primaryType: string;  // Primary type name
-  message: Record<string, any>; // Message data
-}
-```
+**What you provide:**
+- EIP-712 domain information (app name, version, chain ID, verifying contract)
+- Type definitions for the structured data
+- Primary type name for the message
+- Structured message data to sign
 
-**Response:**
-```typescript
-{
-  signature: string;    // Hex-encoded signature
-  typedData: object;    // Original typed data
-  address: string;      // Signer address
-}
-```
+**What the AI returns:**
+- Cryptographic signature in hex format
+- Original structured data that was signed
+- Wallet address that created the signature
+- EIP-712 compliant signature for dApp authentication
 
 **Example Prompts:**
 - "Sign structured data for MyDapp with domain version 1.0.0"

@@ -15,26 +15,14 @@ Simulate a contract transaction before execution to predict success or failure.
 **Tool Name:** `mcp__wallet-agent__simulate_transaction`
 
 **Parameters:**
-```typescript
-{
-  contract: string;     // Contract name from loaded config
-  function: string;     // Function name to call
-  args?: any[];        // Function arguments (optional)
-  value?: string;      // ETH value to send (optional)
-  address?: string;    // Custom contract address (optional)
-}
-```
+- `contract` - Contract name from loaded configuration
+- `function` - Function name to call
+- `args` - Function arguments (optional)
+- `value` - ETH value to send (optional)
+- `address` - Custom contract address (optional)
 
 **Response:**
-```typescript
-{
-  success: boolean;
-  result?: any;        // Function return value (if successful)
-  error?: string;      // Error message (if failed)
-  gasEstimate?: string; // Estimated gas usage
-  revertReason?: string; // Revert reason (if contract reverted)
-}
-```
+The AI agent provides simulation results including success status, function return values, error messages, gas estimates, and revert reasons if the transaction would fail.
 
 **Example Prompts:**
 - "Simulate calling the increment function before executing it"
@@ -60,24 +48,13 @@ Estimate gas cost for a transaction before execution.
 **Tool Name:** `mcp__wallet-agent__estimate_gas`
 
 **Parameters:**
-```typescript
-{
-  to: string;           // Recipient address
-  value?: string;       // Amount in native token units (optional)
-  data?: string;        // Transaction data (optional)
-  from?: string;        // Sender address (optional, defaults to connected wallet)
-}
-```
+- `to` - Recipient address
+- `value` - Amount in native token units (optional)
+- `data` - Transaction data (optional)
+- `from` - Sender address (optional, defaults to connected wallet)
 
 **Response:**
-```typescript
-{
-  gasEstimate: string;  // Estimated gas units
-  gasPrice: string;     // Current gas price
-  estimatedCost: string; // Total estimated cost in native token
-  currency: string;     // Native currency symbol
-}
-```
+The AI agent provides gas estimation including gas units, current gas price, total estimated cost in native currency, and currency symbol.
 
 **Example Prompts:**
 - "How much gas would it cost to send 1 ETH to Alice?"
@@ -102,34 +79,10 @@ Get detailed information about a completed transaction.
 **Tool Name:** `mcp__wallet-agent__get_transaction_receipt`
 
 **Parameters:**
-```typescript
-{
-  hash: string;         // Transaction hash (0x...)
-}
-```
+- `hash` - Transaction hash (0x...)
 
 **Response:**
-```typescript
-{
-  transactionHash: string;
-  blockNumber: number;
-  blockHash: string;
-  transactionIndex: number;
-  from: string;
-  to: string;
-  gasUsed: string;
-  gasPrice: string;
-  status: "success" | "failed";
-  logs: Array<{
-    address: string;
-    topics: string[];
-    data: string;
-    logIndex: number;
-  }>;
-  value: string;
-  confirmations: number;
-}
-```
+The AI agent provides comprehensive transaction details including transaction hash, block information, gas usage, status, events/logs, and confirmation count.
 
 **Example Prompts:**
 - "Get the detailed receipt for transaction 0xabc123..."
