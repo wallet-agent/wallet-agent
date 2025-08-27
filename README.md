@@ -70,6 +70,15 @@ Then explore and analyze contracts:
 "Export MyToken ABI to ./abis/MyToken.json"
 ```
 
+### Contract Testing & Validation
+Test contracts safely without gas costs:
+```
+"Test contract function transfer for MyToken"
+"Simulate balanceOf function for MyToken with account 0x..."
+"Dry run transaction: approve 1000 USDC for 0xDEX..."
+"Test contract MyNFT with view functions only"
+```
+
 Example output for contract analysis:
 ```
 🔬 **Contract Analysis: MyToken**
@@ -162,6 +171,12 @@ Add any EVM-compatible chain with the `add_custom_chain` tool:
 - `list_wagmi_events` - List all events that a contract can emit
 - `export_wagmi_abi` - Export contract ABI to a file in JSON or TypeScript format
 - `analyze_wagmi_contract` - Analyze contract capabilities and detect standards (ERC-20, ERC-721, etc.)
+
+### Contract Testing & Validation
+- `simulate_contract_call` - Simulate contract function calls without gas costs or state changes
+- `test_contract_function` - Generate and run multiple test scenarios for a contract function
+- `test_contract` - Analyze all functions in a contract and provide testing guidance
+- `dry_run_transaction` - Preview transaction effects before execution
 
 ### Private Key Management
 - `import_private_key` - Import a private key from environment variable or file
@@ -290,6 +305,172 @@ Perfect for:
 ```
 
 The human-readable format is perfect for understanding contract interfaces at a glance, while JSON/TypeScript exports integrate seamlessly with your development toolchain.
+
+## Contract Testing & Validation
+
+Wallet Agent provides advanced tools for testing smart contracts safely and efficiently. Test contract behavior without spending gas or affecting blockchain state.
+
+### Key Features
+
+#### 🧪 **Safe Contract Simulation**
+Test contract functions without gas costs using `eth_call`:
+```
+"Simulate transfer function for MyToken with recipient 0x123... and amount 1000"
+"Simulate balanceOf function for MyToken with account 0x456..."
+```
+
+#### 🎯 **Automated Test Generation**
+Generate comprehensive test scenarios automatically:
+```
+"Test contract function transfer for MyToken"
+"Test contract function approve for MyToken" 
+```
+
+#### 🔍 **Contract Function Analysis**
+Analyze all functions in a contract:
+```
+"Test contract MyToken"
+"Test contract MyNFT with view functions only"
+```
+
+#### 🔮 **Transaction Preview**
+Preview transaction effects before execution:
+```
+"Dry run transaction: transfer 100 USDC to 0x123..."
+"Dry run transaction: mint NFT with tokenId 42"
+```
+
+### Test Scenarios
+
+The automated test generator creates scenarios based on function parameters:
+
+**For functions with numeric parameters:**
+- ✅ **Basic Success** - Valid typical values
+- ✅ **Zero Values** - Test with zero amounts
+- ✅ **Maximum Values** - Test with maximum uint256 values
+
+**For functions with address parameters:**
+- ✅ **Valid Address** - Normal Ethereum addresses
+- ❌ **Zero Address** - Tests `0x0` address handling (expected to fail)
+
+**For functions with complex parameters:**
+- ✅ **Mixed Scenarios** - Combination of edge cases
+
+### Real-World Examples
+
+#### Testing a DeFi Token Contract
+
+```
+"Load wagmi config from ./src/generated.ts"
+"Test contract function transfer for USDCToken"
+```
+
+**Sample Output:**
+```
+🧪 Function Test Results: USDCToken.transfer()
+
+📊 Summary:
+- Total Tests: 4
+- Passed: 3 ✅  
+- Failed: 1 ❌
+- Success Rate: 75%
+
+📋 Test Scenarios:
+
+**Basic Success** - ✅ PASS
+Test transfer with typical valid inputs
+📤 Returned: true
+
+**Zero Values** - ✅ PASS  
+Test transfer with zero values for numeric inputs
+📤 Returned: true
+
+**Maximum Values** - ✅ PASS
+Test transfer with maximum values for numeric inputs
+📤 Returned: true
+
+**Zero Address** - ❌ FAIL
+Test transfer with zero address (0x0)
+🚨 Reason: ERC20: transfer to the zero address
+
+💡 Recommendations:
+- Review failed test cases to understand function behavior
+- Consider edge cases when calling this function
+- Add proper error handling in your application
+```
+
+#### Simulating Complex DeFi Operations
+
+```
+"Simulate swap function for MyDEX with tokenIn USDC, tokenOut WETH, amount 1000"
+```
+
+**Benefits:**
+- ✅ **Gas-free testing** - No transaction fees
+- ✅ **State preservation** - Blockchain state unchanged  
+- ✅ **Error detection** - Catch reverts before execution
+- ✅ **Return value preview** - See function outputs
+
+#### Contract Development Workflow
+
+1. **Deploy Contract** (to testnet/local)
+   ```
+   "Load wagmi config from ./src/generated.ts"
+   ```
+
+2. **Analyze Contract Functions** 
+   ```
+   "Test contract MyNewContract"
+   ```
+
+3. **Test Critical Functions**
+   ```
+   "Test contract function mint for MyNewContract"
+   "Test contract function burn for MyNewContract"
+   ```
+
+4. **Simulate Before Execution**
+   ```
+   "Dry run transaction: mint NFT with tokenId 1 to 0x123..."
+   ```
+
+5. **Execute with Confidence**
+   ```
+   "Write contract MyNewContract function mint with args [1, '0x123...']"
+   ```
+
+### Security Benefits
+
+#### Pre-execution Validation
+- **Revert Detection**: Identify transactions that would fail
+- **Gas Estimation**: Preview gas requirements
+- **Parameter Validation**: Test edge cases and invalid inputs
+- **State Requirements**: Verify preconditions are met
+
+#### Smart Testing
+- **Automatic Scenarios**: No manual test case creation
+- **Edge Case Coverage**: Tests boundary conditions
+- **Standard Patterns**: Recognizes common validation patterns
+- **Error Analysis**: Detailed revert reason extraction
+
+### Integration with Development Tools
+
+Perfect for:
+- **Frontend Development** - Test contract calls before user interactions
+- **Smart Contract Testing** - Complement traditional test suites  
+- **DeFi Protocol Integration** - Validate complex multi-step operations
+- **Contract Auditing** - Discover edge cases and potential issues
+- **Documentation** - Generate examples of contract behavior
+
+### Best Practices
+
+1. **Test Before Deploy**: Use simulation during contract development
+2. **Validate User Inputs**: Test with edge cases before user interactions
+3. **Batch Testing**: Use `test_contract` to analyze entire contracts
+4. **Preview Transactions**: Always dry-run high-value operations
+5. **Document Behavior**: Use test results to understand contract logic
+
+The contract testing tools integrate seamlessly with Wagmi ABI extraction, providing a complete contract development and interaction workflow.
 
 ## User Instructions
 
