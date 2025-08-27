@@ -4,7 +4,7 @@ Install Wallet Agent as an MCP server in your AI assistant. The process is simpl
 
 ## Requirements
 
-- **AI Assistant**: Claude Code or Cursor with MCP support
+- **AI Assistant**: Claude Code, Cursor, or Windsurf with MCP support
 - **Operating System**: macOS, Linux, or Windows
 - Your AI assistant will handle all technical requirements automatically
 
@@ -15,7 +15,7 @@ Install Wallet Agent as an MCP server in your AI assistant. The process is simpl
 The easiest way to install Wallet Agent:
 
 ```bash
-claude mcp add wallet-agent bunx wallet-agent@latest
+claude mcp add wallet-agent npx wallet-agent@latest
 ```
 
 ### Verify Installation
@@ -34,7 +34,7 @@ If you prefer manual setup:
 
 ```bash
 # Download and configure manually
-claude mcp add wallet-agent bunx wallet-agent
+claude mcp add wallet-agent npx wallet-agent@latest
 ```
 
 ### Troubleshooting Claude Code

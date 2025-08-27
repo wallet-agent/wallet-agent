@@ -6,7 +6,6 @@ This guide covers setting up Wallet Agent specifically for Claude Code, Anthropi
 
 - **Claude Code CLI** installed and configured ([installation guide](https://docs.anthropic.com/claude/docs/claude-code))
 - **Node.js 18+** or **Bun runtime**
-- **Claude Pro** subscription (required for MCP)
 
 ## Installation
 
