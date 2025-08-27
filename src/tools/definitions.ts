@@ -431,6 +431,99 @@ export const toolDefinitions: Tool[] = [
     },
   },
   {
+    name: "extract_wagmi_abi",
+    description: "Extract ABI for a specific contract from loaded Wagmi config",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+        format: {
+          type: "string",
+          enum: ["json", "typescript", "human-readable"],
+          description: "Output format for the ABI (default: json)",
+        },
+      },
+      required: ["contract"],
+    },
+  },
+  {
+    name: "list_wagmi_functions",
+    description: "List all callable functions for a contract from Wagmi config",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+        type: {
+          type: "string",
+          enum: ["view", "pure", "nonpayable", "payable", "all"],
+          description: "Filter functions by type (default: all)",
+        },
+      },
+      required: ["contract"],
+    },
+  },
+  {
+    name: "list_wagmi_events",
+    description: "List all events that a contract can emit from Wagmi config",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+      },
+      required: ["contract"],
+    },
+  },
+  {
+    name: "export_wagmi_abi",
+    description: "Export contract ABI to a file in specified format",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+        filePath: {
+          type: "string",
+          description: "Output file path",
+        },
+        format: {
+          type: "string",
+          enum: ["json", "typescript"],
+          description: "Export format (default: json)",
+        },
+        includeAddresses: {
+          type: "boolean",
+          description: "Include deployment addresses in export (default: false)",
+        },
+      },
+      required: ["contract", "filePath"],
+    },
+  },
+  {
+    name: "analyze_wagmi_contract",
+    description: "Analyze contract capabilities and detect standards (ERC20, ERC721, etc)",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+      },
+      required: ["contract"],
+    },
+  },
+  {
     name: "write_contract",
     description: "Write to a smart contract using Wagmi-generated ABIs",
     inputSchema: {

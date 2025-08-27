@@ -9,6 +9,7 @@ import { signingHandlers } from "./handlers/signing-handlers.js"
 import { tokenHandlers } from "./handlers/token-handlers.js"
 import { transactionHandlers } from "./handlers/transaction-handlers.js"
 import { transactionSimulationHandlers } from "./handlers/transaction-simulation.js"
+import { wagmiAbiHandlers } from "./handlers/wagmi-abi-handlers.js"
 // Import all handler groups
 import { walletHandlers } from "./handlers/wallet-handlers.js"
 import { walletManagementHandlers } from "./handlers/wallet-management-handlers.js"
@@ -25,6 +26,7 @@ function registerAllHandlers() {
     ...contractHandlers,
     ...tokenHandlers,
     ...encryptedKeyHandlers,
+    ...wagmiAbiHandlers,
     ...miscHandlers,
     ...hyperliquidHandlers,
   ])

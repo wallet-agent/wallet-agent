@@ -127,9 +127,9 @@ describe("Registry Integration", () => {
       "hl_get_user_fills",
     ]
 
-    // Updated to include 3 new simulation handlers
-    expect(tools.length).toBe(expectedTools.length + 3)
-    expect(tools.length).toBe(45) // Total number of tools (42 + 3 simulation)
+    // Updated to include 3 simulation handlers + 5 wagmi ABI extraction handlers + 9 encrypted key handlers
+    expect(tools.length).toBe(expectedTools.length + 17)
+    expect(tools.length).toBe(59) // Total number of tools (42 + 3 simulation + 5 wagmi ABI + 9 encrypted key)
   })
 
   test("all tools should be accessible through registry", () => {
