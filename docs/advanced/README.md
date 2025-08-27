@@ -1,6 +1,6 @@
 # Advanced Topics
 
-Advanced features and specialized use cases for Wallet Agent with AI assistants.
+Advanced features and specialized use cases for Wallet Agent with AI agents.
 
 ## Overview
 

@@ -4,7 +4,7 @@ Creating custom user instructions and workflows for AI agents using Wallet Agent
 
 ## Overview
 
-User instructions enable individual developers to create standardized workflows, custom prompts, and specialized procedures for AI agents. This guide covers creating effective user instructions that leverage Wallet Agent's capabilities while maintaining consistency across different AI assistant platforms.
+User instructions enable individual developers to create standardized workflows, custom prompts, and specialized procedures for AI agents. This guide covers creating effective user instructions that leverage Wallet Agent's capabilities while maintaining consistency across different AI agent platforms.
 
 **🎯 Customization Goal:** Create reusable, personalized instructions that make AI agents more effective at blockchain operations while reducing repetitive explanations.
 

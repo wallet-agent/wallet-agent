@@ -1,12 +1,12 @@
 # Installation
 
-Install Wallet Agent as an MCP server in your AI assistant. The process is simple and takes just a few minutes.
+Install Wallet Agent as an MCP server in your AI agent. The process is simple and takes just a few minutes.
 
 ## Requirements
 
-- **AI Assistant**: Claude Code, Cursor, or Windsurf with MCP support
+- **AI Agent**: Claude Code, Cursor, or Windsurf with MCP support
 - **Operating System**: macOS, Linux, or Windows
-- Your AI assistant will handle all technical requirements automatically
+- Your AI agent will handle all technical requirements automatically
 
 ## Installation Methods
 
@@ -15,7 +15,7 @@ Install Wallet Agent as an MCP server in your AI assistant. The process is simpl
 The easiest way to install Wallet Agent:
 
 ```bash
-claude mcp add wallet-agent npx wallet-agent@latest
+claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 ### Verify Installation
@@ -34,7 +34,7 @@ If you prefer manual setup:
 
 ```bash
 # Download and configure manually
-claude mcp add wallet-agent npx wallet-agent@latest
+claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 ### Troubleshooting Claude Code
@@ -44,8 +44,8 @@ claude mcp add wallet-agent npx wallet-agent@latest
 - Follow Claude Code installation instructions from official documentation
 
 **"MCP server failed to start"**:
-- Check your AI assistant's MCP configuration
-- Restart your AI assistant and try again
+- Check your AI agent's MCP configuration
+- Restart your AI agent and try again
 {% endtab %}
 
 {% tab title="Cursor" %}
@@ -167,17 +167,17 @@ Great! Wallet Agent is now installed and running. Let's try some basic operation
 ### Common Issues
 
 **"Module not found" errors**:
-- Ensure your AI assistant is properly configured
-- Try restarting your AI assistant
+- Ensure your AI agent is properly configured
+- Try restarting your AI agent
 
 **"Permission denied" errors**:
 - Check your system permissions
-- Try running your AI assistant with appropriate permissions
+- Try running your AI agent with appropriate permissions
 
 **MCP server startup failures**:
-- Check that your AI assistant supports MCP
+- Check that your AI agent supports MCP
 - Verify Wallet Agent was installed correctly
-- Restart your AI assistant
+- Restart your AI agent
 
 ### Getting Help
 

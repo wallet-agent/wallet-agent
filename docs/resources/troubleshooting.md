@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Common issues and solutions when using Wallet Agent with AI assistants.
+Common issues and solutions when using Wallet Agent with AI agents.
 
 ## Overview
 

@@ -379,11 +379,11 @@ AI: "I've imported your test private key and switched to private key mode. Your 
 - "What's the balance for 0xf39Fd...?" followed by "Now check 0x70997..." followed by "And also 0x3c44c..." - Each query happens sequentially, taking longer
 
 **AI Optimization:**
-When you ask for multiple balances, AI assistants will automatically batch the requests in parallel to minimize response time.
+When you ask for multiple balances, AI agents will automatically batch the requests in parallel to minimize response time.
 
 ### Connection State Caching
 **Optimization Tips:**
-- AI assistants automatically cache wallet connection state to avoid repeated API calls
+- AI agents automatically cache wallet connection state to avoid repeated API calls
 - When you ask "What's my current setup?" multiple times, the AI uses cached information for faster responses
 - Cache is automatically invalidated when you change wallets or switch chains
 - For real-time accuracy, you can explicitly ask "Refresh and show me my current wallet status"

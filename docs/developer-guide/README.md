@@ -54,7 +54,7 @@ Wallet Agent follows a **developer-first** approach:
 ### 1. Setup & Configuration
 
 ```
-# Install Wallet Agent in your AI assistant
+# Install Wallet Agent in your AI agent
 claude mcp add wallet-agent bunx wallet-agent@latest
 
 # Verify installation
@@ -192,7 +192,7 @@ Plan deployment strategy
 - **Node.js 18+** or **Bun** - JavaScript runtime
 - **Foundry/Anvil** - Local blockchain for testing
 - **Wagmi CLI** - Contract ABI generation
-- **AI Assistant** - Claude Code or Cursor with MCP support
+- **AI Agent** - Claude Code or Cursor with MCP support
 
 {% hint style="info" %}
 **Pro Tip**: Wallet Agent integrates with your existing development tools. You don't need to change your workflow - just add AI capabilities.
@@ -333,9 +333,9 @@ Test your first contract function
 - **[Discussions](https://github.com/wallet-agent/wallet-agent/discussions)** - Developer community
 - **[Examples](https://github.com/wallet-agent/examples)** - Sample projects and patterns
 
-### AI Assistant Integration
+### AI Agent Integration
 ```
-# Get help directly in your AI assistant
+# Get help directly in your AI agent
 "How do I deploy a contract to Sepolia?"
 "What's the best way to test this function?"
 "Generate test cases for my NFT contract"

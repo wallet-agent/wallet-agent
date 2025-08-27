@@ -9,7 +9,7 @@
 
 ## What is Wallet Agent?
 
-Wallet Agent enhances AI coding assistants with Web3 development capabilities by providing:
+Wallet Agent enhances AI coding agents with Web3 development capabilities by providing:
 
 - 🔐 **Secure Wallet Management** - Mock wallets for testing, encrypted private keys for real use
 - ⛽ **Gas-free Contract Testing** - Simulate contract calls without spending gas
@@ -27,7 +27,7 @@ This is beta software under active development. **DO NOT use on mainnet or with 
 ## Quick Navigation
 
 ### 🚀 [Getting Started](getting-started/)
-New to Wallet Agent? Start here to set up the MCP server with your AI assistant.
+New to Wallet Agent? Start here to set up the MCP server with your AI agent.
 
 ### 👤 [User Guide](user-guide/)
 Learn how to perform wallet operations, send transactions, and manage tokens using natural language.
@@ -99,7 +99,7 @@ claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 ### Cursor
-Configure in your MCP settings to enable Web3 operations through natural language commands with Cursor's AI assistant.
+Configure in your MCP settings to enable Web3 operations through natural language commands with Cursor's AI agent.
 
 ## Community & Support
 
@@ -110,11 +110,11 @@ Configure in your MCP settings to enable Web3 operations through natural languag
 
 ## What's Next?
 
-1. **[Install Wallet Agent](getting-started/installation.md)** in your AI assistant
+1. **[Install Wallet Agent](getting-started/installation.md)** in your AI agent
 2. **[Follow the Quick Start](getting-started/quick-start.md)** guide
 3. **[Explore the User Guide](user-guide/)** for common operations
 4. **[Dive into Development](developer-guide/)** for advanced features
 
 ---
 
-Ready to enhance your AI assistant with Web3 capabilities? Let's get started.
+Ready to enhance your AI agent with Web3 capabilities? Let's get started.

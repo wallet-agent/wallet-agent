@@ -1,10 +1,10 @@
 # MCP Tools
 
-Model Context Protocol (MCP) tools for AI assistant integration with Wallet Agent.
+Model Context Protocol (MCP) tools for AI agent integration with Wallet Agent.
 
 ## Overview
 
-Wallet Agent provides a comprehensive set of MCP tools that enable AI assistants to interact with Ethereum-compatible blockchains. These tools are designed for safe, reliable blockchain operations with built-in validation and error handling.
+Wallet Agent provides a comprehensive set of MCP tools that enable AI agents to interact with Ethereum-compatible blockchains. These tools are designed for safe, reliable blockchain operations with built-in validation and error handling.
 
 ## Tool Categories
 

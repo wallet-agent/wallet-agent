@@ -1,10 +1,10 @@
 # Getting Started
 
-Welcome to Wallet Agent! This section will guide you through setting up and configuring Wallet Agent with your AI assistant.
+Welcome to Wallet Agent! This section will guide you through setting up and configuring Wallet Agent with your AI agent.
 
 ## Overview
 
-Wallet Agent is an MCP (Model Context Protocol) server that enables Web3 wallet interactions in AI coding assistants. Whether you're testing smart contracts, managing tokens, or building DApps, Wallet Agent provides a secure and intuitive interface through natural language commands.
+Wallet Agent is an MCP (Model Context Protocol) server that enables Web3 wallet interactions in AI coding agents. Whether you're testing smart contracts, managing tokens, or building DApps, Wallet Agent provides a secure and intuitive interface through natural language commands.
 
 ## What You'll Learn
 
@@ -20,7 +20,7 @@ In this section, you'll learn how to:
 Before getting started, make sure you have:
 
 - **Node.js 18+** or **Bun** installed
-- An AI assistant that supports MCP (Claude Code or Cursor)
+- An AI agent that supports MCP (Claude Code or Cursor)
 - Basic familiarity with Web3 concepts (wallets, transactions, tokens)
 
 {% hint style="info" %}

@@ -4,7 +4,7 @@ This guide covers key concepts for building Web3 applications with Wallet Agent,
 
 ## Overview
 
-Wallet Agent enables blockchain development through natural language interaction with AI assistants. Understanding these core concepts will help you work more effectively and build robust Web3 applications.
+Wallet Agent enables blockchain development through natural language interaction with AI agents. Understanding these core concepts will help you work more effectively and build robust Web3 applications.
 
 ## Development Workflow
 
@@ -328,4 +328,4 @@ Ready to start building? Here's your path forward:
 
 ---
 
-These development concepts form the foundation for building robust Web3 applications with Wallet Agent. Focus on safety, testing, and clear communication with your AI assistant for the best development experience.
+These development concepts form the foundation for building robust Web3 applications with Wallet Agent. Focus on safety, testing, and clear communication with your AI agent for the best development experience.

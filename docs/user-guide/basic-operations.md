@@ -376,7 +376,7 @@ Always know whether you're in Mock or Real mode:
 
 **Problem**: "MCP server not responding"
 **Solution**: 
-1. Restart your AI assistant
+1. Restart your AI agent
 2. Check that Wallet Agent is properly installed
 3. Try: "Get wallet info" to test connection
 

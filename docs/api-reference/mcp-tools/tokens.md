@@ -4,7 +4,7 @@ MCP tools for ERC-20 token and ERC-721 NFT operations with AI agents.
 
 ## Overview
 
-Token tools enable AI assistants to interact with ERC-20 tokens and ERC-721 NFTs through natural language prompts. These tools handle token transfers, balance queries, approvals, and NFT operations.
+Token tools enable AI agents to interact with ERC-20 tokens and ERC-721 NFTs through natural language prompts. These tools handle token transfers, balance queries, approvals, and NFT operations.
 
 ## ERC-20 Token Tools
 

@@ -4,7 +4,7 @@ MCP tools for blockchain network management and multi-chain operations with AI a
 
 ## Overview
 
-Chain tools enable AI assistants to manage blockchain networks, switch between chains, and configure custom EVM-compatible networks through natural language prompts. These tools support multi-chain development and operations.
+Chain tools enable AI agents to manage blockchain networks, switch between chains, and configure custom EVM-compatible networks through natural language prompts. These tools support multi-chain development and operations.
 
 ## Tools
 

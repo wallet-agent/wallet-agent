@@ -9,13 +9,13 @@ This guide covers setting up Wallet Agent specifically for Claude Code, Anthropi
 
 ## Installation
 
-Add Wallet Agent to Claude Code using npx (or bunx for better performance):
+Add Wallet Agent to Claude Code using bunx (or npx as fallback):
 
 ```bash
-# Using npx (works everywhere)
-claude mcp add wallet-agent npx wallet-agent@latest
+# Using bunx (recommended)
+claude mcp add wallet-agent bunx wallet-agent@latest
 
-# Using bunx (recommended for better performance)
+# Using npx (fallback if bunx not available)
 claude mcp add wallet-agent npx wallet-agent@latest
 ```
 
@@ -24,7 +24,7 @@ This command:
 - Configures it as an MCP server  
 - Makes it available in all Claude Code sessions
 
-💡 **Performance Tip:** Use `bunx` instead of `npx` for faster startup times if you have Bun installed.
+💡 **Performance Tip:** `bunx` provides faster startup times and better performance than `npx`.
 
 ## Verification
 
@@ -73,10 +73,10 @@ Claude Code supports passing environment variables to MCP servers:
 
 ```bash
 # Basic setup with environment variable
-claude mcp add wallet-agent npx wallet-agent@latest -e WALLET_PRIVATE_KEY=0x...
+claude mcp add wallet-agent bunx wallet-agent@latest -e WALLET_PRIVATE_KEY=0x...
 
 # Multiple environment variables
-claude mcp add wallet-agent npx wallet-agent@latest \
+claude mcp add wallet-agent bunx wallet-agent@latest \
   -e WALLET_PRIVATE_KEY=0x... \
   -e DEBUG=wallet-agent:* \
   -e NODE_ENV=development
@@ -162,7 +162,7 @@ Ask Claude Code to explain and document your Web3 operations:
 ```bash
 # Remove and re-add the MCP server
 claude mcp remove wallet-agent
-claude mcp add wallet-agent npx wallet-agent@latest
+claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 **"Command not found: claude"**
@@ -182,7 +182,7 @@ bun --version
 
 # Try reinstalling Wallet Agent
 claude mcp remove wallet-agent
-claude mcp add wallet-agent npx wallet-agent@latest
+claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 ### Debug Mode
@@ -190,7 +190,7 @@ claude mcp add wallet-agent npx wallet-agent@latest
 Enable detailed logging to troubleshoot issues:
 
 ```bash
-claude mcp add wallet-agent npx wallet-agent@latest -e DEBUG=wallet-agent:*
+claude mcp add wallet-agent bunx wallet-agent@latest -e DEBUG=wallet-agent:*
 ```
 
 Check Claude Code's output for detailed error messages and debug information.
@@ -207,7 +207,7 @@ claude mcp remove wallet-agent
 rm -rf ~/.claude/mcp/wallet-agent
 
 # Reinstall
-claude mcp add wallet-agent npx wallet-agent@latest
+claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 ## Advanced Features
