@@ -4,7 +4,7 @@ This guide covers setting up Wallet Agent specifically for Claude Code, Anthropi
 
 ## Prerequisites
 
-- **Claude Code CLI** installed and configured
+- **Claude Code CLI** installed and configured ([installation guide](https://docs.anthropic.com/claude/docs/claude-code))
 - **Node.js 18+** or **Bun runtime**
 - **Claude Pro** subscription (required for MCP)
 
@@ -192,11 +192,11 @@ claude mcp add wallet-agent bunx wallet-agent@latest
 
 **"Command not found: claude"**
 ```bash
-# Install or update Claude Code CLI
-curl -fsSL https://claude.ai/install.sh | sh
-
-# Or check installation
+# Check if Claude Code CLI is installed
 which claude
+
+# If not installed, follow the official Claude Code installation guide
+# Visit: https://docs.anthropic.com/claude/docs/claude-code
 ```
 
 **"Permission denied" errors**
