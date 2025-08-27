@@ -104,10 +104,10 @@ Switch to Polygon
 🔄 Switched to Polygon successfully!
 
 ⛓️ Chain: Polygon (Chain ID: 137)
-💰 Balance: 10000.0 MATIC
+💰 Balance: 10000.0 POL
 🌐 RPC: https://polygon-rpc.com
 
-💡 Native currency is now MATIC instead of ETH
+💡 Native currency is now POL instead of ETH
 ```
 
 ## Understanding the Commands

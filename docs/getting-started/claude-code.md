@@ -140,7 +140,7 @@ Claude Code maintains context across commands:
 "Connect to my test wallet"
 "What's my balance?"
 "Send 1 ETH to the second test wallet"
-"Switch to Polygon and check my MATIC balance"
+"Switch to Polygon and check my POL balance"
 ```
 
 ### Error Handling and Guidance

@@ -103,7 +103,7 @@ Wallet Agent implements MCP Protocol version 2024-11-05.
 |-------|----------|-----------------|--------|
 | Ethereum Mainnet | 1 | ETH | ✅ Built-in |
 | Sepolia Testnet | 11155111 | ETH | ✅ Built-in |
-| Polygon | 137 | MATIC | ✅ Built-in |
+| Polygon | 137 | POL | ✅ Built-in |
 | Anvil Local | 31337 | ETH | ✅ Built-in |
 | Custom Chains | Any | Configurable | ✅ Via `add_custom_chain` |
 

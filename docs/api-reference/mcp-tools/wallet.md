@@ -115,14 +115,14 @@ Get the native token balance for an address.
 **What the AI returns:**
 - Native token balance in readable format (e.g., "10.5 ETH")
 - Address that was checked
-- Native token symbol for the current blockchain (ETH, MATIC, etc.)
+- Native token symbol for the current blockchain (ETH, POL, etc.)
 - Clear balance information
 
 **Example Prompts:**
 - "What's my current wallet balance?"
 - "Check the ETH balance for address 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532"
 - "Show me the native token balance for my connected wallet"
-- "How much MATIC do I have on Polygon?"
+- "How much POL do I have on Polygon?"
 
 **Errors:**
 - `InvalidParams`: Invalid address format

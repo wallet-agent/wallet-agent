@@ -27,7 +27,7 @@ This command shows:
 - **Wallet Type**: Mock (safe) or Real (testnet/mainnet)
 - **Available Accounts**: Number of wallets you can connect to
 - **Current Chain**: Which blockchain network you're using
-- **Native Currency**: The main token of the current chain (ETH, MATIC, etc.)
+- **Native Currency**: The main token of the current chain (ETH, POL, etc.)
 
 ### List Available Accounts
 
@@ -126,7 +126,7 @@ Check my balance
 ⛓️ Chain: Anvil (31337)
 📊 Last Updated: Just now
 
-💡 This is your native token balance (ETH on Ethereum, MATIC on Polygon)
+💡 This is your native token balance (ETH on Ethereum, POL on Polygon)
 ```
 
 ### Check Specific Address Balance

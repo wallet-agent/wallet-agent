@@ -289,7 +289,7 @@ The AI agent will provide comprehensive NFT information including collection det
 - Polygon USDC: 500.00
 
 ### Chain-Specific Token Operations
-**Developer:** "Switch to Polygon and transfer 100 MATIC-USDC to Alice"
+**Developer:** "Switch to Polygon and transfer 100 POL-USDC to Alice"
 
 **AI Agent Response:** The AI will switch to Polygon network and execute the USDC transfer using the Polygon deployment.
 

@@ -275,7 +275,7 @@ Tokens exist independently on each blockchain:
 | Chain | Popular Tokens |
 |-------|---------------|
 | Ethereum | USDC, USDT, DAI, UNI, AAVE |
-| Polygon | USDC.e, USDT, DAI, MATIC, WETH |
+| Polygon | USDC.e, USDT, DAI, POL, WETH |
 | Sepolia | Test versions of above tokens |
 
 ### Switch Chains for Token Operations
@@ -287,7 +287,7 @@ Transfer 100 USDC to 0x7099
 ```
 
 **Chain-Specific Considerations:**
-- **Gas Fees**: Paid in native token (ETH on Ethereum, MATIC on Polygon)
+- **Gas Fees**: Paid in native token (ETH on Ethereum, POL on Polygon)
 - **Token Addresses**: Same token has different addresses on different chains
 - **Bridge Requirements**: Moving tokens between chains requires bridge services
 

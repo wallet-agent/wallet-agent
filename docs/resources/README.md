@@ -123,7 +123,7 @@ Detailed changelog and release notes for all Wallet Agent versions.
 **Getting Started:**
 - "Show me all available mock accounts for testing"
 - "Connect to my first wallet and check the balance"
-- "Switch to Polygon network and check my MATIC balance"
+- "Switch to Polygon network and check my POL balance"
 - "Load my smart contract configuration"
 
 **Transaction Operations:**

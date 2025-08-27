@@ -204,11 +204,11 @@ The AI agent will provide a comprehensive overview of the current wallet connect
 ## Multi-Chain Operations
 
 ### Cross-Chain Balance Monitoring
-**Developer:** "Check my ETH balance on Ethereum, Polygon MATIC, and Arbitrum ETH"
+**Developer:** "Check my ETH balance on Ethereum, Polygon POL, and Arbitrum ETH"
 
 **AI Agent Response:** The AI will switch between networks and report:
 - Ethereum: 2.5 ETH
-- Polygon: 150.0 MATIC  
+- Polygon: 150.0 POL  
 - Arbitrum: 1.8 ETH
 
 ### Chain-Specific Contract Deployment

@@ -64,7 +64,7 @@ The AI agent provides gas estimation including gas units, current gas price, tot
 - "Calculate the transaction cost in USD"
 
 **AI Agent Response:**
-The AI agent will estimate the gas cost and display it in both gas units and the native currency (ETH, MATIC, etc.), along with current gas price information.
+The AI agent will estimate the gas cost and display it in both gas units and the native currency (ETH, POL, etc.), along with current gas price information.
 
 **Errors:**
 - `InvalidParams`: Invalid address format

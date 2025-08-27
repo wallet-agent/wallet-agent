@@ -10,7 +10,7 @@ Blockchain networks (or "chains") are independent blockchain systems that:
 
 - **Process Transactions** - Each chain validates and records transactions
 - **Store State** - Account balances, contract data, NFTs
-- **Use Native Currency** - ETH, MATIC, BNB, etc. for gas fees
+- **Use Native Currency** - ETH, POL, BNB, etc. for gas fees
 - **Run Smart Contracts** - DApps and protocols specific to each chain
 
 ### EVM Compatibility
@@ -32,7 +32,7 @@ Wallet Agent includes these chains by default:
 | **Anvil** | 31337 | ETH | Local development |
 | **Ethereum** | 1 | ETH | Mainnet (view-only) |
 | **Sepolia** | 11155111 | ETH | Ethereum testnet |
-| **Polygon** | 137 | MATIC | Polygon PoS mainnet |
+| **Polygon** | 137 | POL | Polygon PoS mainnet |
 
 ### Chain Details
 
@@ -71,7 +71,7 @@ Switch to Polygon
 🔄 Switched to Polygon successfully!
 
 ⛓️ Chain: Polygon (Chain ID: 137)  
-💰 Balance: 10000.0 MATIC
+💰 Balance: 10000.0 POL
 🌐 RPC: https://polygon-rpc.com
 🔍 Explorer: https://polygonscan.com
 
@@ -80,7 +80,7 @@ Switch to Polygon
 - Block Time: ~2.4 seconds
 - Confirmation Time: ~5 seconds
 
-💡 Native currency is now MATIC instead of ETH
+💡 Native currency is now POL instead of ETH
 ```
 
 ### Switch by Chain ID
@@ -126,8 +126,8 @@ What chain am I on?
 📍 Current Network Status
 
 ⛓️ Chain: Polygon (Chain ID: 137)
-💰 Native Currency: MATIC
-🏠 Your Balance: 10000.0 MATIC
+💰 Native Currency: POL
+🏠 Your Balance: 10000.0 POL
 
 🌐 Network Details:
 - RPC Endpoint: https://polygon-rpc.com
@@ -327,7 +327,7 @@ Each chain has different gas characteristics:
 | Chain | Gas Token | Typical Cost | Speed |
 |-------|-----------|--------------|-------|
 | Ethereum | ETH | High ($5-50+) | 12 sec blocks |
-| Polygon | MATIC | Very Low ($0.01) | 2 sec blocks |
+| Polygon | POL | Very Low ($0.01) | 2 sec blocks |
 | Anvil | ETH | Free | Instant |
 | Sepolia | ETH | Free (testnet) | 12 sec blocks |
 
@@ -383,16 +383,16 @@ Each chain has different gas characteristics:
 
 **Insufficient Gas for Chain**
 ```
-❌ Insufficient MATIC for gas
+❌ Insufficient POL for gas
 
-💰 Required: ~0.01 MATIC
-💰 Available: 0.0 MATIC  
+💰 Required: ~0.01 POL
+💰 Available: 0.0 POL  
 ⛓️ Chain: Polygon
 
 🔧 Solutions:
-- Get testnet MATIC: Use Polygon faucet
+- Get testnet POL: Use Polygon faucet
 - Switch chains: "Switch to Anvil" (free gas)
-- Use different wallet: "Connect to wallet with MATIC"
+- Use different wallet: "Connect to wallet with POL"
 ```
 
 ### Chain Switching Issues

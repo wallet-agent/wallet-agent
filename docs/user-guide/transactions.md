@@ -241,7 +241,7 @@ Each blockchain has its own native token:
 | Chain | Native Token | Symbol |
 |-------|-------------|--------|
 | Ethereum | Ether | ETH |
-| Polygon | Polygon Matic | MATIC |
+| Polygon | Polygon PoS | POL |
 | Anvil | Ether | ETH |
 | Sepolia | Sepolia Ether | ETH |
 
@@ -251,7 +251,7 @@ Switch chains and send native tokens:
 
 ```
 Switch to Polygon
-Send 10 MATIC to 0x7099
+Send 10 POL to 0x7099
 ```
 
 ```

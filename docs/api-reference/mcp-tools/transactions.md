@@ -55,7 +55,7 @@ Estimate gas cost for a transaction before execution.
 **What the AI returns:**
 - Estimated gas units needed for the transaction
 - Current gas price on the network
-- Total estimated cost in native currency (ETH, MATIC, etc.)
+- Total estimated cost in native currency (ETH, POL, etc.)
 - Native currency symbol for the current blockchain
 - Complete cost breakdown
 

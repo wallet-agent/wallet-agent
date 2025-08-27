@@ -145,7 +145,7 @@ Common questions developers have when using Wallet Agent with AI agents like Cla
 **A:** 
 - Deploy same contract to multiple networks: "Deploy Counter to Ethereum and Polygon"
 - Check balances across chains: "Show my USDC balance on all networks"
-- Manage gas tokens: "Ensure I have ETH on Ethereum and MATIC on Polygon"
+- Manage gas tokens: "Ensure I have ETH on Ethereum and POL on Polygon"
 
 ## Token and DeFi Operations
 
