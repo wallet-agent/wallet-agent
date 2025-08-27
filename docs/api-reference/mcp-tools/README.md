@@ -59,6 +59,19 @@ Blockchain network management and switching.
 - `switch_chain` - Switch between supported blockchains
 - `get_wallet_info` - Get current chain and wallet information
 
+### [Encrypted Key Tools](encrypted-keys.md)
+Enterprise-grade encrypted private key management.
+
+- `create_encrypted_keystore` - Create encrypted key store with master password
+- `unlock_keystore` - Unlock encrypted key store for operations
+- `lock_keystore` - Lock encrypted key store for security
+- `get_keystore_status` - Get keystore status and session information
+- `import_encrypted_private_key` - Import private key into encrypted store
+- `list_encrypted_keys` - List all keys in encrypted store
+- `remove_encrypted_key` - Remove key from encrypted store
+- `update_key_label` - Update label/name for encrypted key
+- `change_keystore_password` - Change master password for keystore
+
 ### [Testing Tools](testing.md)
 Development and testing utilities.
 
@@ -298,4 +311,5 @@ Explore specific tool categories:
 - **[Contract Tools →](contracts.md)**
 - **[Token Tools →](tokens.md)**
 - **[Chain Tools →](chains.md)**
+- **[Encrypted Key Tools →](encrypted-keys.md)**
 - **[Testing Tools →](testing.md)**

@@ -19,10 +19,30 @@ Encrypted key storage provides an additional security layer when using private k
 - No additional setup required
 
 **Encrypted Private Keys:**
-- Protected with passphrase or key derivation
-- Requires decryption step before use
-- Enhanced security for production environments
-- Additional setup and management overhead
+- Protected with AES-256-GCM encryption and master password
+- Individual key encryption with unique initialization vectors
+- Enterprise-grade security with PBKDF2 key derivation (100,000 iterations)
+- Session-based access with automatic 30-minute timeouts
+- Secure memory handling and cleanup
+
+### WalletAgent Encrypted Key System
+
+WalletAgent provides a complete encrypted key management system with 9 specialized MCP tools:
+
+**Keystore Management:**
+- `create_encrypted_keystore` - Initialize secure storage
+- `unlock_keystore` - Begin secure session
+- `lock_keystore` - End session and clear memory
+- `get_keystore_status` - Monitor session and security state
+
+**Key Operations:**
+- `import_encrypted_private_key` - Add keys with individual encryption
+- `list_encrypted_keys` - View stored keys (addresses only, never private keys)
+- `remove_encrypted_key` - Securely delete keys
+- `update_key_label` - Organize with descriptive labels
+
+**Security Management:**
+- `change_keystore_password` - Rotate master password and re-encrypt all keys
 
 ### When to Use Encrypted Keys
 
@@ -102,14 +122,56 @@ For enhanced security with encrypted key files:
 
 ### Production Deployment
 
-**Environment Separation:**
-**Developer:** "Set up encrypted keys for different deployment environments"
+#### Environment-Specific Setup
 
-**AI Agent Response:** The AI will configure:
-- Development: Test keys with basic encryption
-- Staging: Production-like encryption setup
-- Production: Maximum security encrypted storage
-- Clear separation and access controls
+**Development Environment:**
+```
+Create encrypted keystore for development testing
+Import private key from DEV_PRIVATE_KEY with label 'Development Testing'
+```
+
+**Staging Environment:**
+```
+Create encrypted keystore with production-strength master password
+Import private key from STAGING_PRIVATE_KEY with label 'Staging Validation'
+Test all encrypted key workflows before production deployment
+```
+
+**Production Environment:**
+```
+Create encrypted keystore with maximum security master password
+Import private key from PROD_PRIVATE_KEY with label 'Production Main'
+Import backup private key from PROD_BACKUP_KEY with label 'Production Backup'
+Verify keystore status and security configuration
+```
+
+#### Production Security Checklist
+
+**Initial Deployment:**
+- ✅ Master password meets enterprise security standards (12+ characters)
+- ✅ Private keys imported from secure environment variables only
+- ✅ All keys properly labeled with descriptive names
+- ✅ Keystore file permissions restricted to service account only
+- ✅ Regular backup procedures established
+
+**Operational Security:**
+- ✅ Unlock keystore only when needed for operations
+- ✅ Lock keystore immediately after operation completion
+- ✅ Monitor session timeouts and automatic locks
+- ✅ Regular master password rotation (quarterly)
+- ✅ Audit logs for all keystore operations
+
+**Access Controls:**
+```
+# Service account setup
+useradd -r -s /bin/false wallet-agent
+chown wallet-agent:wallet-agent /path/to/keystore
+chmod 600 /path/to/keystore
+
+# Environment variable security
+echo "PROD_PRIVATE_KEY=0x..." | sudo tee -a /etc/environment
+chmod 600 /etc/environment
+```
 
 **Access Control:**
 **Developer:** "Implement proper access controls for encrypted key operations"

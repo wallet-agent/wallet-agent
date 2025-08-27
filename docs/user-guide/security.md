@@ -67,7 +67,7 @@ Use mock mode for:
 
 ### Encrypted Key Management
 
-WalletAgent provides secure private key storage:
+WalletAgent provides enterprise-grade encrypted private key storage with comprehensive workflow support:
 
 ```
 Create encrypted keystore with master password
@@ -79,6 +79,78 @@ Create encrypted keystore with master password
 - **Session Management** - 30-minute automatic timeout
 - **Memory Protection** - Keys cleared on session end
 - **File Security** - Restrictive permissions (600)
+
+#### Complete Encrypted Key Workflow
+
+**Step 1: Initial Setup**
+```
+Create encrypted keystore for production use
+```
+This creates your secure keystore with master password protection.
+
+**Step 2: Import Private Keys**
+```
+Import private key from MAIN_WALLET_KEY environment variable with label 'Production Main'
+Import additional private key with label 'Backup Trading Account'
+```
+Each key is individually encrypted and labeled for easy management.
+
+**Step 3: Verify Storage**
+```
+List my encrypted keys to see stored addresses and labels
+Check keystore status to confirm setup
+```
+
+**Step 4: Secure Operations**
+```
+Lock keystore when not actively trading
+Unlock keystore only when needed for operations
+```
+
+#### Daily Encrypted Key Operations
+
+**Starting a Trading Session:**
+```
+Check keystore status
+Unlock encrypted keystore for today's operations
+Connect to my encrypted wallet address
+```
+
+**During Operations:**
+```
+Send 1 ETH to recipient  # Uses encrypted key transparently
+Check my balance         # Shows balance for encrypted address
+Transfer 100 USDC tokens # All operations use encrypted keys securely
+```
+
+**Ending Session:**
+```
+Lock encrypted keystore for security
+```
+Keys are automatically cleared from memory and keystore is secured.
+
+#### Key Management Operations
+
+**Adding New Keys:**
+```
+Unlock encrypted keystore
+Import new private key with label 'DeFi Operations'
+List encrypted keys to confirm addition
+```
+
+**Organizing Keys:**
+```
+Update label for key 0x... to 'Main Trading Account'
+Remove old encrypted key that's no longer needed
+List encrypted keys to see current organization
+```
+
+**Security Maintenance:**
+```
+Change keystore master password quarterly for security
+Verify all encrypted keys are properly labeled
+Check keystore status regularly
+```
 
 ### Private Key Best Practices
 

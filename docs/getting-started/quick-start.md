@@ -278,8 +278,36 @@ You've been using **mock wallets** - completely safe test accounts. When you're 
 ### Real Wallets (Advanced)  
 - ✅ Works with testnets like Sepolia
 - ✅ Real blockchain interactions
-- ✅ Encrypted private key storage
+- ✅ Enterprise-grade encrypted private key storage
 - ⚠️ Requires testnet ETH for gas
+
+#### Quick Encrypted Key Setup
+
+For maximum security, use WalletAgent's encrypted keystore:
+
+**1. Create Encrypted Keystore:**
+```
+Create encrypted keystore for secure testnet operations
+```
+
+**2. Import Your Testnet Private Key:**
+```
+Import private key from TESTNET_PRIVATE_KEY with label 'Sepolia Testing'
+```
+
+**3. Switch to Encrypted Mode:**
+```
+Switch to private key wallet mode
+Connect to my encrypted wallet address
+```
+
+**4. Verify Setup:**
+```
+Check keystore status
+Get current account information
+```
+
+Now you can perform real blockchain operations with maximum security!
 
 ## Next Steps
 
