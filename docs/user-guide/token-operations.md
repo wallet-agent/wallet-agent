@@ -148,7 +148,7 @@ Transfer all USDC to 0x3C44
 - Amount to Transfer: 1000.0 USDC
 - Gas Fee: ~0.001365 ETH (paid in ETH)
 
-🚀 Transferring all 1000.0 USDC...
+Transferring all 1000.0 USDC...
 ```
 
 {% hint style="info" %}

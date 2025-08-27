@@ -75,7 +75,7 @@ Connect to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 💰 Balance: 10000.0 ETH
 🎯 Status: Ready for transactions
 
-🚀 You can now send transactions and interact with contracts!
+You can now send transactions and interact with contracts.
 ```
 
 ### Connect Using Short Address
@@ -438,4 +438,4 @@ Try these practice exercises:
 
 ---
 
-You now know the fundamentals of Wallet Agent! These basic operations are the foundation for all Web3 interactions. 🎉
+You now know the fundamentals of Wallet Agent. These basic operations are the foundation for all Web3 interactions.

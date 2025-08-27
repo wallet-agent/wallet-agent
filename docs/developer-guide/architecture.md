@@ -328,4 +328,4 @@ Ready to start building? Here's your path forward:
 
 ---
 
-These development concepts form the foundation for building robust Web3 applications with Wallet Agent. Focus on safety, testing, and clear communication with your AI assistant for the best development experience! 🚀
+These development concepts form the foundation for building robust Web3 applications with Wallet Agent. Focus on safety, testing, and clear communication with your AI assistant for the best development experience.

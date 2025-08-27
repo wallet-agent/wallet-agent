@@ -45,7 +45,7 @@ Connect to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 ⛓️ Chain: Anvil (Chain ID: 31337)  
 💰 Balance: 10000.0 ETH
 
-🎉 Ready for Web3 operations!
+Ready for Web3 operations.
 ```
 
 **What just happened?**
@@ -78,7 +78,7 @@ Send 1 ETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **Expected Output:**
 ```
-🚀 Transaction Sent Successfully!
+Transaction Sent Successfully
 
 📍 From: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 📍 To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
@@ -89,7 +89,7 @@ Send 1 ETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 ✅ Transaction confirmed in block 1234
 ```
 
-**Congratulations!** 🎉 You just sent your first Web3 transaction using natural language!
+**Congratulations.** You just sent your first Web3 transaction using natural language.
 
 ### Step 5: Switch Chains
 
@@ -215,7 +215,7 @@ Simulate balanceOf function for USDC with account 0xf39Fd6e51aad88F6F4ce6aB88272
 - No gas cost for simulations
 ```
 
-This is **incredibly powerful** for development - you can test any contract function without spending gas or affecting blockchain state.
+This is **very useful** for development - you can test any contract function without spending gas or affecting blockchain state.
 
 ## What You've Learned
 
@@ -322,4 +322,4 @@ Get [token] balance      # Check token balance
 
 ---
 
-**Congratulations** You've completed the Wallet Agent quick start. You're now ready to explore the full power of Web3 development with WalletAgent.
+**Congratulations.** You've completed the Wallet Agent quick start. You're now ready to explore the full capabilities of Web3 development with Wallet Agent.

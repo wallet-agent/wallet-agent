@@ -53,7 +53,7 @@ The fastest way to get started:
 2. **[Try the Quick Start](quick-start.md)** (10 minutes)
 3. **[Explore User Operations](../user-guide/)** (ongoing)
 
-Ready? Let's install Wallet Agent! 🚀
+Ready? Let's install Wallet Agent.
 
 ## Next Steps
 

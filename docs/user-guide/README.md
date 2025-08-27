@@ -73,7 +73,7 @@ Wallet Agent provides rich, detailed responses. Here's how to read them:
 
 ### Success Indicators
 - ✅ **Green checkmarks** - Operations completed successfully
-- 🎉 **Celebration emojis** - Major milestones achieved
+- 📊 **Status updates** - Major milestones achieved
 - 📈 **Status updates** - Progress indicators
 
 ### Information Displays
@@ -204,6 +204,6 @@ Ready to dive in? Here's your learning path:
 
 ---
 
-Let's start with the basics and build your Web3 skills step by step! 🚀
+Let's start with the basics and build your Web3 skills step by step.
 
 👉 **[Continue to Basic Operations →](basic-operations.md)**

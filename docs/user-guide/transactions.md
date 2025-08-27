@@ -14,7 +14,7 @@ Send 1 ETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **Example Output:**
 ```
-🚀 Transaction Sent Successfully!
+Transaction Sent Successfully
 
 📍 From: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 📍 To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8  
@@ -177,7 +177,7 @@ Send all ETH to 0x7099
 - Estimated Gas Fee: 0.000441 ETH
 - Amount to Send: 9999.999559 ETH
 
-🚀 Proceeding with maximum transfer...
+Proceeding with maximum transfer...
 ```
 
 ### Transaction with Data
@@ -207,7 +207,7 @@ Show my recent transactions
 ```
 📜 Transaction History (Last 10)
 
-1. 🚀 Sent 1.0 ETH to 0x7099...
+1. Sent 1.0 ETH to 0x7099...
    ⏱️ 2 minutes ago | ✅ Confirmed
    🔗 0xabc123...
 

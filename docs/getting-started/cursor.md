@@ -460,4 +460,4 @@ Now that Wallet Agent is configured with Cursor:
 
 ---
 
-Ready to build Web3 apps with Cursor and Wallet Agent? Let's start coding! 🚀
+Ready to build Web3 apps with Cursor and Wallet Agent? Let's start coding.

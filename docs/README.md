@@ -9,7 +9,7 @@
 
 ## What is Wallet Agent?
 
-Wallet Agent transforms AI coding assistants into Web3 development powerhouses by providing:
+Wallet Agent enhances AI coding assistants with Web3 development capabilities by providing:
 
 - 🔐 **Secure Wallet Management** - Mock wallets for testing, encrypted private keys for real use
 - ⛽ **Gas-free Contract Testing** - Simulate contract calls without spending gas
@@ -117,4 +117,4 @@ Configure in your MCP settings to enable Web3 operations through natural languag
 
 ---
 
-Ready to supercharge your AI assistant with Web3 capabilities? Let's get started! 🚀
+Ready to enhance your AI assistant with Web3 capabilities? Let's get started.

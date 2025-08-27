@@ -324,4 +324,4 @@ Now that Wallet Agent is configured with Claude Code:
 
 ---
 
-Ready to explore Web3 with Claude Code and Wallet Agent? Let's go! 🚀
+Ready to explore Web3 with Claude Code and Wallet Agent? Let's begin.

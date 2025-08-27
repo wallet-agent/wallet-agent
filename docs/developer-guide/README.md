@@ -195,7 +195,7 @@ Plan deployment strategy
 - **AI Assistant** - Claude Code or Cursor with MCP support
 
 {% hint style="info" %}
-**Pro Tip**: Wallet Agent integrates with your existing development tools. You don't need to change your workflow - just add AI superpowers!
+**Pro Tip**: Wallet Agent integrates with your existing development tools. You don't need to change your workflow - just add AI capabilities.
 {% endhint %}
 
 ## Common Development Patterns
@@ -344,6 +344,6 @@ Test your first contract function
 
 ---
 
-Ready to build the future of Web3 with AI assistance? Let's start with understanding the key development concepts! 🚀
+Ready to build the future of Web3 with AI assistance? Let's start with understanding the key development concepts.
 
 👉 **[Continue to Development Concepts →](architecture.md)**
