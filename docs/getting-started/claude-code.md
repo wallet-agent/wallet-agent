@@ -185,11 +185,9 @@ Ask Claude Code to explain and document your Web3 operations:
 
 **"MCP server not responding"**
 ```bash
-# Check if the server is running
-claude mcp status
-
-# Restart MCP servers
-claude mcp restart wallet-agent
+# Remove and re-add the MCP server
+claude mcp remove wallet-agent
+claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 **"Command not found: claude"**
@@ -220,10 +218,7 @@ Enable detailed logging to troubleshoot issues:
 claude mcp add wallet-agent bunx wallet-agent -e DEBUG=wallet-agent:*
 ```
 
-Then check logs:
-```bash
-claude mcp logs wallet-agent
-```
+Check Claude Code's output for detailed error messages and debug information.
 
 ### Reset Configuration
 
