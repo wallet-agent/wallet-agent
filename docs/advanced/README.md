@@ -158,7 +158,7 @@ Advanced use cases often involve high-volume operations:
 Some advanced features require real-time performance:
 
 **Latency Optimization:**
-- Use high-performance RPC endpoints
+- Use reliable RPC endpoints
 - Implement local caching strategies
 - Optimize network configurations
 - Monitor and measure latency

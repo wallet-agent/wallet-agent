@@ -62,7 +62,7 @@ This guide helps resolve common problems you might encounter when using WalletAg
 **Prevention:**
 - Use multiple RPC endpoints for redundancy
 - Monitor network status before critical operations
-- Choose reliable, high-performance RPC providers
+- Choose reliable RPC providers
 
 ## Transaction Issues
 
@@ -277,7 +277,7 @@ This guide helps resolve common problems you might encounter when using WalletAg
 4. Suggest optimization strategies
 
 **Solutions:**
-- "Switch to a faster RPC endpoint"
+- "Switch to a more reliable RPC endpoint"
 - "Use batch operations for multiple queries"
 - "Check network congestion and wait for better conditions"
 - "Optimize gas settings for faster confirmation"

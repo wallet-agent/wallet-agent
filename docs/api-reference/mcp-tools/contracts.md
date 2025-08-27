@@ -280,10 +280,10 @@ The AI agent will execute the contract function, wait for transaction confirmati
 
 **AI Agent Response:** The AI will batch these read operations for better performance.
 
-### Chain-Specific Optimization
-**Developer:** "Use the fastest available RPC for contract calls"
+### Chain-Specific Operations
+**Developer:** "Make sure contract calls work reliably on the current chain"
 
-**AI Agent Response:** The AI will automatically select the most responsive RPC endpoint for the current chain.
+**AI Agent Response:** The AI will use the configured RPC endpoint for the current chain to ensure reliable contract interactions.
 
 ## Related Tools
 
