@@ -830,6 +830,117 @@ export const toolDefinitions: Tool[] = [
       required: ["chainId"],
     },
   },
+  {
+    name: "simulate_contract_call",
+    description: "Simulate a contract function call without gas costs or state changes",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+        address: {
+          type: "string",
+          description: "Contract address (optional if in Wagmi config)",
+        },
+        function: {
+          type: "string",
+          description: "Function name to simulate",
+        },
+        args: {
+          type: "array",
+          description: "Function arguments",
+          items: {},
+        },
+        value: {
+          type: "string",
+          description: "ETH value to send with call (optional)",
+        },
+        from: {
+          type: "string",
+          description: "Caller address (defaults to connected wallet)",
+        },
+      },
+      required: ["contract", "function"],
+    },
+  },
+  {
+    name: "test_contract_function",
+    description: "Generate and run multiple test scenarios for a contract function",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+        function: {
+          type: "string",
+          description: "Function name to test",
+        },
+        includeEdgeCases: {
+          type: "boolean",
+          description: "Include edge case testing scenarios (default: true)",
+        },
+      },
+      required: ["contract", "function"],
+    },
+  },
+  {
+    name: "test_contract",
+    description: "Run comprehensive tests on all functions in a contract",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+        functionType: {
+          type: "string",
+          enum: ["all", "view", "pure", "nonpayable", "payable"],
+          description: "Filter functions by type (default: all)",
+        },
+      },
+      required: ["contract"],
+    },
+  },
+  {
+    name: "dry_run_transaction",
+    description: "Preview the effects of a transaction without executing it",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contract: {
+          type: "string",
+          description: "Contract name from Wagmi config",
+        },
+        address: {
+          type: "string",
+          description: "Contract address (optional if in Wagmi config)",
+        },
+        function: {
+          type: "string",
+          description: "Function name to execute",
+        },
+        args: {
+          type: "array",
+          description: "Function arguments",
+          items: {},
+        },
+        value: {
+          type: "string",
+          description: "ETH value to send",
+        },
+        from: {
+          type: "string",
+          description: "Transaction sender",
+        },
+      },
+      required: ["contract", "function"],
+    },
+  },
   // Add Hyperliquid tools
   ...hyperliquidTools,
 ]
