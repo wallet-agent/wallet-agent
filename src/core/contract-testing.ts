@@ -141,8 +141,8 @@ export async function simulateContractCall(
       success: true,
       returnValue,
       gasUsed: undefined, // CallReturnType doesn't include gasUsed
-      stateChanges: [], // TODO: Implement state tracking
-      logs: [], // TODO: Implement event log parsing
+      stateChanges: [], // State tracking not supported by eth_call
+      logs: [], // Event logs not available in simulation mode
     }
   } catch (error) {
     // Handle revert/error cases

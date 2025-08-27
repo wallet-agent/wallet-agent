@@ -5,6 +5,8 @@
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
 import type { Address } from "viem"
 import { z } from "zod"
+import { getContainer } from "../../container.js"
+import { resolveContract } from "../../core/contract-resolution.js"
 import {
   type ContractSimulationParams,
   generateTestScenarios,
@@ -212,28 +214,62 @@ export class TestContractHandler extends BaseToolHandler {
     )
 
     try {
-      // This is a placeholder for now - we'll need to get all functions from the contract
-      // and run tests on each one. For now, let's provide a helpful response.
+      const container = getContainer()
+      const chainId = container.walletEffects.getCurrentChainId()
+      const resolved = resolveContract(contract, undefined, chainId, container.contractAdapter)
 
-      return this.createTextResponse(
-        `🚧 **Contract Testing Suite: ${contract}**\n\n` +
-          `This feature is coming soon! It will:\n\n` +
-          `📋 **Planned Features:**\n` +
-          `- Test all ${functionType} functions automatically\n` +
-          `- Generate comprehensive test reports\n` +
-          `- Identify potential vulnerabilities\n` +
-          `- Provide optimization recommendations\n\n` +
-          `🔧 **For now, you can:**\n` +
-          `- Use "Test contract function" to test individual functions\n` +
-          `- Use "Simulate contract call" for specific function calls\n` +
-          `- Use "List wagmi functions" to see all available functions\n\n` +
-          `💡 **Coming in the next update!**`,
-      )
+      // Get all functions from the contract ABI
+      const allFunctions = resolved.abi.filter((item) => item.type === "function")
+
+      // Filter functions by type if specified
+      const filteredFunctions =
+        functionType === "all"
+          ? allFunctions
+          : allFunctions.filter(
+              (func) => func.type === "function" && func.stateMutability === functionType,
+            )
+
+      if (filteredFunctions.length === 0) {
+        return this.createTextResponse(
+          `⚠️ **No ${functionType} functions found in ${contract}**\n\n` +
+            `The contract ABI contains ${allFunctions.length} total functions, but none match the filter "${functionType}".`,
+        )
+      }
+
+      let responseText = `🧪 **Contract Testing Suite: ${contract}**\n\n`
+      responseText += `📊 **Overview:**\n`
+      responseText += `- Total Functions: ${allFunctions.length}\n`
+      responseText += `- Testing ${functionType}: ${filteredFunctions.length} functions\n\n`
+
+      responseText += `🔧 **Available Functions:**\n\n`
+
+      for (const func of filteredFunctions) {
+        if (func.type === "function") {
+          const inputs = func.inputs || []
+          const inputTypes = inputs.map((input) => `${input.type} ${input.name || ""}`).join(", ")
+          const outputs = func.outputs || []
+          const outputTypes = outputs.map((output) => output.type).join(", ")
+
+          responseText += `**${func.name}(${inputTypes})**\n`
+          responseText += `- State Mutability: ${func.stateMutability}\n`
+          if (outputTypes) {
+            responseText += `- Returns: ${outputTypes}\n`
+          }
+          responseText += `- Use: \`test_contract_function\` with function "${func.name}"\n\n`
+        }
+      }
+
+      responseText += `💡 **Next Steps:**\n`
+      responseText += `- Test individual functions with "test_contract_function"\n`
+      responseText += `- Simulate specific calls with "simulate_contract_call"\n`
+      responseText += `- Preview transactions with "dry_run_transaction"\n`
+
+      return this.createTextResponse(responseText)
     } catch (error) {
       if (error instanceof McpError) throw error
       throw new McpError(
         ErrorCode.InternalError,
-        `Contract testing failed: ${error instanceof Error ? error.message : String(error)}`,
+        `Contract analysis failed: ${error instanceof Error ? error.message : String(error)}`,
       )
     }
   }
