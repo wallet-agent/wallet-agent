@@ -227,6 +227,274 @@ The AI agent will execute the contract function, wait for transaction confirmati
 **Developer:** "The transaction is failing due to gas"
 **AI Response:** "Let me estimate the gas first and check if you have sufficient balance for both the transaction and gas fees."
 
+---
+
+## Advanced Contract Analysis Tools
+
+### analyze_wagmi_contract
+
+Analyze contract capabilities and detect standard interfaces like ERC20, ERC721.
+
+**Tool Name:** `mcp__wallet-agent__analyze_wagmi_contract`
+
+**What you provide:**
+- Contract name from your loaded Wagmi configuration
+
+**What the AI returns:**
+- Complete contract overview with function counts and types
+- Function breakdown by state mutability (view, pure, payable, non-payable)
+- Event and error counts
+- Detected standard interfaces (ERC-20, ERC-721, ERC-1155, Ownable, etc.)
+- Deployment information across chains
+- Actionable recommendations based on detected standards
+
+**Example Prompts:**
+- "Analyze my Token contract capabilities"
+- "What standards does my NFT contract implement?"
+- "Give me an overview of my Counter contract features"
+- "Detect what interfaces my contract supports"
+
+**Errors:**
+- `InvalidParams` - Contract not found in loaded configuration
+- `InternalError` - Failed to analyze contract ABI
+
+---
+
+### extract_wagmi_abi
+
+Extract the ABI for a specific contract in various formats.
+
+**Tool Name:** `mcp__wallet-agent__extract_wagmi_abi`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Output format: "json", "typescript", or "human-readable" (defaults to "json")
+
+**What the AI returns:**
+- Complete ABI in the specified format
+- Human-readable function signatures and descriptions
+- TypeScript-compatible exports for development
+- JSON format for direct use in other tools
+
+**Example Prompts:**
+- "Extract the ABI for my Token contract in JSON format"
+- "Get human-readable function signatures for my NFT contract"
+- "Export my Counter contract ABI in TypeScript format"
+- "Show me the ABI structure for my contract"
+
+**Errors:**
+- `InvalidParams` - Invalid contract name or format
+- `InternalError` - Failed to extract ABI
+
+---
+
+### export_wagmi_abi
+
+Export contract ABI to a file in the specified format.
+
+**Tool Name:** `mcp__wallet-agent__export_wagmi_abi`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- File path where to save the ABI
+- Format: "json" or "typescript" (defaults to "json")
+- Include addresses: true/false for multi-chain deployment info
+
+**What the AI returns:**
+- Confirmation of successful export with file details
+- File size and format information
+- Number of chain addresses included (if requested)
+
+**Example Prompts:**
+- "Export my Token contract ABI to ./abis/token.json"
+- "Save the NFT contract ABI as TypeScript to ./types/nft.ts"
+- "Export my contract ABI with all deployment addresses"
+
+**Errors:**
+- `InvalidParams` - Invalid contract name, file path, or format
+- `InternalError` - Failed to write file or extract ABI
+
+---
+
+### list_wagmi_functions
+
+List all callable functions for a contract with filtering options.
+
+**Tool Name:** `mcp__wallet-agent__list_wagmi_functions`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function type filter: "view", "pure", "nonpayable", "payable", or "all" (defaults to "all")
+
+**What the AI returns:**
+- List of functions matching the specified type
+- Function signatures with parameter and return types
+- State mutability information for each function
+- Summary count of functions found
+
+**Example Prompts:**
+- "List all functions in my Token contract"
+- "Show me only the view functions in my NFT contract"
+- "What payable functions does my contract have?"
+- "Get all state-changing functions in my Counter contract"
+
+**Errors:**
+- `InvalidParams` - Invalid contract name or function type
+- `InternalError` - Failed to analyze contract functions
+
+---
+
+### list_wagmi_events
+
+List all events that a contract can emit.
+
+**Tool Name:** `mcp__wallet-agent__list_wagmi_events`
+
+**What you provide:**
+- Contract name from your loaded configuration
+
+**What the AI returns:**
+- Complete list of events with their signatures
+- Event parameters with types and indexing information
+- Summary count of total events
+
+**Example Prompts:**
+- "What events does my Token contract emit?"
+- "List all events from my NFT contract"
+- "Show me the event signatures for my contract"
+- "What events should I listen for from this contract?"
+
+**Errors:**
+- `InvalidParams` - Contract not found in loaded configuration
+- `InternalError` - Failed to analyze contract events
+
+---
+
+## Advanced Testing and Simulation Tools
+
+### simulate_contract_call
+
+Simulate a contract function call without gas costs or state changes.
+
+**Tool Name:** `mcp__wallet-agent__simulate_contract_call`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name to simulate
+- Function arguments (optional)
+- ETH value to send (optional, for payable functions)
+- Caller address (optional, uses connected wallet by default)
+- Contract address (optional, if different from configuration)
+
+**What the AI returns:**
+- Simulation success/failure status
+- Return value from the function call
+- Estimated gas usage
+- Detailed error message if simulation fails
+- Debugging tips and next steps
+
+**Example Prompts:**
+- "Simulate calling transfer with 100 tokens to address 0x123..."
+- "Test the mint function before executing it"
+- "Preview calling deposit with 0.5 ETH"
+- "Simulate increment function on my Counter contract"
+
+**Errors:**
+- `InvalidParams` - Invalid contract, function, or arguments
+- `InternalError` - Simulation failed due to network or contract issues
+
+---
+
+### dry_run_transaction
+
+Preview the complete effects of a transaction without executing it.
+
+**Tool Name:** `mcp__wallet-agent__dry_run_transaction`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name to execute
+- Function arguments (optional)
+- ETH value to send (optional)
+- Transaction sender address (optional)
+
+**What the AI returns:**
+- Complete transaction preview with expected results
+- Success/failure prediction with detailed reasoning
+- Gas requirements and cost estimation
+- Return values and state changes
+- Go/no-go recommendation with troubleshooting tips
+
+**Example Prompts:**
+- "Dry run a token transfer before sending it"
+- "Preview the effects of calling this payable function"
+- "Test this risky transaction before executing"
+- "Check if this transaction would succeed"
+
+**Errors:**
+- `InvalidParams` - Invalid transaction parameters
+- `InternalError` - Dry run failed due to network issues
+
+---
+
+### test_contract_function
+
+Generate and run comprehensive test scenarios for a specific function.
+
+**Tool Name:** `mcp__wallet-agent__test_contract_function`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name to test
+- Include edge cases: true/false (defaults to true)
+
+**What the AI returns:**
+- Complete test suite results with pass/fail summary
+- Individual test scenario results with descriptions
+- Edge case testing results
+- Success rate percentage
+- Detailed failure reasons and debugging recommendations
+
+**Example Prompts:**
+- "Test all scenarios for the transfer function"
+- "Run comprehensive tests on my contract's mint function"
+- "Generate and run test cases for the deposit function"
+- "Test edge cases for my contract function"
+
+**Errors:**
+- `InvalidParams` - Invalid contract or function name
+- `InternalError` - Test generation or execution failed
+
+---
+
+### test_contract
+
+Run comprehensive tests on all functions in a contract.
+
+**Tool Name:** `mcp__wallet-agent__test_contract`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function type filter: "all", "view", "pure", "nonpayable", "payable" (defaults to "all")
+
+**What the AI returns:**
+- Contract testing overview with function counts
+- Available functions organized by type
+- Testing recommendations for each function type
+- Guidance on using individual function testing tools
+
+**Example Prompts:**
+- "Test all functions in my Token contract"
+- "Run tests on view functions only"
+- "Test all payable functions in my contract"
+- "Give me a testing overview of my NFT contract"
+
+**Errors:**
+- `InvalidParams` - Invalid contract name or function type
+- `InternalError` - Failed to analyze contract for testing
+
+---
+
 ## Advanced Contract Operations
 
 ### Contract Simulation

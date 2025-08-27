@@ -8,6 +8,146 @@ Testing tools enable AI agents to help developers validate transactions, simulat
 
 ## Tools
 
+### simulate_contract_call
+
+Simulate a contract function call without gas costs or state changes.
+
+**Tool Name:** `mcp__wallet-agent__simulate_contract_call`
+
+**What you provide:**
+- Contract name from your loaded Wagmi configuration
+- Function name to simulate
+- Function arguments (optional, depending on the function)
+- ETH value to send with call (optional, for payable functions)
+- Caller address (optional, defaults to connected wallet)
+- Custom contract address (optional, if different from configuration)
+
+**What the AI returns:**
+- Simulation success/failure status
+- Return value from the function call
+- Estimated gas usage
+- Detailed error message if simulation fails
+- Debugging tips and next steps
+
+**Example Prompts:**
+- "Simulate calling transfer with 100 tokens to address 0x123..."
+- "Test the mint function before executing it"
+- "Preview calling deposit with 0.5 ETH"
+- "Simulate increment function on my Counter contract"
+- "Check if this risky transaction would succeed"
+
+**AI Agent Response:**
+The AI agent will simulate the contract call and report whether it would succeed or fail, including return values, gas estimates, and detailed error messages with debugging tips if the simulation fails.
+
+**Errors:**
+- `InvalidParams`: Invalid contract, function, or arguments
+- `InvalidRequest`: Contract not loaded or wallet not connected
+- `InternalError`: Simulation failed due to network or contract issues
+
+---
+
+### dry_run_transaction
+
+Preview the complete effects of a transaction without executing it.
+
+**Tool Name:** `mcp__wallet-agent__dry_run_transaction`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name to execute
+- Function arguments (optional)
+- ETH value to send (optional)
+- Transaction sender address (optional)
+
+**What the AI returns:**
+- Complete transaction preview with expected results
+- Success/failure prediction with detailed reasoning
+- Gas requirements and cost estimation
+- Return values and state changes
+- Go/no-go recommendation with troubleshooting tips
+
+**Example Prompts:**
+- "Dry run a token transfer before sending it"
+- "Preview the effects of calling this payable function"
+- "Test this risky transaction before executing"
+- "Check if this transaction would succeed"
+- "What would happen if I called this function?"
+
+**AI Agent Response:**
+The AI agent will provide a comprehensive transaction preview, including success prediction, expected results, gas costs, and actionable recommendations on whether to proceed with the transaction.
+
+**Errors:**
+- `InvalidParams`: Invalid transaction parameters
+- `InternalError`: Dry run failed due to network issues
+
+---
+
+### test_contract_function
+
+Generate and run comprehensive test scenarios for a specific contract function.
+
+**Tool Name:** `mcp__wallet-agent__test_contract_function`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function name to test
+- Include edge cases: true/false (defaults to true)
+
+**What the AI returns:**
+- Complete test suite results with pass/fail summary
+- Individual test scenario results with descriptions
+- Edge case testing results
+- Success rate percentage
+- Detailed failure reasons and debugging recommendations
+
+**Example Prompts:**
+- "Test all scenarios for the transfer function"
+- "Run comprehensive tests on my contract's mint function"
+- "Generate and run test cases for the deposit function"
+- "Test edge cases for my contract function"
+- "Validate my function handles all input types correctly"
+
+**AI Agent Response:**
+The AI agent will generate and execute multiple test scenarios, providing a comprehensive test report with pass/fail results, success rates, and detailed analysis of any failures.
+
+**Errors:**
+- `InvalidParams`: Invalid contract or function name
+- `InternalError`: Test generation or execution failed
+
+---
+
+### test_contract
+
+Run comprehensive tests on all functions in a contract.
+
+**Tool Name:** `mcp__wallet-agent__test_contract`
+
+**What you provide:**
+- Contract name from your loaded configuration
+- Function type filter: "all", "view", "pure", "nonpayable", "payable" (defaults to "all")
+
+**What the AI returns:**
+- Contract testing overview with function counts
+- Available functions organized by type
+- Testing recommendations for each function type
+- Guidance on using individual function testing tools
+
+**Example Prompts:**
+- "Test all functions in my Token contract"
+- "Run tests on view functions only"
+- "Test all payable functions in my contract"
+- "Give me a testing overview of my NFT contract"
+- "Analyze what functions I can test in this contract"
+
+**AI Agent Response:**
+The AI agent will provide a comprehensive overview of the contract's functions organized by type, with specific guidance on testing strategies and recommendations for using individual testing tools.
+
+**Errors:**
+- `InvalidParams`: Invalid contract name or function type
+- `InternalError`: Failed to analyze contract for testing
+
+---
+
 ### simulate_transaction
 
 Simulate a contract transaction before execution to predict success or failure.
@@ -109,6 +249,24 @@ The AI agent will retrieve and display comprehensive transaction details includi
 2. Estimate gas: "Gas estimate: 43,852 units, cost: ~0.00088 ETH"
 3. Conclude: "Transaction looks safe to execute"
 
+### Advanced Contract Function Testing
+**Developer:** "Test all scenarios for my Counter contract's setNumber function"
+
+**AI Agent Response:** The AI will:
+1. Generate test scenarios: "Created 8 test cases including edge cases"
+2. Execute tests: "Running positive values, zero, negative values, boundary conditions"
+3. Report results: "6/8 tests passed. Function rejects negative values as expected."
+4. Provide insights: "Function handles edge cases correctly with proper error messages"
+
+### Contract Simulation Workflows
+**Developer:** "Simulate calling the withdraw function with different amounts to find the maximum I can withdraw"
+
+**AI Agent Response:** The AI will:
+1. Test small amount: "withdraw(0.1 ETH): Success"
+2. Test larger amount: "withdraw(1.0 ETH): Success"
+3. Test maximum: "withdraw(2.5 ETH): Would fail - insufficient contract balance"
+4. Recommend: "Maximum safe withdrawal: 2.3 ETH"
+
 ### Transaction Analysis
 **Developer:** "My transaction 0xabc123... just completed. Analyze what happened"
 
@@ -125,6 +283,15 @@ The AI agent will retrieve and display comprehensive transaction details includi
 - increment: ✅ Success (gas: ~43K)
 - setNumber(42): ✅ Success (gas: ~45K) 
 - withdraw(1.0): ❌ Failed - insufficient balance
+
+### Comprehensive Function Testing
+**Developer:** "Run a complete test suite on my ERC20 token contract"
+
+**AI Agent Response:** The AI will:
+1. Analyze contract: "Found 15 functions: 8 view, 5 non-payable, 2 payable"
+2. Test view functions: "All read functions work correctly"
+3. Test state-changing functions: "Transfer, approve, mint functions tested with various scenarios"
+4. Report results: "92% test success rate. 2 functions have access control restrictions as expected"
 
 ### Error Diagnosis
 **Developer:** "Why did my transaction fail? Hash: 0xdef456..."
@@ -177,6 +344,25 @@ The AI agent will retrieve and display comprehensive transaction details includi
 **Developer:** "Simulate calling the restricted function and tell me why it fails"
 
 **AI Agent Response:** "Simulation failed with revert reason: 'Ownable: caller is not the owner'. You need to be the contract owner to call this function."
+
+### Dry Run Transaction Preview
+**Developer:** "Preview what would happen if I call the complex trading function with these parameters"
+
+**AI Agent Response:** The AI will:
+1. Analyze transaction: "Function would execute 3 internal operations"
+2. Check preconditions: "Sufficient balance, valid parameters, proper approvals"
+3. Estimate outcomes: "Would swap 1000 USDC for ~995 DAI, fee: 5 USDC"
+4. Gas analysis: "Estimated 180K gas (~$12 at current prices)"
+5. Recommendation: "Transaction ready to execute - all checks passed"
+
+### Edge Case Testing
+**Developer:** "Test my contract function with extreme values and edge cases"
+
+**AI Agent Response:** The AI will:
+1. Test boundary values: "Zero, maximum uint256, negative values"
+2. Test invalid inputs: "Empty strings, null addresses, overflow scenarios"
+3. Test state conditions: "Contract paused, insufficient funds, access restrictions"
+4. Summarize: "Function properly handles 12/15 edge cases. 3 scenarios need additional validation"
 
 ### Value Transaction Testing
 **Developer:** "Test sending 0.5 ETH to the deposit function"
@@ -251,14 +437,35 @@ The AI agent will retrieve and display comprehensive transaction details includi
 
 **AI Agent Response:** The AI will:
 1. Verify contract deployment
-2. Test all public functions
-3. Check initial state values
-4. Confirm gas costs are reasonable
+2. Test all public functions using comprehensive test scenarios
+3. Check initial state values with read operations
+4. Simulate key functions to ensure they work as expected
+5. Confirm gas costs are reasonable across different operations
+
+### Contract Regression Testing
+**Developer:** "I updated my contract. Test that all existing functionality still works"
+
+**AI Agent Response:** The AI will:
+1. Load new contract configuration
+2. Run comprehensive test suite on all functions
+3. Compare results with expected behavior
+4. Identify any breaking changes or regressions
+5. Provide detailed compatibility report
 
 ### Continuous Testing
 **Developer:** "Set up automated testing for my contract on this testnet"
 
-**AI Agent Response:** "I can help you create test scenarios that you can run regularly: function simulation, gas estimation, state verification, and integration testing with other contracts."
+**AI Agent Response:** "I can help you create test scenarios that you can run regularly: comprehensive function testing with edge cases, contract simulation for critical operations, gas estimation tracking, state verification, and integration testing with other contracts."
+
+### Advanced Testing Automation
+**Developer:** "Create a testing workflow that validates my entire DeFi protocol"
+
+**AI Agent Response:** The AI will:
+1. Analyze protocol contracts: "Found Token, Staking, and Governance contracts"
+2. Create integration tests: "Testing token approval → staking → reward claiming workflow"
+3. Simulate complex scenarios: "Multi-user interactions, edge cases, failure modes"
+4. Set up monitoring: "Gas optimization tracking, function success rates, error analysis"
+5. Provide automation scripts: "Repeatable test suite for continuous validation"
 
 ## Related Tools
 
