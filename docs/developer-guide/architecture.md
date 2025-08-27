@@ -1,607 +1,331 @@
-# Architecture
+# Development Concepts
 
-Understanding Wallet Agent's architecture helps you build better applications, troubleshoot issues, and contribute to the project effectively.
+This guide covers key concepts for building Web3 applications with Wallet Agent, focusing on development patterns and workflows that help you build better applications.
 
-## System Overview
+## Overview
 
-Wallet Agent is built as a **Model Context Protocol (MCP) server** that bridges AI assistants with Web3 functionality. It follows clean architecture principles with clear separation of concerns.
+Wallet Agent enables blockchain development through natural language interaction with AI assistants. Understanding these core concepts will help you work more effectively and build robust Web3 applications.
 
-```mermaid
-graph TB
-    AI[AI Assistant<br/>Claude Code / Cursor] --> MCP[MCP Protocol Layer]
-    MCP --> Tools[Tool Registry<br/>63+ MCP Tools]
-    Tools --> Handlers[Tool Handlers<br/>Business Logic]
-    Handlers --> Core[Core Layer<br/>Domain Logic]
-    Core --> Effects[Effects Layer<br/>Side Effects]
-    Effects --> Adapters[Adapters<br/>External Services]
-    Adapters --> External[External Systems<br/>Blockchain / Storage]
-    
-    Core --> Container[Dependency Injection<br/>Container]
-    Effects --> Container
-    Adapters --> Container
+## Development Workflow
+
+### Safe-First Development
+
+Wallet Agent follows a **safety-first** approach to Web3 development:
+
+**Mock Mode by Default**
+- All operations start in mock mode for safe testing
+- Switch to real wallets only when ready for production
+- Built-in validation prevents costly mistakes
+
+**Transaction Simulation**
+- Test contract functions without gas costs using simulation
+- Preview transaction outcomes before execution
+- Catch errors before they cost money
+
+**Multi-Environment Support**
+- Develop locally with Anvil blockchain
+- Test on Sepolia testnet
+- Deploy to mainnet when ready
+
+### AI-Native Development
+
+**Natural Language Interface**
+Instead of complex API calls, use conversational prompts:
+```
+"Load my Wagmi config from ./src/generated.ts"
+"Test the mint function on MyNFT contract with recipient 0x123..."
+"Deploy MyToken to Sepolia with initial supply 1000000"
 ```
 
-## Core Principles
+**Context-Aware Operations**
+Wallet Agent remembers your:
+- Current wallet connection
+- Active blockchain network  
+- Loaded contract configurations
+- Recent transaction history
 
-### 1. Dependency Injection
+**Intelligent Error Handling**
+Get clear explanations when things go wrong:
+- Gas estimation failures with suggested fixes
+- Contract interaction errors with context
+- Network issues with retry suggestions
 
-All components use dependency injection for testability and modularity:
+## Key Development Patterns
 
-```typescript
-// Container manages all dependencies
-const container = getContainer()
-const walletEffects = container.walletEffects
-const contractAdapter = container.contractAdapter
+### Contract Development Lifecycle
+
+**1. Design and Planning**
+```
+"Analyze the UniswapV2Router contract to understand the swap function"
+"What are the standard functions for an ERC721 contract?"
+"Extract the ABI from MyToken contract for frontend integration"
 ```
 
-**Benefits:**
-- Easy testing with mock dependencies
-- Clean separation of concerns  
-- Configurable implementations
-- Isolated component testing
-
-### 2. Effects Pattern
-
-Side effects (blockchain calls, file I/O, network requests) are isolated in the Effects layer:
-
-```typescript
-// Effects handle all external interactions
-export class WalletEffects {
-  async getCurrentAccount(): Promise<Account> {
-    // Blockchain interaction isolated here
-  }
-}
+**2. Safe Development and Testing**
+```
+"Simulate the mint function before executing it"
+"Test contract deployment on Anvil first"
+"Generate comprehensive test scenarios for all contract functions"
 ```
 
-**Benefits:**
-- Pure business logic in Core layer
-- Testable with mock effects
-- Clear separation of pure/impure code
-- Easier debugging and monitoring
-
-### 3. Adapter Pattern
-
-External services are accessed through adapters with consistent interfaces:
-
-```typescript
-// Adapters provide consistent interfaces
-export interface ContractAdapter {
-  getContract(name: string): Promise<Contract>
-  storeContract(contract: Contract): Promise<void>
-}
+**3. Deployment and Verification**
+```
+"Deploy MyContract to Sepolia with constructor args [name, symbol]"
+"Verify the deployment by calling the name function"
+"Estimate deployment costs for Ethereum mainnet"
 ```
 
-**Benefits:**
-- Swappable implementations
-- Consistent error handling
-- Easy mocking for tests
-- Future-proof abstractions
-
-## Layer Architecture
-
-### MCP Protocol Layer
-
-**Purpose**: Handle Model Context Protocol communication with AI assistants.
-
-**Components:**
-- `server.ts` - MCP server setup and request routing
-- `tools/definitions.ts` - Tool schema definitions
-- `tools/handler-registry.ts` - Tool registration and execution
-
-**Responsibilities:**
-- Parse and validate MCP requests
-- Route tool calls to appropriate handlers
-- Format responses for AI assistants
-- Handle MCP-specific errors and protocols
-
-### Tool Handlers Layer
-
-**Purpose**: Implement business logic for each MCP tool.
-
-**Location**: `src/tools/handlers/`
-
-**Structure:**
+**4. Integration and Maintenance**
 ```
-handlers/
-├── wallet-handlers.ts          # Wallet connection, balance checks
-├── transaction-handlers.ts     # Transaction sending, monitoring
-├── contract-handlers.ts        # Contract read/write operations
-├── token-handlers.ts           # ERC-20 token operations
-├── contract-testing-handlers.ts # Contract simulation and testing
-├── wagmi-abi-handlers.ts       # ABI extraction and analysis
-└── encrypted-key-handlers.ts   # Secure key management
+"Generate TypeScript types from the deployed contract"
+"Monitor contract events for Transfer activities"
+"Update frontend hooks with new contract addresses"
 ```
 
-**Responsibilities:**
-- Validate input parameters using Zod schemas
-- Implement tool-specific business logic
-- Call appropriate Core/Effects layer methods
-- Format user-friendly responses
-- Handle tool-specific error conditions
+### Multi-Chain Development
 
-### Core Layer
-
-**Purpose**: Pure business logic and domain models.
-
-**Location**: `src/core/`
-
-**Key Modules:**
+**Chain Abstraction**
+Work with multiple blockchains seamlessly:
 ```
-core/
-├── contract-resolution.ts   # Contract and token resolution
-├── contract-testing.ts      # Contract simulation engine
-├── transaction-helpers.ts   # Transaction building utilities
-├── validators.ts            # Input validation logic
-├── formatters.ts           # Data formatting utilities
-└── builders.ts             # Object construction helpers
+"Deploy MyContract to Polygon"
+"Switch to Arbitrum and check gas prices"
+"Compare deployment costs across Ethereum, Polygon, and Arbitrum"
 ```
 
-**Characteristics:**
-- **Pure Functions** - No side effects, testable
-- **Domain Logic** - Business rules and validations
-- **Immutable Data** - Uses readonly types and immutability
-- **Framework Agnostic** - Independent of external libraries
-
-### Effects Layer
-
-**Purpose**: Handle all side effects and external interactions.
-
-**Location**: `src/effects/`
-
-**Key Effects:**
+**Network Configuration**
 ```
-effects/
-├── wallet-effects.ts        # Blockchain wallet operations
-├── transaction-effects.ts   # Transaction submission and monitoring
-├── contract-effects.ts      # Smart contract interactions
-├── token-effects.ts         # Token balance and transfer operations
-└── file-reader.ts           # File system operations
+"Add Base network as a custom chain"
+"Switch to Sepolia testnet for testing"
+"Configure custom RPC endpoint for private network"
 ```
 
-**Responsibilities:**
-- Blockchain RPC calls
-- File system operations
-- Network requests
-- Caching and persistence
-- Error handling and retries
+### Testing Strategies
 
-### Adapters Layer
-
-**Purpose**: Abstract external service interfaces.
-
-**Location**: `src/adapters/`
-
-**Key Adapters:**
+**Comprehensive Test Coverage**
 ```
-adapters/
-├── wallet-adapter.ts        # Wagmi wallet integration
-├── contract-adapter.ts      # Contract ABI management
-├── token-adapter.ts         # Token registry and metadata
-└── wagmi-adapter.ts         # Wagmi configuration management
+"Test all functions in MyContract with edge cases"
+"Generate test scenarios for boundary conditions"
+"Verify error handling with invalid inputs"
 ```
 
-**Benefits:**
-- Consistent interfaces across different providers
-- Easy swapping of implementations
-- Simplified testing with mock adapters
-- Future-proof architecture for new integrations
-
-## Data Flow
-
-### Request Processing Flow
-
-```mermaid
-sequenceDiagram
-    participant AI as AI Assistant
-    participant MCP as MCP Server
-    participant Handler as Tool Handler
-    participant Core as Core Layer
-    participant Effects as Effects Layer
-    participant Blockchain as Blockchain
-
-    AI->>MCP: Tool Call Request
-    MCP->>Handler: Route to Handler
-    Handler->>Handler: Validate Input (Zod)
-    Handler->>Core: Execute Business Logic
-    Core->>Effects: Request Side Effect
-    Effects->>Blockchain: Blockchain Call
-    Blockchain-->>Effects: Response
-    Effects-->>Core: Processed Result
-    Core-->>Handler: Domain Result
-    Handler->>Handler: Format Response
-    Handler-->>MCP: Tool Response
-    MCP-->>AI: MCP Response
+**Performance Testing**
+```
+"Run 50 concurrent balance queries to test system load"
+"Measure gas usage optimization in contract functions"
+"Test transaction throughput on different networks"
 ```
 
-### Example: Sending a Transaction
+## Development Environment Setup
 
-1. **AI Request**: "Send 1 ETH to 0x123..."
-2. **Tool Handler**: `SendTransactionHandler`
-   - Validates recipient address and amount
-   - Converts to proper types
-3. **Core Logic**: `transaction-helpers.ts`
-   - Builds transaction parameters
-   - Validates transaction structure
-4. **Effects**: `transaction-effects.ts`
-   - Submits to blockchain
-   - Monitors for confirmation
-5. **Response**: Formatted success message with transaction details
+### Local Development
 
-## Configuration System
-
-### Environment-Based Configuration
-
-```typescript
-// Environment configuration
-export interface EnvironmentConfig {
-  NODE_ENV: 'development' | 'production' | 'test'
-  WALLET_PRIVATE_KEY?: string
-  DEBUG?: string
-  RPC_URL_ETHEREUM?: string
-}
-```
-
-### Container Configuration
-
-The dependency injection container configures all components:
-
-```typescript
-export class Container {
-  // Lazy initialization of all dependencies
-  get walletEffects(): WalletEffects {
-    return this._walletEffects ??= new WalletEffects(this.wagmiConfig)
-  }
-  
-  get contractAdapter(): ContractAdapter {
-    return this._contractAdapter ??= new WagmiContractAdapter()
-  }
-}
-```
-
-### Test Configuration
-
-Test environments use isolated containers:
-
-```typescript
-// Test container with mock implementations
-export class TestContainer extends Container {
-  get walletEffects(): MockWalletEffects {
-    return this._mockWalletEffects ??= new MockWalletEffects()
-  }
-}
-```
-
-## Caching Strategy
-
-### Multi-Level Caching
-
-**Level 1: Container Singletons**
-- Effect and adapter instances
-- Configuration objects
-- Shared resources
-
-**Level 2: Effects Caching**
-```typescript
-// PublicClient caching per chain
-private clientCache = new Map<number, PublicClient>()
-
-getPublicClient(chainId: number): PublicClient {
-  return this.clientCache.get(chainId) ?? this.createClient(chainId)
-}
-```
-
-**Level 3: Contract Resolution Cache**
-```typescript
-// Contract resolution caching
-const contractResolutionCache = new Map<string, ResolvedContract>()
-
-export function resolveContract(name: string): ResolvedContract {
-  const cacheKey = `${name}:${chainId}`
-  return contractResolutionCache.get(cacheKey) ?? resolveAndCache(name)
-}
-```
-
-### Cache Invalidation
-
-Caches are cleared when:
-- Chain configuration changes
-- Contract configurations update
-- Test environments reset
-- Manual cache clearing requested
-
-## Error Handling Strategy
-
-### Layered Error Handling
-
-**MCP Layer Errors:**
-```typescript
-// MCP-specific error codes
-throw new McpError(ErrorCode.InvalidParams, "Invalid address format")
-throw new McpError(ErrorCode.InternalError, "Blockchain connection failed")
-```
-
-**Domain Layer Errors:**
-```typescript
-// Business logic errors
-throw new Error("Insufficient balance for transaction")
-throw new Error("Contract not found in configuration")
-```
-
-**Effects Layer Errors:**
-```typescript
-// External service errors with context
-throw new Error(`RPC call failed: ${rpcError.message}`)
-throw new Error(`File not found: ${filePath}`)
-```
-
-### Error Recovery Patterns
-
-**Automatic Retries:**
-```typescript
-// Retry blockchain calls with exponential backoff
-async function withRetry<T>(operation: () => Promise<T>): Promise<T> {
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      return await operation()
-    } catch (error) {
-      if (attempt === MAX_RETRIES) throw error
-      await delay(Math.pow(2, attempt) * 1000)
-    }
-  }
-}
-```
-
-**Graceful Degradation:**
-```typescript
-// Fallback to cached data when live data unavailable
-async function getTokenBalance(address: string): Promise<bigint> {
-  try {
-    return await fetchLiveBalance(address)
-  } catch (error) {
-    logger.warn('Live balance failed, using cached', { error })
-    return getCachedBalance(address) ?? 0n
-  }
-}
-```
-
-## Security Architecture
-
-### Private Key Management
-
-```typescript
-// Encrypted storage with session management
-export class EncryptedKeyStore {
-  private decryptedKeys = new Map<string, string>()
-  private sessionTimeout = 30 * 60 * 1000 // 30 minutes
-  
-  async unlock(masterPassword: string): Promise<void> {
-    // Decrypt keys into memory
-    // Set automatic cleanup timer
-  }
-  
-  lock(): void {
-    // Clear all decrypted keys from memory
-    // Cancel session timers
-  }
-}
-```
-
-### Input Validation
-
-All user inputs validated with Zod schemas:
-
-```typescript
-const TransactionSchema = z.object({
-  to: z.string().refine(isAddress, 'Invalid Ethereum address'),
-  value: z.string().refine(isValidAmount, 'Invalid amount format'),
-  gasLimit: z.number().optional().refine(isValidGas, 'Invalid gas limit')
-})
-```
-
-### Secure Defaults
-
-- Mock mode enabled by default
-- Private keys never logged
-- Session timeouts for sensitive operations
-- Comprehensive input sanitization
-
-## Performance Optimizations
-
-### Lazy Loading
-
-Components initialized only when needed:
-
-```typescript
-// Lazy initialization of expensive resources
-get wagmiConfig(): Config {
-  return this._wagmiConfig ??= createConfig({
-    chains: getAllChains(),
-    transports: createTransports()
-  })
-}
-```
-
-### Connection Pooling
-
-Reuse blockchain connections:
-
-```typescript
-// Shared client instances per chain
-private static clients = new Map<number, PublicClient>()
-
-static getClient(chainId: number): PublicClient {
-  return this.clients.get(chainId) ?? this.createClient(chainId)
-}
-```
-
-### Batch Operations
-
-Group related operations:
-
-```typescript
-// Batch multiple contract reads
-const results = await multicall({
-  contracts: [
-    { address: tokenA, functionName: 'balanceOf', args: [account] },
-    { address: tokenB, functionName: 'balanceOf', args: [account] },
-    { address: tokenC, functionName: 'balanceOf', args: [account] }
-  ]
-})
-```
-
-## Testing Architecture
-
-### Test Isolation
-
-Each test gets a fresh container:
-
-```typescript
-describe('Contract Operations', () => {
-  let testContainer: TestContainer
-  
-  beforeEach(() => {
-    testContainer = TestContainer.createForTest({})
-  })
-  
-  afterEach(() => {
-    testContainer.cleanup()
-  })
-})
-```
-
-### Mock System
-
-Comprehensive mocking for all external dependencies:
-
-```typescript
-export class MockWalletEffects implements WalletEffects {
-  async getCurrentAccount(): Promise<Account> {
-    return {
-      address: MOCK_ADDRESSES[0],
-      balance: parseEther('10000')
-    }
-  }
-}
-```
-
-### Test Categories
-
-**Unit Tests**: Individual components in isolation
-**Integration Tests**: Component interactions  
-**E2E Tests**: Full workflows with real blockchain
-**Contract Tests**: Smart contract behavior validation
-
-## Extension Points
-
-### Adding New Tools
-
-1. **Define Tool Schema**:
-```typescript
-// Add to tools/definitions.ts
-{
-  name: "my_new_tool",
-  description: "My new tool functionality",
-  inputSchema: {
-    type: "object",
-    properties: {
-      param: { type: "string", description: "Parameter description" }
-    }
-  }
-}
-```
-
-2. **Implement Handler**:
-```typescript
-// Create tools/handlers/my-tool-handlers.ts
-export class MyNewToolHandler extends BaseToolHandler {
-  constructor() {
-    super("my_new_tool", "Tool description")
-  }
-  
-  async execute(args: unknown): Promise<ToolResponse> {
-    // Implementation here
-  }
-}
-```
-
-3. **Register Handler**:
-```typescript
-// Add to tools/handlers.ts
-import { myNewToolHandlers } from "./handlers/my-tool-handlers.js"
-
-toolRegistry.registerAll([
-  ...existingHandlers,
-  ...myNewToolHandlers
-])
-```
-
-### Adding New Chains
-
-1. **Built-in Chain**: Add to `chains.ts`
-2. **Custom Chain**: Use existing custom chain tools
-3. **Special Features**: Extend chain-specific adapters
-
-### Adding New Effects
-
-1. **Create Effect Interface**: Define contract in Core layer
-2. **Implement Effect**: Add to Effects layer
-3. **Mock Implementation**: Create test version
-4. **Register in Container**: Add to dependency injection
-
-## Debugging & Monitoring
-
-### Logging System
-
-Structured logging with context:
-
-```typescript
-const logger = createLogger('contract-operations')
-
-logger.info({ msg: 'Contract call initiated', contract, function: functionName })
-logger.error({ msg: 'Contract call failed', error, contract, function: functionName })
-```
-
-### Debug Mode
-
-Enable detailed logging:
-
+**Anvil Integration**
 ```bash
-export DEBUG="wallet-agent:*"
+# Start local blockchain
+anvil --host 0.0.0.0 --port 8545
+
+# Connect Wallet Agent
+"Switch to Anvil network"
+"Connect to test wallet 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 ```
 
-### Performance Monitoring
-
-Track operation timing:
-
-```typescript
-const timer = performance.now()
-const result = await operation()
-const duration = performance.now() - timer
-
-logger.debug({ msg: 'Operation completed', duration, operation: 'contractCall' })
+**Project Integration**
+```
+"Load Wagmi configuration from ./src/generated.ts" 
+"List all available contracts in my project"
+"Analyze MyToken contract capabilities"
 ```
 
-## Future Architecture Plans
+### Testnet Development
 
-### Planned Improvements
+**Safe Testing Environment**
+```
+"Switch to Sepolia testnet"
+"Import private key from environment variable TEST_PRIVATE_KEY"
+"Deploy contracts with test parameters"
+```
 
-1. **Plugin System**: Hot-loadable extensions
-2. **Event Sourcing**: Full operation audit trail  
-3. **Metrics Collection**: Detailed usage analytics
-4. **Distributed Caching**: Multi-instance cache sharing
-5. **GraphQL Layer**: Structured data access
-6. **WebSocket Support**: Real-time updates
+**Production Preparation**
+```
+"Estimate mainnet deployment costs"
+"Review security checklist for production deployment"
+"Generate deployment scripts for mainnet"
+```
 
-### Extension Opportunities
+## Security Best Practices
 
-- Custom blockchain integrations
-- Additional wallet provider support
-- Advanced caching strategies
-- Machine learning integration
-- Automated optimization suggestions
+### Development Security
+
+**Always Start Safe**
+- Begin all development in mock mode
+- Use simulation before real transactions
+- Test thoroughly on testnets before mainnet
+
+**Key Management**
+- Store private keys in environment variables
+- Use encrypted key storage for production
+- Never commit private keys to version control
+
+**Input Validation**
+```
+"Validate address format before sending transaction"
+"Check balance sufficiency before token transfers"
+"Verify contract addresses before interactions"
+```
+
+### Production Security
+
+**Comprehensive Testing**
+- Test all contract functions and edge cases
+- Verify error handling and recovery
+- Perform security audits before deployment
+
+**Monitoring and Maintenance**
+```
+"Set up transaction monitoring for deployed contracts"
+"Monitor contract events for unusual activity"  
+"Track gas usage and optimize performance"
+```
+
+## Performance Optimization
+
+### Efficient Development Patterns
+
+**Batch Operations**
+```
+"Check balances for multiple addresses simultaneously"
+"Execute multiple token approvals in parallel"
+"Query multiple contract functions at once"
+```
+
+**Caching and Reuse**
+- Contract configurations are automatically cached
+- RPC connections are pooled per network
+- Frequently accessed data is optimized
+
+**Network Optimization**
+```
+"Use multicall for batch contract reads"
+"Optimize gas usage with transaction simulation"
+"Choose optimal networks for different operations"
+```
+
+### Resource Management
+
+**Memory Efficiency**
+- Clean test environments between runs
+- Automatic cleanup of temporary resources
+- Efficient handling of large dataset operations
+
+**Network Efficiency**
+- Intelligent retry mechanisms for failed requests
+- Connection pooling for blockchain RPC calls
+- Optimized caching strategies
+
+## Advanced Development Concepts
+
+### Contract Interaction Patterns
+
+**Read-Heavy Applications**
+```
+"Batch multiple view function calls for dashboard data"
+"Cache frequently accessed contract state"
+"Use multicall for efficient data aggregation"
+```
+
+**Write-Heavy Applications**
+```
+"Optimize transaction ordering for gas efficiency"
+"Use transaction simulation to prevent failures"
+"Implement proper nonce management for concurrent transactions"
+```
+
+### Cross-Chain Patterns
+
+**Multi-Chain Deployment**
+```
+"Deploy identical contracts across Ethereum, Polygon, and Arbitrum"
+"Maintain consistent contract addresses across networks"
+"Configure network-specific parameters for each deployment"
+```
+
+**Bridge Integration**
+```
+"Plan token bridge strategies for cross-chain liquidity"
+"Design contracts for multi-chain compatibility"
+"Implement cross-chain communication patterns"
+```
+
+## Troubleshooting and Debugging
+
+### Common Development Issues
+
+**Transaction Failures**
+```
+"Simulate transaction to identify failure reason"
+"Check gas estimates and increase limit if needed"
+"Verify contract state before transaction execution"
+```
+
+**Contract Interaction Problems**
+```
+"Validate ABI matches deployed contract"
+"Check network connection and RPC endpoint status"
+"Verify wallet has sufficient balance for gas"
+```
+
+**Development Environment Issues**
+```
+"Restart Anvil blockchain for clean state"
+"Clear cached configurations and reload"
+"Verify environment variables and network settings"
+```
+
+### Debug Information
+
+**Transaction Analysis**
+```
+"Get detailed transaction receipt for hash 0x123..."
+"Analyze gas usage and optimization opportunities"
+"Check event logs for contract state changes"
+```
+
+**Network Diagnostics**
+```
+"Test RPC endpoint connectivity"
+"Compare gas prices across different networks"
+"Verify chain configuration and block height"
+```
+
+## Learning Path
+
+### Beginner Developers
+1. Start with mock wallets and local testing
+2. Learn basic contract interaction patterns
+3. Practice with testnet deployments
+4. Master transaction simulation and testing
+
+### Intermediate Developers
+1. Explore multi-chain development
+2. Implement complex DeFi interactions
+3. Build automated testing workflows
+4. Optimize gas usage and performance
+
+### Advanced Developers
+1. Design custom blockchain integrations
+2. Build production deployment pipelines
+3. Implement advanced security patterns
+4. Contribute to Wallet Agent development
+
+## Next Steps
+
+Ready to start building? Here's your path forward:
+
+**[Contract Development →](contract-development.md)** - Learn smart contract development patterns
+**[Wagmi Integration →](wagmi-integration.md)** - Master ABI management and integration
+**[Contract Testing →](contract-testing.md)** - Build comprehensive test suites
+**[Custom Chains →](custom-chains.md)** - Add support for new blockchain networks
 
 ---
 
-Understanding this architecture helps you build better applications and contribute effectively to Wallet Agent's continued development! 🏗️
-
-👉 **[Continue to Contract Development →](contract-development.md)**
+These development concepts form the foundation for building robust Web3 applications with Wallet Agent. Focus on safety, testing, and clear communication with your AI assistant for the best development experience! 🚀

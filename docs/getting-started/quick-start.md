@@ -119,8 +119,8 @@ Let's break down what makes Wallet Agent special:
 Instead of complex function calls, you use everyday language:
 
 ```
-❌ Complex: writeContract('0x123', 'transfer', ['0x456', '1000000'])
-✅ Simple: "Send 100 USDC to 0x456..."
+❌ Complex: Technical function calls with parameters
+✅ Simple: "Send 100 USDC to my friend's address"
 ```
 
 ### Intelligent Context
@@ -186,12 +186,12 @@ Transfer 100 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 One of Wallet Agent's most powerful features is contract interaction. Let's explore:
 
-### Load Contract ABIs
+### Load Contract Configuration
 
-If you have Wagmi-generated contracts:
+If you have contract configuration files:
 
 ```
-Load wagmi config from ./src/generated.ts
+Load my contract configuration for AI interactions
 ```
 
 ### Simulate Contract Calls (Gas-Free!)

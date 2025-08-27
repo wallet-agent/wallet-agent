@@ -29,14 +29,14 @@ This is beta software under active development. **DO NOT use on mainnet or with 
 ### 🚀 [Getting Started](getting-started/)
 New to Wallet Agent? Start here to set up the MCP server with your AI assistant.
 
-### 👥 [User Guide](user-guide/)
+### 👤 [User Guide](user-guide/)
 Learn how to perform wallet operations, send transactions, and manage tokens using natural language.
 
 ### 🔧 [Developer Guide](developer-guide/)
 Build and test smart contracts, integrate with Wagmi, and extend Wallet Agent's capabilities.
 
 ### 📚 [API Reference](api-reference/)
-Complete reference for all MCP tools and TypeScript APIs.
+Complete reference for all AI agent tools and conversational commands.
 
 ### ⚡ [Advanced Topics](advanced/)
 Encrypted key management, custom chains, Hyperliquid integration, and extending functionality.
@@ -76,12 +76,12 @@ Encrypted key management, custom chains, Hyperliquid integration, and extending 
 "Switch to Polygon"
 ```
 
-### Smart Contract Development
+### Smart Contract Operations
 ```
-"Load wagmi config from ./src/generated.ts"
-"Test contract function transfer for MyToken"
-"Simulate balanceOf function with account 0x..."
-"Dry run transaction: mint NFT with tokenId 42"
+"Load my contract configuration for AI interactions"
+"Test the transfer function on my token contract"
+"Check the balance of a specific account"
+"Simulate minting an NFT before executing the transaction"
 ```
 
 ### Token Management
@@ -99,17 +99,7 @@ claude mcp add wallet-agent bunx wallet-agent@latest
 ```
 
 ### Cursor
-Add to `~/.cursor/mcp.json`:
-```json
-{
-  "mcpServers": {
-    "wallet-agent": {
-      "command": "bunx",
-      "args": ["wallet-agent"]
-    }
-  }
-}
-```
+Configure in your MCP settings to enable Web3 operations through natural language commands with Cursor's AI assistant.
 
 ## Community & Support
 

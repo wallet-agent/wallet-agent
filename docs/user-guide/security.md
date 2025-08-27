@@ -60,8 +60,8 @@ Use mock mode for:
 - Learning Wallet Agent commands
 - Testing smart contract interactions
 - Experimenting with DeFi protocols
-- Training team members
 - Developing applications
+- Practicing complex operations safely
 
 ## Real Wallet Security
 

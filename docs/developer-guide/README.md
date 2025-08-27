@@ -6,7 +6,7 @@ Welcome to the Wallet Agent Developer Guide! This section is designed for develo
 
 This guide covers everything you need for Web3 development with Wallet Agent:
 
-- 🏗️ **[Architecture](architecture.md)** - Understanding Wallet Agent's design and patterns
+- 🏗️ **[Development Concepts](architecture.md)** - Understanding key development concepts and patterns
 - 📋 **[Contract Development](contract-development.md)** - Building and deploying smart contracts
 - 🔧 **[Wagmi Integration](wagmi-integration.md)** - Working with Wagmi-generated ABIs and hooks
 - 🧪 **[Contract Testing](contract-testing.md)** - Safe testing and simulation tools
@@ -283,7 +283,7 @@ Plan deployment strategy
 ## Learning Path
 
 ### Beginner Developers
-1. **[Architecture](architecture.md)** - Understand the system design
+1. **[Development Concepts](architecture.md)** - Understand core development concepts
 2. **[Contract Development](contract-development.md)** - Learn smart contract patterns
 3. **[Testing](testing.md)** - Master testing strategies
 
@@ -344,6 +344,6 @@ Test your first contract function
 
 ---
 
-Ready to build the future of Web3 with AI assistance? Let's start with understanding the architecture! 🚀
+Ready to build the future of Web3 with AI assistance? Let's start with understanding the key development concepts! 🚀
 
-👉 **[Continue to Architecture →](architecture.md)**
+👉 **[Continue to Development Concepts →](architecture.md)**
