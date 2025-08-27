@@ -72,6 +72,19 @@ Enterprise-grade encrypted private key management.
 - `update_key_label` - Update label/name for encrypted key
 - `change_keystore_password` - Change master password for keystore
 
+### [Hyperliquid Tools](hyperliquid.md)
+Decentralized perpetual futures trading on Hyperliquid exchange.
+
+- `hl_import_wallet` - Import wallet for Hyperliquid trading
+- `hl_get_account_info` - Get account information and balances
+- `hl_place_order` - Place limit or market orders
+- `hl_cancel_order` - Cancel open orders
+- `hl_get_open_orders` - Get all open orders
+- `hl_get_positions` - Get current positions and PnL
+- `hl_transfer` - Transfer USDC on Hyperliquid
+- `hl_get_all_mids` - Get mid prices for all trading pairs
+- `hl_get_user_fills` - Get trade execution history
+
 ### [Testing Tools](testing.md)
 Development and testing utilities.
 
@@ -312,4 +325,5 @@ Explore specific tool categories:
 - **[Token Tools →](tokens.md)**
 - **[Chain Tools →](chains.md)**
 - **[Encrypted Key Tools →](encrypted-keys.md)**
+- **[Hyperliquid Tools →](hyperliquid.md)**
 - **[Testing Tools →](testing.md)**

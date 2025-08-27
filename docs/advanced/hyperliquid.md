@@ -10,23 +10,23 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 
 ### Account Setup
 
-**Wallet Import:**
-**Developer:** "Import my Hyperliquid trading wallet using my private key"
+**Wallet Import with MCP Tools:**
+**Developer:** "Import my Hyperliquid trading wallet using private key 0x..."
 
-**AI Agent Response:** The AI will:
+**AI Agent Response:** Uses `hl_import_wallet` tool to:
 1. Securely import your private key for Hyperliquid operations
-2. Connect to the Hyperliquid API
-3. Verify account access and permissions
-4. Display current account status and balances
+2. Initialize Hyperliquid Info and Exchange clients
+3. Derive and display your Ethereum trading address
+4. Confirm wallet is ready for trading operations
 
 **Account Information:**
 **Developer:** "Show me my Hyperliquid account information and balances"
 
-**AI Agent Response:** The AI will display:
+**AI Agent Response:** Uses `hl_get_account_info` tool to display:
 - USDC balance and available margin
-- Current open positions
-- Unrealized PnL across all positions
+- Current open positions with unrealized PnL
 - Account equity and margin utilization
+- Withdrawal eligibility and trading permissions
 
 ### Initial Configuration
 
@@ -46,20 +46,20 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 **Market Orders:**
 **Developer:** "Buy 1 BTC perp at market price"
 
-**AI Agent Response:** The AI will:
-1. Check current BTC perpetual market price
-2. Verify sufficient margin for the trade
-3. Place the market order
-4. Report order execution and fill details
+**AI Agent Response:** Uses `hl_place_order` tool with market order parameters:
+1. Uses `hl_get_all_mids` to check current BTC perpetual price
+2. Uses `hl_get_account_info` to verify sufficient margin
+3. Executes `hl_place_order` with `orderType: "market"` and `isBuy: true`
+4. Reports order execution details and transaction hash
 
 **Limit Orders:**
 **Developer:** "Place a limit order to buy 0.5 ETH perp at $1800"
 
-**AI Agent Response:** The AI will:
-1. Validate the limit price against current market
-2. Check margin requirements
-3. Place the limit order
-4. Provide order ID for tracking
+**AI Agent Response:** Uses `hl_place_order` tool with limit order parameters:
+1. Validates limit price against current market using `hl_get_all_mids`
+2. Checks margin requirements with `hl_get_account_info`
+3. Places limit order with `limitPx: 1800` and `sz: 0.5`
+4. Provides order ID from response for tracking with `hl_get_open_orders`
 
 **Advanced Order Types:**
 **Developer:** "Set up a stop-loss at $1750 for my ETH position"
@@ -75,20 +75,20 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 **Position Monitoring:**
 **Developer:** "Show me all my current positions and their PnL"
 
-**AI Agent Response:** The AI will display:
-- All open positions with entry prices
-- Current unrealized PnL for each position
-- Position sizes and margin usage
-- Overall portfolio performance
+**AI Agent Response:** Uses `hl_get_positions` tool to display:
+- All open positions with entry prices and current sizes
+- Real-time unrealized PnL calculated from `hl_get_all_mids`
+- Position leverage and margin requirements
+- Overall portfolio performance and risk metrics
 
 **Position Adjustment:**
 **Developer:** "Reduce my BTC position by half"
 
-**AI Agent Response:** The AI will:
-1. Calculate current BTC position size
-2. Determine the exact amount to close
-3. Execute the position reduction
-4. Report new position size and realized PnL
+**AI Agent Response:** Uses multiple MCP tools for position reduction:
+1. Uses `hl_get_positions` to calculate current BTC position size
+2. Determines exact amount to close (e.g., if holding 2 BTC, close 1 BTC)
+3. Uses `hl_place_order` with `reduceOnly: true` to execute position reduction
+4. Uses `hl_get_user_fills` to report execution details and realized PnL
 
 **Position Closing:**
 **Developer:** "Close my entire SOL position at market"

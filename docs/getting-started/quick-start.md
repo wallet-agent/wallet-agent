@@ -217,6 +217,39 @@ Simulate balanceOf function for USDC with account 0xf39Fd6e51aad88F6F4ce6aB88272
 
 This is **very useful** for development - you can test any contract function without spending gas or affecting blockchain state.
 
+### Step 7: Advanced Trading (Optional)
+
+For users interested in decentralized trading, WalletAgent includes Hyperliquid integration for perpetual futures:
+
+```
+Import my Hyperliquid wallet using private key from HYPERLIQUID_KEY
+```
+
+**Expected Output:**
+```
+✅ Hyperliquid wallet imported successfully!
+
+📍 Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+🏛️ Exchange: Hyperliquid (Testnet)
+💼 Ready for perpetual futures trading
+
+Next steps:
+- Check account balance and positions
+- View current market prices  
+- Place your first trading order
+```
+
+**Try Some Trading Commands:**
+```
+Show my Hyperliquid account balance and positions
+Get current mid prices for BTC and ETH on Hyperliquid
+Place a small test order: buy 0.001 BTC at market price
+```
+
+{% hint style="info" %}
+**Professional Trading**: Hyperliquid tools enable institutional-grade perpetual futures trading with AI assistance. Always start with small amounts on testnet!
+{% endhint %}
+
 ## What You've Learned
 
 In just 10 minutes, you've learned to:
