@@ -1,7 +1,7 @@
 import { formatEther } from "viem"
 import { getContainer, mockAccounts } from "../../container.js"
 import { ConnectWalletArgsSchema, GetBalanceArgsSchema } from "../../schemas.js"
-import { createUserFriendlyError } from "../../utils/error-messages.js"
+import { createContextualError } from "../../utils/error-messages.js"
 import { BaseToolHandler } from "../handler-registry.js"
 
 /**
@@ -22,7 +22,8 @@ export class ConnectWalletHandler extends BaseToolHandler {
         `Connected to wallet: ${result.address}\nChain: ${result.chainId}`,
       )
     } catch (error) {
-      throw new Error(createUserFriendlyError(error, "Connect Wallet"))
+      const container = getContainer()
+      throw new Error(createContextualError(error, "Connect Wallet", container.walletEffects))
     }
   }
 }

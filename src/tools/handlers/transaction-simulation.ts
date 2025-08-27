@@ -9,6 +9,7 @@ import { z } from "zod"
 import { getAllChains } from "../../chains.js"
 import { getContainer } from "../../container.js"
 import { AddressSchema, HexStringSchema } from "../../schemas.js"
+import { ErrorMessages } from "../../utils/error-messages.js"
 import { BaseToolHandler } from "../handler-registry.js"
 
 // Enhanced schemas with simulation support
@@ -47,7 +48,7 @@ export class SafeSendTransactionHandler extends BaseToolHandler {
     const chainId = container.walletEffects.getChainId()
     const chain = getAllChains().find((c) => c.id === chainId)
     if (!chain) {
-      throw new McpError(ErrorCode.InvalidRequest, `Chain ${chainId} not found`)
+      throw new McpError(ErrorCode.InvalidRequest, ErrorMessages.CHAIN_NOT_FOUND(chainId))
     }
 
     const symbol = chain.nativeCurrency.symbol
@@ -304,7 +305,7 @@ export class SafeTokenTransferHandler extends BaseToolHandler {
       // Check token balance first
       const from = container.walletEffects.getAddress()
       if (!from) {
-        throw new McpError(ErrorCode.InvalidRequest, "No wallet connected")
+        throw new McpError(ErrorCode.InvalidRequest, ErrorMessages.WALLET_NOT_CONNECTED)
       }
 
       // Check token balance and simulate transfer

@@ -307,7 +307,7 @@ export class TransactionEffects {
     const currentAddress = address || this.walletEffects.getAddress()
 
     if (!currentAddress) {
-      throw new Error("No wallet connected")
+      throw new Error(ErrorMessages.WALLET_NOT_CONNECTED)
     }
 
     const chain = this.getCurrentChain()

@@ -77,13 +77,8 @@ export class WalletEffects {
   async connectWallet(address: Address) {
     if (this.currentWalletType === "privateKey") {
       const privateKeyAddresses = this.privateKeyAddresses()
-      if (privateKeyAddresses.length === 0) {
-        throw new Error(
-          `${ErrorMessages.PRIVATE_KEY_NOT_FOUND.replace("The specified address is not in your imported private keys.", "No private keys have been imported.")} Import a private key first using import_private_key.`,
-        )
-      }
       if (!addressExists(address, privateKeyAddresses)) {
-        throw new Error(ErrorMessages.PRIVATE_KEY_NOT_FOUND)
+        throw new Error(ErrorMessages.PRIVATE_KEY_NOT_FOUND(privateKeyAddresses.length))
       }
       this.connectedAddress = address
       return {

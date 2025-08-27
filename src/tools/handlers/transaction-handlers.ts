@@ -40,10 +40,33 @@ export class SwitchChainHandler extends BaseToolHandler {
 
   async execute(args: unknown) {
     const { chainId } = this.validateArgs(SwitchChainArgsSchema, args)
+    const container = getContainer()
+
+    // Get current account before switching
+    const currentAccount = container.walletEffects.getCurrentAccount()
+    const wasConnected = currentAccount.isConnected
+    const previousAddress = currentAccount.address
+
+    // Switch chain
     await switchToChain(chainId)
 
     const chain = getAllChains().find((c) => c.id === chainId)
     const chainName = chain?.name || `Chain ${chainId}`
+
+    // Auto-reconnect if wallet was connected before switching
+    if (wasConnected && previousAddress) {
+      try {
+        await container.walletEffects.connectWallet(previousAddress)
+        return this.createTextResponse(
+          `Switched to ${chainName} (Chain ID: ${chainId}) and reconnected wallet ${previousAddress}`,
+        )
+      } catch (error) {
+        return this.createTextResponse(
+          `Switched to ${chainName} (Chain ID: ${chainId}). Failed to auto-reconnect wallet: ${error instanceof Error ? error.message : String(error)}. Please reconnect manually.`,
+        )
+      }
+    }
+
     return this.createTextResponse(`Switched to ${chainName} (Chain ID: ${chainId})`)
   }
 }

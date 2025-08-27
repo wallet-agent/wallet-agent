@@ -70,7 +70,10 @@ export class WriteContractHandler extends BaseToolHandler {
     }
 
     if (!params.contract || !params.function) {
-      throw new McpError(ErrorCode.InvalidParams, "contract and function are required")
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "Missing required parameters. Examples: contract: 'MyToken', function: 'transfer'",
+      )
     }
 
     const result = await writeContract({
@@ -104,7 +107,10 @@ export class ReadContractHandler extends BaseToolHandler {
     }
 
     if (!params.contract || !params.function) {
-      throw new McpError(ErrorCode.InvalidParams, "contract and function are required")
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "Missing required parameters. Examples: contract: 'MyToken', function: 'transfer'",
+      )
     }
 
     const result = await readContract({

@@ -213,5 +213,64 @@ describe("Transaction Tools Integration", () => {
 
       expect(text).toContain("Chain ID: 12345")
     })
+
+    test("should auto-reconnect wallet after switching chains", async () => {
+      // Connect wallet first
+      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 })
+
+      // Verify wallet is connected
+      const beforeSwitch = await expectToolSuccess("get_current_account", undefined)
+      expect(beforeSwitch.text).toContain("Connected:")
+      expect(beforeSwitch.text).toContain(TEST_ADDRESS_1)
+
+      // Switch to mainnet
+      const { text } = await expectToolSuccess(
+        "switch_chain",
+        { chainId: 1 },
+        "Switched to Ethereum",
+      )
+
+      // Verify the success message includes reconnection info
+      expect(text).toContain("reconnected wallet")
+      expect(text).toContain(TEST_ADDRESS_1)
+
+      // Verify wallet is still connected after switching
+      const afterSwitch = await expectToolSuccess("get_current_account", undefined)
+      expect(afterSwitch.text).toContain("Connected:")
+      expect(afterSwitch.text).toContain(TEST_ADDRESS_1)
+      expect(afterSwitch.text).toContain("Chain ID: 1")
+    })
+
+    test("should auto-reconnect with private key wallet", async () => {
+      // Import private key and switch to private key mode
+      await expectToolSuccess("import_private_key", {
+        privateKey: TEST_PRIVATE_KEY,
+      })
+      await expectToolSuccess("set_wallet_type", { type: "privateKey" })
+      await expectToolSuccess("connect_wallet", { address: TEST_ADDRESS_1 })
+
+      // Verify wallet is connected
+      const beforeSwitch = await expectToolSuccess("get_current_account", undefined)
+      expect(beforeSwitch.text).toContain("Connected:")
+      expect(beforeSwitch.text).toContain("privateKey")
+
+      // Switch to mainnet
+      const { text } = await expectToolSuccess(
+        "switch_chain",
+        { chainId: 1 },
+        "Switched to Ethereum",
+      )
+
+      // Verify the success message includes reconnection info
+      expect(text).toContain("reconnected wallet")
+      expect(text).toContain(TEST_ADDRESS_1)
+
+      // Verify wallet is still connected after switching
+      const afterSwitch = await expectToolSuccess("get_current_account", undefined)
+      expect(afterSwitch.text).toContain("Connected:")
+      expect(afterSwitch.text).toContain(TEST_ADDRESS_1)
+      expect(afterSwitch.text).toContain("Chain ID: 1")
+      expect(afterSwitch.text).toContain("privateKey")
+    })
   })
 })
