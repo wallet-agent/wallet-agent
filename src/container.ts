@@ -22,7 +22,7 @@ import { TransactionEffects } from "./effects/transaction-effects.js"
 import { WalletEffects } from "./effects/wallet-effects.js"
 import { createLogger } from "./logger.js"
 import { EncryptedKeyStoreManager } from "./storage/encrypted-key-store.js"
-import { ProjectStorageManager, StorageResolver } from "./storage/project-storage.js"
+import { findProjectStorage, ProjectStorageManager } from "./storage/project-storage.js"
 import { StorageManager } from "./storage/storage-manager.js"
 import type { TestGlobalThis } from "./types/test-globals.js"
 
@@ -121,7 +121,7 @@ export class Container {
     // Initialize storage manager first (unless disabled for testing)
     if (options.enableStorage !== false && process.env.NODE_ENV !== "test") {
       // Check if we're in a project context first
-      const projectStoragePath = StorageResolver.findProjectStorage()
+      const projectStoragePath = findProjectStorage()
 
       if (projectStoragePath) {
         // Use project storage if available

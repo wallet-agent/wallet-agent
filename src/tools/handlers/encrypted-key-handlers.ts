@@ -16,14 +16,14 @@ import { BaseToolHandler, type ToolResponse } from "../handler-registry.js"
 function getKeyStore(): EncryptedKeyStoreManager {
   const container = getContainer()
   const keyStore = container.getEncryptedKeyStore()
-  
+
   if (!keyStore) {
     throw new McpError(
       ErrorCode.InternalError,
-      "Encrypted key store not available. Ensure storage is properly configured."
+      "Encrypted key store not available. Ensure storage is properly configured.",
     )
   }
-  
+
   return keyStore
 }
 
@@ -38,39 +38,39 @@ export class CreateEncryptedKeystoreHandler extends BaseToolHandler {
   async execute(args: unknown): Promise<ToolResponse> {
     const { masterPassword } = this.validateArgs(
       z.object({ masterPassword: z.string().min(8) }),
-      args
+      args,
     )
 
     try {
       const keyStore = getKeyStore()
-      
+
       if (keyStore.exists()) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "Encrypted key store already exists. Use unlock_keystore to access it."
+          "Encrypted key store already exists. Use unlock_keystore to access it.",
         )
       }
 
       await keyStore.createKeyStore(masterPassword)
-      
+
       return this.createTextResponse(
         "✅ Encrypted key store created successfully!\n\n" +
-        "Your key store is now ready to securely store private keys. The store is automatically unlocked and ready for use.\n\n" +
-        "**Security Features:**\n" +
-        "- AES-256-GCM encryption\n" +
-        "- PBKDF2 key derivation (100,000 iterations)\n" +
-        "- Unique encryption for each key\n" +
-        "- Session-based access (30-minute timeout)\n" +
-        "- Secure memory handling\n\n" +
-        "**Next steps:**\n" +
-        "- Use `import_encrypted_private_key` to add keys\n" +
-        "- Use `lock_keystore` when done to secure access\n" +
-        "- Remember your master password - it cannot be recovered!"
+          "Your key store is now ready to securely store private keys. The store is automatically unlocked and ready for use.\n\n" +
+          "**Security Features:**\n" +
+          "- AES-256-GCM encryption\n" +
+          "- PBKDF2 key derivation (100,000 iterations)\n" +
+          "- Unique encryption for each key\n" +
+          "- Session-based access (30-minute timeout)\n" +
+          "- Secure memory handling\n\n" +
+          "**Next steps:**\n" +
+          "- Use `import_encrypted_private_key` to add keys\n" +
+          "- Use `lock_keystore` when done to secure access\n" +
+          "- Remember your master password - it cannot be recovered!",
       )
     } catch (error) {
       throw new McpError(
         ErrorCode.InternalError,
-        `Failed to create encrypted key store: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to create encrypted key store: ${error instanceof Error ? error.message : String(error)}`,
       )
     }
   }
@@ -85,49 +85,46 @@ export class UnlockKeystoreHandler extends BaseToolHandler {
   }
 
   async execute(args: unknown): Promise<ToolResponse> {
-    const { masterPassword } = this.validateArgs(
-      z.object({ masterPassword: z.string() }),
-      args
-    )
+    const { masterPassword } = this.validateArgs(z.object({ masterPassword: z.string() }), args)
 
     try {
       const keyStore = getKeyStore()
-      
+
       if (!keyStore.exists()) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "No encrypted key store found. Use create_encrypted_keystore first."
+          "No encrypted key store found. Use create_encrypted_keystore first.",
         )
       }
 
       await keyStore.unlock(masterPassword)
       const sessionInfo = keyStore.getSessionInfo()
-      
+
       return this.createTextResponse(
         `🔓 Key store unlocked successfully!\n\n` +
-        `Session timeout: ${Math.round(sessionInfo.timeoutMs / 1000 / 60)} minutes\n\n` +
-        `You can now:\n` +
-        `- Import private keys with \`import_encrypted_private_key\`\n` +
-        `- List keys with \`list_encrypted_keys\`\n` +
-        `- Use keys for wallet operations\n\n` +
-        `**Security reminder:** The store will automatically lock after ${Math.round(sessionInfo.timeoutMs / 1000 / 60)} minutes of inactivity.`
+          `Session timeout: ${Math.round(sessionInfo.timeoutMs / 1000 / 60)} minutes\n\n` +
+          `You can now:\n` +
+          `- Import private keys with \`import_encrypted_private_key\`\n` +
+          `- List keys with \`list_encrypted_keys\`\n` +
+          `- Use keys for wallet operations\n\n` +
+          `**Security reminder:** The store will automatically lock after ${Math.round(sessionInfo.timeoutMs / 1000 / 60)} minutes of inactivity.`,
       )
     } catch (error) {
       if (error instanceof McpError) throw error
-      
+
       // Handle common error cases
       const errorMsg = error instanceof Error ? error.message : String(error)
       if (errorMsg.includes("Invalid master password")) {
         throw new McpError(ErrorCode.InvalidParams, "❌ Invalid master password")
       }
-      
+
       throw new McpError(ErrorCode.InternalError, `Failed to unlock key store: ${errorMsg}`)
     }
   }
 }
 
 /**
- * Lock encrypted key store  
+ * Lock encrypted key store
  */
 export class LockKeystoreHandler extends BaseToolHandler {
   constructor() {
@@ -138,15 +135,15 @@ export class LockKeystoreHandler extends BaseToolHandler {
     try {
       const keyStore = getKeyStore()
       keyStore.lock()
-      
+
       return this.createTextResponse(
         "🔒 Key store locked successfully!\n\n" +
-        "All decrypted keys have been cleared from memory. Use `unlock_keystore` with your master password to access keys again."
+          "All decrypted keys have been cleared from memory. Use `unlock_keystore` with your master password to access keys again.",
       )
     } catch (error) {
       throw new McpError(
         ErrorCode.InternalError,
-        `Failed to lock key store: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to lock key store: ${error instanceof Error ? error.message : String(error)}`,
       )
     }
   }
@@ -167,45 +164,45 @@ export class ImportEncryptedPrivateKeyHandler extends BaseToolHandler {
         masterPassword: z.string(),
         label: z.string().optional(),
       }),
-      args
+      args,
     )
 
     try {
       const keyStore = getKeyStore()
-      
+
       if (!keyStore.isSessionValid()) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "Key store is locked. Use unlock_keystore first."
+          "Key store is locked. Use unlock_keystore first.",
         )
       }
 
       // Resolve private key from input (env var, file, or direct key)
       const resolvedPrivateKey = resolvePrivateKeyInput(privateKey)
-      
+
       // Import the key with encryption
       const address = await keyStore.importPrivateKey(resolvedPrivateKey, masterPassword, label)
-      
+
       return this.createTextResponse(
         `🔐 Private key imported successfully!\n\n` +
-        `Address: ${address}\n` +
-        `Label: ${label || "No label"}\n\n` +
-        `The private key has been encrypted and securely stored. You can now use this address for wallet operations.`
+          `Address: ${address}\n` +
+          `Label: ${label || "No label"}\n\n` +
+          `The private key has been encrypted and securely stored. You can now use this address for wallet operations.`,
       )
     } catch (error) {
       if (error instanceof McpError) throw error
-      
+
       const errorMsg = error instanceof Error ? error.message : String(error)
       if (errorMsg.includes("already exists")) {
         throw new McpError(
           ErrorCode.InvalidParams,
-          "A key for this address is already stored in the encrypted key store"
+          "A key for this address is already stored in the encrypted key store",
         )
       }
-      
+
       throw new McpError(
         ErrorCode.InternalError,
-        `Failed to import encrypted private key: ${errorMsg}`
+        `Failed to import encrypted private key: ${errorMsg}`,
       )
     }
   }
@@ -222,20 +219,20 @@ export class ListEncryptedKeysHandler extends BaseToolHandler {
   async execute(_args: unknown): Promise<ToolResponse> {
     try {
       const keyStore = getKeyStore()
-      
+
       if (!keyStore.isSessionValid()) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "Key store is locked. Use unlock_keystore first."
+          "Key store is locked. Use unlock_keystore first.",
         )
       }
 
       const keys = await keyStore.listKeys()
-      
+
       if (keys.length === 0) {
         return this.createTextResponse(
           "📭 No encrypted keys found.\n\n" +
-          "Use `import_encrypted_private_key` to add keys to your encrypted store."
+            "Use `import_encrypted_private_key` to add keys to your encrypted store.",
         )
       }
 
@@ -249,14 +246,14 @@ export class ListEncryptedKeysHandler extends BaseToolHandler {
 
       return this.createTextResponse(
         `🔑 Encrypted Keys (${keys.length} total):\n\n${keyList}\n\n` +
-        `**Security Note:** Private keys are encrypted and never displayed. Use these addresses with wallet operations.`
+          `**Security Note:** Private keys are encrypted and never displayed. Use these addresses with wallet operations.`,
       )
     } catch (error) {
       if (error instanceof McpError) throw error
-      
+
       throw new McpError(
         ErrorCode.InternalError,
-        `Failed to list encrypted keys: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to list encrypted keys: ${error instanceof Error ? error.message : String(error)}`,
       )
     }
   }
@@ -271,41 +268,35 @@ export class RemoveEncryptedKeyHandler extends BaseToolHandler {
   }
 
   async execute(args: unknown): Promise<ToolResponse> {
-    const { address } = this.validateArgs(
-      z.object({ address: z.string() }),
-      args
-    )
+    const { address } = this.validateArgs(z.object({ address: z.string() }), args)
 
     try {
       const keyStore = getKeyStore()
-      
+
       if (!keyStore.isSessionValid()) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "Key store is locked. Use unlock_keystore first."
+          "Key store is locked. Use unlock_keystore first.",
         )
       }
 
       const removed = await keyStore.removePrivateKey(address as Address)
-      
+
       if (!removed) {
-        throw new McpError(
-          ErrorCode.InvalidParams,
-          `No encrypted key found for address ${address}`
-        )
+        throw new McpError(ErrorCode.InvalidParams, `No encrypted key found for address ${address}`)
       }
 
       return this.createTextResponse(
         `🗑️ Encrypted key removed successfully!\n\n` +
-        `Address: ${address}\n\n` +
-        `The private key has been securely deleted from the encrypted store and cleared from memory.`
+          `Address: ${address}\n\n` +
+          `The private key has been securely deleted from the encrypted store and cleared from memory.`,
       )
     } catch (error) {
       if (error instanceof McpError) throw error
-      
+
       throw new McpError(
         ErrorCode.InternalError,
-        `Failed to remove encrypted key: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to remove encrypted key: ${error instanceof Error ? error.message : String(error)}`,
       )
     }
   }
@@ -325,37 +316,32 @@ export class UpdateKeyLabelHandler extends BaseToolHandler {
         address: z.string(),
         label: z.string(),
       }),
-      args
+      args,
     )
 
     try {
       const keyStore = getKeyStore()
-      
+
       if (!keyStore.isSessionValid()) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "Key store is locked. Use unlock_keystore first."
+          "Key store is locked. Use unlock_keystore first.",
         )
       }
 
       await keyStore.updateKeyLabel(address as Address, label)
-      
+
       return this.createTextResponse(
-        `🏷️ Key label updated successfully!\n\n` +
-        `Address: ${address}\n` +
-        `New label: ${label}`
+        `🏷️ Key label updated successfully!\n\nAddress: ${address}\nNew label: ${label}`,
       )
     } catch (error) {
       if (error instanceof McpError) throw error
-      
+
       const errorMsg = error instanceof Error ? error.message : String(error)
       if (errorMsg.includes("No key found")) {
-        throw new McpError(
-          ErrorCode.InvalidParams,
-          `No encrypted key found for address ${address}`
-        )
+        throw new McpError(ErrorCode.InvalidParams, `No encrypted key found for address ${address}`)
       }
-      
+
       throw new McpError(ErrorCode.InternalError, `Failed to update key label: ${errorMsg}`)
     }
   }
@@ -375,34 +361,34 @@ export class ChangeKeystorePasswordHandler extends BaseToolHandler {
         currentPassword: z.string(),
         newPassword: z.string().min(8),
       }),
-      args
+      args,
     )
 
     try {
       const keyStore = getKeyStore()
-      
+
       if (!keyStore.isSessionValid()) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "Key store is locked. Use unlock_keystore first."
+          "Key store is locked. Use unlock_keystore first.",
         )
       }
 
       await keyStore.changeMasterPassword(currentPassword, newPassword)
-      
+
       return this.createTextResponse(
         "🔐 Master password changed successfully!\n\n" +
-        "All encrypted keys have been re-encrypted with the new password. The key store remains unlocked.\n\n" +
-        "**Security reminder:** Keep your new password secure - it cannot be recovered if lost!"
+          "All encrypted keys have been re-encrypted with the new password. The key store remains unlocked.\n\n" +
+          "**Security reminder:** Keep your new password secure - it cannot be recovered if lost!",
       )
     } catch (error) {
       if (error instanceof McpError) throw error
-      
+
       const errorMsg = error instanceof Error ? error.message : String(error)
       if (errorMsg.includes("Invalid password") || errorMsg.includes("bad decrypt")) {
         throw new McpError(ErrorCode.InvalidParams, "❌ Current password is incorrect")
       }
-      
+
       throw new McpError(ErrorCode.InternalError, `Failed to change master password: ${errorMsg}`)
     }
   }
@@ -420,32 +406,34 @@ export class GetKeystoreStatusHandler extends BaseToolHandler {
     try {
       const keyStore = getKeyStore()
       const sessionInfo = keyStore.getSessionInfo()
-      
+
       const exists = keyStore.exists()
       const isUnlocked = sessionInfo.isUnlocked
-      
+
       let statusText = `🔐 **Encrypted Key Store Status**\n\n`
-      
+
       if (!exists) {
-        statusText += "❌ **Status:** Not created\n\nUse `create_encrypted_keystore` to set up secure key storage."
+        statusText +=
+          "❌ **Status:** Not created\n\nUse `create_encrypted_keystore` to set up secure key storage."
       } else if (!isUnlocked) {
-        statusText += "🔒 **Status:** Locked\n\nUse `unlock_keystore` with your master password to access keys."
+        statusText +=
+          "🔒 **Status:** Locked\n\nUse `unlock_keystore` with your master password to access keys."
       } else {
         const timeLeft = Math.round(sessionInfo.timeUntilTimeout / 1000 / 60)
         const keyCount = (await keyStore.listKeys()).length
-        
+
         statusText += `🔓 **Status:** Unlocked\n\n`
         statusText += `**Keys stored:** ${keyCount}\n`
         statusText += `**Session timeout:** ${timeLeft} minutes remaining\n`
         statusText += `**Session length:** ${Math.round(sessionInfo.timeoutMs / 1000 / 60)} minutes total\n\n`
         statusText += `The store will automatically lock in ${timeLeft} minutes of inactivity.`
       }
-      
+
       return this.createTextResponse(statusText)
     } catch (error) {
       throw new McpError(
         ErrorCode.InternalError,
-        `Failed to get keystore status: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to get keystore status: ${error instanceof Error ? error.message : String(error)}`,
       )
     }
   }

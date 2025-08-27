@@ -2,13 +2,18 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import { existsSync } from "node:fs"
 import { mkdir, readFile, rmdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-import { ProjectStorageManager, StorageResolver } from "../../src/storage/project-storage.js"
+import {
+  findProjectStorage,
+  getProjectRoot,
+  isInProject,
+  ProjectStorageManager,
+} from "../../src/storage/project-storage.js"
 
 // Use unique test directories for isolation
 const createTestDir = () =>
   `/tmp/wallet-agent-project-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
 
-describe("StorageResolver", () => {
+describe("Project Storage Functions", () => {
   let testDir: string
   let originalCwd: string
 
@@ -30,7 +35,7 @@ describe("StorageResolver", () => {
       const projectPath = join(testDir, ".wallet-agent")
       await mkdir(projectPath, { recursive: true })
 
-      const found = StorageResolver.findProjectStorage(testDir)
+      const found = findProjectStorage(testDir)
       expect(found).toBe(projectPath)
     })
 
@@ -40,12 +45,12 @@ describe("StorageResolver", () => {
       await mkdir(projectPath, { recursive: true })
       await mkdir(subDir, { recursive: true })
 
-      const found = StorageResolver.findProjectStorage(subDir)
+      const found = findProjectStorage(subDir)
       expect(found).toBe(projectPath)
     })
 
     it("should return null if no .wallet-agent found", () => {
-      const found = StorageResolver.findProjectStorage(testDir)
+      const found = findProjectStorage(testDir)
       expect(found).toBeNull()
     })
 
@@ -55,7 +60,7 @@ describe("StorageResolver", () => {
       await mkdir(projectPath, { recursive: true })
       await mkdir(deepDir, { recursive: true })
 
-      const found = StorageResolver.findProjectStorage(deepDir)
+      const found = findProjectStorage(deepDir)
       expect(found).toBe(projectPath)
     })
   })
@@ -63,7 +68,7 @@ describe("StorageResolver", () => {
   describe("getProjectRoot", () => {
     it("should return parent directory of .wallet-agent", () => {
       const projectPath = join(testDir, ".wallet-agent")
-      const root = StorageResolver.getProjectRoot(projectPath)
+      const root = getProjectRoot(projectPath)
       expect(root).toBe(testDir)
     })
   })
@@ -73,11 +78,11 @@ describe("StorageResolver", () => {
       const projectPath = join(testDir, ".wallet-agent")
       await mkdir(projectPath, { recursive: true })
 
-      expect(StorageResolver.isInProject(testDir)).toBe(true)
+      expect(isInProject(testDir)).toBe(true)
     })
 
     it("should return false when not in project context", () => {
-      expect(StorageResolver.isInProject(testDir)).toBe(false)
+      expect(isInProject(testDir)).toBe(false)
     })
   })
 })
@@ -358,11 +363,14 @@ describe("ProjectStorageManager", () => {
       await mkdir(subDir, { recursive: true })
 
       // Should find project storage from subdirectory
-      const foundPath = StorageResolver.findProjectStorage(subDir)
+      const foundPath = findProjectStorage(subDir)
       expect(foundPath).toBe(projectPath)
 
       // Should be able to create manager from subdirectory context
-      const subManager = new ProjectStorageManager(foundPath!)
+      if (!foundPath) {
+        throw new Error("Expected foundPath to be defined")
+      }
+      const subManager = new ProjectStorageManager(foundPath)
       const config = await subManager.readConfig()
       expect(config.projectName).toBe(testDir.split("/").pop())
     })
@@ -377,10 +385,13 @@ describe("ProjectStorageManager", () => {
       await mkdir(childDir, { recursive: true })
 
       // Should find parent project from child directory
-      const foundPath = StorageResolver.findProjectStorage(childDir)
+      const foundPath = findProjectStorage(childDir)
       expect(foundPath).toBe(parentProject)
 
-      const childManager = new ProjectStorageManager(foundPath!)
+      if (!foundPath) {
+        throw new Error("Expected foundPath to be defined")
+      }
+      const childManager = new ProjectStorageManager(foundPath)
       const config = await childManager.readConfig()
       expect(config.projectName).toBe(testDir.split("/").pop())
     })

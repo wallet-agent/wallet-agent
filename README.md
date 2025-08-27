@@ -123,6 +123,17 @@ Add any EVM-compatible chain with the `add_custom_chain` tool:
 - `remove_private_key` - Remove an imported private key
 - `set_wallet_type` - Switch between mock and private key wallets
 
+### Encrypted Key Management
+- `create_encrypted_keystore` - Create a new encrypted key store with master password
+- `unlock_keystore` - Unlock encrypted key store for session access
+- `lock_keystore` - Lock key store and clear decrypted keys from memory
+- `import_encrypted_private_key` - Import private key into encrypted store
+- `list_encrypted_keys` - List all encrypted keys (addresses and labels only)
+- `remove_encrypted_key` - Remove encrypted key from store
+- `update_key_label` - Update label for an encrypted key
+- `change_keystore_password` - Change master password for encrypted keys
+- `get_keystore_status` - Get current encrypted key store status
+
 ### ENS
 - `resolve_ens_name` - Resolve an ENS name to an Ethereum address (mainnet only)
 
@@ -184,7 +195,25 @@ The AI agent will automatically apply your preferences when performing wallet op
 
 ⚠️ **NEVER paste private keys in chat!**
 
-### Option 1: Environment Variable
+### Option 1: Encrypted Key Store (Recommended)
+The most secure way to manage private keys:
+
+```bash
+# Create encrypted key store
+"Create encrypted keystore with master password"
+"Import encrypted private key from WALLET_PRIVATE_KEY with master password"
+"Set wallet type to privateKey"
+"Connect to my wallet"
+```
+
+**Security Features:**
+- AES-256-GCM authenticated encryption
+- PBKDF2 key derivation (100,000 iterations)  
+- Session-based access (30-minute timeout)
+- Automatic memory clearing on lock
+- File stored with restrictive permissions
+
+### Option 2: Environment Variable
 ```bash
 # When adding server
 claude mcp add wallet-agent bunx wallet-agent -e WALLET_PRIVATE_KEY=0x...
@@ -194,15 +223,15 @@ export WALLET_PRIVATE_KEY="0x..."
 ```
 Then: "Import private key from WALLET_PRIVATE_KEY"
 
-### Option 2: Secure File
+### Option 3: Secure File
 ```bash
 echo "0x..." > ~/.wallet-key
 chmod 600 ~/.wallet-key
 ```
 Then: "Import private key from ~/.wallet-key"
 
-### Workflow
-1. "Set wallet type to privateKey"
+### Standard Workflow
+1. "Set wallet type to privateKey" 
 2. "Connect to my wallet"
 3. Use normally
 
@@ -237,7 +266,16 @@ See the [Testing Guide](test/README.md) for comprehensive testing documentation,
 
 ## Security
 
-- Private keys stored in memory only
-- No network transmission of secrets
+### Encrypted Key Management
+- **AES-256-GCM**: Industry-standard authenticated encryption
+- **PBKDF2**: 100,000 iterations for key derivation (OWASP recommended)
+- **Session Security**: 30-minute timeout with automatic lock
+- **Memory Protection**: Keys cleared on session end
+- **File Security**: Restrictive permissions (600) on encrypted storage
+
+### General Security
+- Private keys never logged or transmitted over network
+- Support for environment variables and secure file storage
+- Mock wallets for safe testing
 - Use testnets for development
 - Audit code before mainnet use

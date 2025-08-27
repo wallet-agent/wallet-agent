@@ -3,7 +3,11 @@ import { join } from "node:path"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { createLogger } from "./logger.js"
 import { createMcpServer } from "./server.js"
-import { ProjectStorageManager, StorageResolver } from "./storage/project-storage.js"
+import {
+  findProjectStorage,
+  getProjectRoot,
+  ProjectStorageManager,
+} from "./storage/project-storage.js"
 
 const logger = createLogger("cli")
 
@@ -46,9 +50,9 @@ For more information, visit: https://github.com/wallet-agent/wallet-agent
 async function startServer() {
   try {
     // Check if we're in a project context and auto-initialize if needed
-    const projectPath = StorageResolver.findProjectStorage()
+    const projectPath = findProjectStorage()
     if (projectPath) {
-      logger.info(`Starting in project context: ${StorageResolver.getProjectRoot(projectPath)}`)
+      logger.info(`Starting in project context: ${getProjectRoot(projectPath)}`)
     } else {
       // No project storage found - create it automatically in current directory
       const currentDir = process.cwd()

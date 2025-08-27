@@ -303,7 +303,7 @@ export const toolDefinitions: Tool[] = [
     },
   },
   {
-    name: "lock_keystore", 
+    name: "lock_keystore",
     description: "Lock the encrypted key store and clear sensitive data from memory",
     inputSchema: {
       type: "object",
@@ -334,9 +334,10 @@ export const toolDefinitions: Tool[] = [
   },
   {
     name: "list_encrypted_keys",
-    description: "List all keys in the encrypted store (shows addresses and labels, not private keys)",
+    description:
+      "List all keys in the encrypted store (shows addresses and labels, not private keys)",
     inputSchema: {
-      type: "object", 
+      type: "object",
       properties: {},
     },
   },
@@ -361,7 +362,7 @@ export const toolDefinitions: Tool[] = [
       type: "object",
       properties: {
         address: {
-          type: "string", 
+          type: "string",
           description: "Address of the key to update",
         },
         label: {
@@ -383,7 +384,7 @@ export const toolDefinitions: Tool[] = [
           description: "Current master password",
         },
         newPassword: {
-          type: "string", 
+          type: "string",
           description: "New master password (minimum 8 characters)",
           minLength: 8,
         },

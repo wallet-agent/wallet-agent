@@ -1,6 +1,6 @@
 /**
  * Encrypted key store for secure private key management
- * 
+ *
  * Provides persistent storage of encrypted private keys with:
  * - Password-based encryption using AES-256-GCM
  * - Session-based key management
@@ -8,11 +8,11 @@
  * - Audit logging of key operations
  */
 
-import { readFile, writeFile } from "node:fs/promises"
 import { existsSync } from "node:fs"
+import { readFile, writeFile } from "node:fs/promises"
 import type { Address } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
-import { KeyEncryption, type EncryptedKeyStore } from "../crypto/key-encryption.js"
+import { type EncryptedKeyStore, KeyEncryption } from "../crypto/key-encryption.js"
 import { createLogger } from "../logger.js"
 import type { StorageManager } from "./storage-manager.js"
 
@@ -37,18 +37,18 @@ export class EncryptedKeyStoreManager {
   private readonly storePath: string
   private session: KeyStoreSession
   private decryptedKeys: Map<Address, string> = new Map()
-  
+
   // Default session timeout: 30 minutes
   private static readonly DEFAULT_SESSION_TIMEOUT = 30 * 60 * 1000
 
   constructor(storageManager: StorageManager, sessionTimeoutMs?: number) {
     const layout = storageManager.getLayout()
     this.storePath = `${layout.authDir}/encrypted-keys.json`
-    
+
     this.session = {
       isUnlocked: false,
       lastActivity: 0,
-      timeoutMs: sessionTimeoutMs || EncryptedKeyStoreManager.DEFAULT_SESSION_TIMEOUT
+      timeoutMs: sessionTimeoutMs || EncryptedKeyStoreManager.DEFAULT_SESSION_TIMEOUT,
     }
   }
 
@@ -69,14 +69,14 @@ export class EncryptedKeyStoreManager {
 
     const keyStore: EncryptedKeyStore = {
       version: "1.0.0",
-      keys: {}
+      keys: {},
     }
 
     await writeFile(this.storePath, JSON.stringify(keyStore, null, 2), { mode: 0o600 })
-    
+
     // Unlock the newly created store
     await this.unlock(masterPassword)
-    
+
     logger.info("Created new encrypted key store")
   }
 
@@ -91,12 +91,19 @@ export class EncryptedKeyStoreManager {
     // Test password by trying to decrypt an existing key (if any)
     const keyStore = await this.readKeyStore()
     const keyAddresses = Object.keys(keyStore.keys)
-    
+
     if (keyAddresses.length > 0) {
       // Verify password with first key
-      const firstKey = keyStore.keys[keyAddresses[0]!]
+      const firstAddress = keyAddresses[0]
+      if (!firstAddress) {
+        throw new Error("Unable to verify password: no valid key addresses found")
+      }
+      const firstKey = keyStore.keys[firstAddress]
+      if (!firstKey) {
+        throw new Error("Unable to verify password: key data not found")
+      }
       try {
-        KeyEncryption.decryptPrivateKey(firstKey!, masterPassword)
+        KeyEncryption.decryptPrivateKey(firstKey, masterPassword)
       } catch {
         throw new Error("Invalid master password")
       }
@@ -105,7 +112,7 @@ export class EncryptedKeyStoreManager {
 
     this.session.isUnlocked = true
     this.session.lastActivity = Date.now()
-    
+
     logger.info("Key store unlocked successfully")
   }
 
@@ -115,13 +122,13 @@ export class EncryptedKeyStoreManager {
   lock(): void {
     this.session.isUnlocked = false
     this.session.lastActivity = 0
-    
+
     // Clear decrypted keys from memory
     for (const [, privateKey] of this.decryptedKeys.entries()) {
       KeyEncryption.clearSensitiveData(privateKey)
     }
     this.decryptedKeys.clear()
-    
+
     logger.info("Key store locked")
   }
 
@@ -135,7 +142,7 @@ export class EncryptedKeyStoreManager {
 
     const now = Date.now()
     const timeSinceActivity = now - this.session.lastActivity
-    
+
     if (timeSinceActivity > this.session.timeoutMs) {
       this.lock()
       return false
@@ -171,7 +178,9 @@ export class EncryptedKeyStoreManager {
       const content = await readFile(this.storePath, "utf-8")
       return JSON.parse(content) as EncryptedKeyStore
     } catch (error) {
-      throw new Error(`Failed to read key store: ${error instanceof Error ? error.message : String(error)}`)
+      throw new Error(
+        `Failed to read key store: ${error instanceof Error ? error.message : String(error)}`,
+      )
     }
   }
 
@@ -182,7 +191,9 @@ export class EncryptedKeyStoreManager {
     try {
       await writeFile(this.storePath, JSON.stringify(keyStore, null, 2), { mode: 0o600 })
     } catch (error) {
-      throw new Error(`Failed to write key store: ${error instanceof Error ? error.message : String(error)}`)
+      throw new Error(
+        `Failed to write key store: ${error instanceof Error ? error.message : String(error)}`,
+      )
     }
   }
 
@@ -192,7 +203,7 @@ export class EncryptedKeyStoreManager {
   async importPrivateKey(
     privateKey: string,
     masterPassword: string,
-    label?: string
+    label?: string,
   ): Promise<Address> {
     this.ensureUnlocked()
 
@@ -209,7 +220,7 @@ export class EncryptedKeyStoreManager {
 
       // Encrypt the private key
       const encryptedKey = KeyEncryption.encryptPrivateKey(privateKey, masterPassword, label)
-      
+
       // Store encrypted key
       keyStore.keys[address] = encryptedKey
       await this.writeKeyStore(keyStore)
@@ -220,7 +231,9 @@ export class EncryptedKeyStoreManager {
       logger.info({ address, label }, "Imported encrypted private key")
       return address
     } catch (error) {
-      throw new Error(`Failed to import private key: ${error instanceof Error ? error.message : String(error)}`)
+      throw new Error(
+        `Failed to import private key: ${error instanceof Error ? error.message : String(error)}`,
+      )
     }
   }
 
@@ -239,20 +252,22 @@ export class EncryptedKeyStoreManager {
     // Decrypt from storage
     const keyStore = await this.readKeyStore()
     const encryptedKey = keyStore.keys[address]
-    
+
     if (!encryptedKey) {
       throw new Error(`No private key found for address ${address}`)
     }
 
     try {
       const privateKey = KeyEncryption.decryptPrivateKey(encryptedKey, masterPassword)
-      
+
       // Cache in session
       this.decryptedKeys.set(address, privateKey)
-      
+
       return privateKey
     } catch (error) {
-      throw new Error(`Failed to decrypt private key: ${error instanceof Error ? error.message : String(error)}`)
+      throw new Error(
+        `Failed to decrypt private key: ${error instanceof Error ? error.message : String(error)}`,
+      )
     }
   }
 
@@ -263,7 +278,7 @@ export class EncryptedKeyStoreManager {
     this.ensureUnlocked()
 
     const keyStore = await this.readKeyStore()
-    
+
     if (!keyStore.keys[address]) {
       return false
     }
@@ -290,21 +305,18 @@ export class EncryptedKeyStoreManager {
     this.ensureUnlocked()
 
     const keyStore = await this.readKeyStore()
-    
+
     return Object.entries(keyStore.keys).map(([address, encryptedKey]) => ({
       address: address as Address,
       label: encryptedKey.label,
-      createdAt: encryptedKey.createdAt
+      createdAt: encryptedKey.createdAt,
     }))
   }
 
   /**
    * Change master password for all keys
    */
-  async changeMasterPassword(
-    currentPassword: string,
-    newPassword: string
-  ): Promise<void> {
+  async changeMasterPassword(currentPassword: string, newPassword: string): Promise<void> {
     this.ensureUnlocked()
 
     const keyStore = await this.readKeyStore()
@@ -317,22 +329,27 @@ export class EncryptedKeyStoreManager {
     try {
       // Re-encrypt all keys with new password
       for (const address of addresses) {
-        const encryptedKey = keyStore.keys[address]!
+        const encryptedKey = keyStore.keys[address]
+        if (!encryptedKey) {
+          throw new Error(`Key data not found for address ${address}`)
+        }
         keyStore.keys[address] = KeyEncryption.changeKeyPassword(
           encryptedKey,
           currentPassword,
-          newPassword
+          newPassword,
         )
       }
 
       await this.writeKeyStore(keyStore)
-      
+
       // Clear session cache since keys are re-encrypted
       this.decryptedKeys.clear()
 
       logger.info(`Changed master password for ${addresses.length} keys`)
     } catch (error) {
-      throw new Error(`Failed to change master password: ${error instanceof Error ? error.message : String(error)}`)
+      throw new Error(
+        `Failed to change master password: ${error instanceof Error ? error.message : String(error)}`,
+      )
     }
   }
 
@@ -344,7 +361,7 @@ export class EncryptedKeyStoreManager {
 
     const keyStore = await this.readKeyStore()
     const encryptedKey = keyStore.keys[address]
-    
+
     if (!encryptedKey) {
       throw new Error(`No key found for address ${address}`)
     }
@@ -363,9 +380,9 @@ export class EncryptedKeyStoreManager {
       isUnlocked: this.session.isUnlocked,
       lastActivity: this.session.lastActivity,
       timeoutMs: this.session.timeoutMs,
-      timeUntilTimeout: this.session.isUnlocked 
+      timeUntilTimeout: this.session.isUnlocked
         ? Math.max(0, this.session.timeoutMs - (Date.now() - this.session.lastActivity))
-        : 0
+        : 0,
     }
   }
 

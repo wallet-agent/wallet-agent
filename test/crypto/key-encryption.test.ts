@@ -58,13 +58,13 @@ describe("KeyEncryption", () => {
   describe("encryptPrivateKey", () => {
     test("should encrypt private key successfully", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword, testLabel)
-      
+
       expect(encrypted.encryptedData).toBeDefined()
       expect(encrypted.iv).toBeDefined()
       expect(encrypted.salt).toBeDefined()
       expect(encrypted.createdAt).toBeDefined()
       expect(encrypted.label).toBe(testLabel)
-      
+
       // Verify base64 encoding
       expect(() => Buffer.from(encrypted.encryptedData, "base64")).not.toThrow()
       expect(() => Buffer.from(encrypted.iv, "base64")).not.toThrow()
@@ -85,7 +85,7 @@ describe("KeyEncryption", () => {
     test("should produce different encrypted data for same key", () => {
       const encrypted1 = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
       const encrypted2 = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
-      
+
       expect(encrypted1.encryptedData).not.toBe(encrypted2.encryptedData)
       expect(encrypted1.iv).not.toBe(encrypted2.iv)
       expect(encrypted1.salt).not.toBe(encrypted2.salt)
@@ -96,13 +96,13 @@ describe("KeyEncryption", () => {
     test("should decrypt private key successfully", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword, testLabel)
       const decrypted = KeyEncryption.decryptPrivateKey(encrypted, testPassword)
-      
+
       expect(decrypted).toBe(testPrivateKey)
     })
 
     test("should fail with wrong password", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
-      
+
       expect(() => {
         KeyEncryption.decryptPrivateKey(encrypted, "wrongPassword")
       }).toThrow("Invalid password or corrupted key data")
@@ -110,13 +110,13 @@ describe("KeyEncryption", () => {
 
     test("should fail with corrupted encrypted data", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
-      
+
       // Corrupt the encrypted data
       const corrupted = {
         ...encrypted,
-        encryptedData: "corrupted-data"
+        encryptedData: "corrupted-data",
       }
-      
+
       expect(() => {
         KeyEncryption.decryptPrivateKey(corrupted, testPassword)
       }).toThrow()
@@ -124,13 +124,13 @@ describe("KeyEncryption", () => {
 
     test("should fail with corrupted IV", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
-      
+
       // Corrupt the IV
       const corrupted = {
         ...encrypted,
-        iv: "corrupted-iv"
+        iv: "corrupted-iv",
       }
-      
+
       expect(() => {
         KeyEncryption.decryptPrivateKey(corrupted, testPassword)
       }).toThrow()
@@ -141,14 +141,14 @@ describe("KeyEncryption", () => {
     test("should return true for correct password", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
       const isValid = KeyEncryption.verifyPassword(encrypted, testPassword)
-      
+
       expect(isValid).toBe(true)
     })
 
     test("should return false for wrong password", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
       const isValid = KeyEncryption.verifyPassword(encrypted, "wrongPassword")
-      
+
       expect(isValid).toBe(false)
     })
   })
@@ -157,17 +157,17 @@ describe("KeyEncryption", () => {
     test("should change password successfully", () => {
       const oldPassword = testPassword
       const newPassword = "newPassword456"
-      
+
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, oldPassword, testLabel)
       const reencrypted = KeyEncryption.changeKeyPassword(encrypted, oldPassword, newPassword)
-      
+
       // Should be able to decrypt with new password
       const decrypted = KeyEncryption.decryptPrivateKey(reencrypted, newPassword)
       expect(decrypted).toBe(testPrivateKey)
-      
+
       // Should preserve label
       expect(reencrypted.label).toBe(testLabel)
-      
+
       // Should fail with old password
       expect(() => {
         KeyEncryption.decryptPrivateKey(reencrypted, oldPassword)
@@ -176,7 +176,7 @@ describe("KeyEncryption", () => {
 
     test("should fail with wrong old password", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
-      
+
       expect(() => {
         KeyEncryption.changeKeyPassword(encrypted, "wrongPassword", "newPassword")
       }).toThrow()
@@ -187,7 +187,7 @@ describe("KeyEncryption", () => {
     test("should use different salt and IV for each encryption", () => {
       const encrypted1 = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
       const encrypted2 = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
-      
+
       expect(encrypted1.salt).not.toBe(encrypted2.salt)
       expect(encrypted1.iv).not.toBe(encrypted2.iv)
       expect(encrypted1.encryptedData).not.toBe(encrypted2.encryptedData)
@@ -195,16 +195,19 @@ describe("KeyEncryption", () => {
 
     test("should produce authenticated encryption", () => {
       const encrypted = KeyEncryption.encryptPrivateKey(testPrivateKey, testPassword)
-      
+
       // Tampering with encrypted data should be detected
       const tamperedData = Buffer.from(encrypted.encryptedData, "base64")
-      tamperedData[0] = tamperedData[0]! ^ 1 // Flip one bit
-      
+      const firstByte = tamperedData[0]
+      if (firstByte !== undefined) {
+        tamperedData[0] = firstByte ^ 1 // Flip one bit
+      }
+
       const tampered = {
         ...encrypted,
-        encryptedData: tamperedData.toString("base64")
+        encryptedData: tamperedData.toString("base64"),
       }
-      
+
       expect(() => {
         KeyEncryption.decryptPrivateKey(tampered, testPassword)
       }).toThrow()
@@ -215,7 +218,7 @@ describe("KeyEncryption", () => {
         "0x0000000000000000000000000000000000000000000000000000000000000001", // Minimum
         "0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140", // Near maximum
       ]
-      
+
       for (const privateKey of edgeCases) {
         const encrypted = KeyEncryption.encryptPrivateKey(privateKey, testPassword)
         const decrypted = KeyEncryption.decryptPrivateKey(encrypted, testPassword)

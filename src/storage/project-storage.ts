@@ -37,42 +37,40 @@ export interface ProjectStorageLayout extends StorageLayout {
 }
 
 /**
- * Resolves storage location (project vs global) by walking up directory tree
+ * Project directory configuration
  */
-export class StorageResolver {
-  private static readonly PROJECT_DIR_NAME = ".wallet-agent"
+const PROJECT_DIR_NAME = ".wallet-agent"
 
-  /**
-   * Find project storage directory by walking up from current directory
-   */
-  static findProjectStorage(startDir: string = process.cwd()): string | null {
-    let currentDir = resolve(startDir)
-    const root = resolve("/")
+/**
+ * Find project storage directory by walking up from current directory
+ */
+export function findProjectStorage(startDir: string = process.cwd()): string | null {
+  let currentDir = resolve(startDir)
+  const root = resolve("/")
 
-    while (currentDir !== root) {
-      const projectPath = join(currentDir, StorageResolver.PROJECT_DIR_NAME)
-      if (existsSync(projectPath)) {
-        return projectPath
-      }
-      currentDir = dirname(currentDir)
+  while (currentDir !== root) {
+    const projectPath = join(currentDir, PROJECT_DIR_NAME)
+    if (existsSync(projectPath)) {
+      return projectPath
     }
-
-    return null
+    currentDir = dirname(currentDir)
   }
 
-  /**
-   * Get project root directory (parent of .wallet-agent)
-   */
-  static getProjectRoot(projectStoragePath: string): string {
-    return dirname(projectStoragePath)
-  }
+  return null
+}
 
-  /**
-   * Check if we're in a project context
-   */
-  static isInProject(startDir: string = process.cwd()): boolean {
-    return StorageResolver.findProjectStorage(startDir) !== null
-  }
+/**
+ * Get project root directory (parent of .wallet-agent)
+ */
+export function getProjectRoot(projectStoragePath: string): string {
+  return dirname(projectStoragePath)
+}
+
+/**
+ * Check if we're in a project context
+ */
+export function isInProject(startDir: string = process.cwd()): boolean {
+  return findProjectStorage(startDir) !== null
 }
 
 /**
@@ -97,7 +95,7 @@ export class ProjectStorageManager extends StorageManager {
       resolvedProjectPath = projectPath
     } else {
       // If no path provided, search for project storage
-      resolvedProjectPath = StorageResolver.findProjectStorage()
+      resolvedProjectPath = findProjectStorage()
       if (!resolvedProjectPath) {
         throw new Error(
           "No project storage found. Run 'wallet-agent init' to initialize project storage.",
@@ -190,7 +188,7 @@ export class ProjectStorageManager extends StorageManager {
    * Create default project configuration
    */
   private async createDefaultProjectConfig(): Promise<void> {
-    const projectRoot = StorageResolver.getProjectRoot(this.projectLayout.baseDir)
+    const projectRoot = getProjectRoot(this.projectLayout.baseDir)
     const projectName = projectRoot.split("/").pop() || "wallet-agent-project"
 
     const defaultConfig: ProjectConfig = {
