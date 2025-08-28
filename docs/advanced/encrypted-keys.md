@@ -13,7 +13,7 @@ Encrypted key storage provides an additional security layer when using private k
 ### Encryption vs Plain Storage
 
 **Plain Private Keys:**
-- Stored directly in environment variables or files
+- Stored directly in files or direct import
 - Immediate access but higher security risk
 - Suitable for development environments
 - No additional setup required
@@ -127,21 +127,21 @@ For enhanced security with encrypted key files:
 **Development Environment:**
 ```
 Create encrypted keystore for development testing
-Import private key from DEV_PRIVATE_KEY with label 'Development Testing'
+Import private key with label 'Development Testing'
 ```
 
 **Staging Environment:**
 ```
 Create encrypted keystore with production-strength master password
-Import private key from STAGING_PRIVATE_KEY with label 'Staging Validation'
+Import private key with label 'Staging Validation'
 Test all encrypted key workflows before production deployment
 ```
 
 **Production Environment:**
 ```
 Create encrypted keystore with maximum security master password
-Import private key from PROD_PRIVATE_KEY with label 'Production Main'
-Import backup private key from PROD_BACKUP_KEY with label 'Production Backup'
+Import private key with label 'Production Main'
+Import backup private key with label 'Production Backup'
 Verify keystore status and security configuration
 ```
 
@@ -149,7 +149,7 @@ Verify keystore status and security configuration
 
 **Initial Deployment:**
 - ✅ Master password meets enterprise security standards (12+ characters)
-- ✅ Private keys imported from secure environment variables only
+- ✅ Private keys imported from secure sources only
 - ✅ All keys properly labeled with descriptive names
 - ✅ Keystore file permissions restricted to service account only
 - ✅ Regular backup procedures established
@@ -168,9 +168,9 @@ useradd -r -s /bin/false wallet-agent
 chown wallet-agent:wallet-agent /path/to/keystore
 chmod 600 /path/to/keystore
 
-# Environment variable security
-echo "PROD_PRIVATE_KEY=0x..." | sudo tee -a /etc/environment
-chmod 600 /etc/environment
+# Secure key file example
+echo "0x..." > /secure/path/prod-key
+chmod 600 /secure/path/prod-key
 ```
 
 **Access Control:**

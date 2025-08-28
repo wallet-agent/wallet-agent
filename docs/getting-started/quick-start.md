@@ -194,7 +194,7 @@ If you have contract configuration files:
 Load my contract configuration for AI interactions
 ```
 
-### Simulate Contract Calls (Gas-Free)
+### Simulate Contract Calls
 
 Test contract functions without spending gas:
 
@@ -217,12 +217,12 @@ Simulate balanceOf function for USDC with account 0xf39Fd6e51aad88F6F4ce6aB88272
 
 This is **very useful** for development - you can test any contract function without spending gas or affecting blockchain state.
 
-### Step 7: Advanced Trading (Optional)
+### Step 7: Hyperliquid Support (Optional)
 
 For users interested in decentralized trading, WalletAgent includes Hyperliquid integration for perpetual futures:
 
 ```
-Import my Hyperliquid wallet using private key from HYPERLIQUID_KEY
+Import my Hyperliquid wallet using private key
 ```
 
 **Expected Output:**
@@ -258,7 +258,7 @@ In just 10 minutes, you've learned to:
 - ✅ Send transactions between addresses  
 - ✅ Switch between different blockchain networks
 - ✅ Transfer tokens with simple commands
-- ✅ Simulate smart contract calls gas-free
+- ✅ Simulate smart contract calls
 
 ## Essential Command Patterns
 
@@ -325,7 +325,7 @@ Create encrypted keystore for secure testnet operations
 
 **2. Import Your Testnet Private Key:**
 ```
-Import private key from TESTNET_PRIVATE_KEY with label 'Sepolia Testing'
+Import private key with label 'Sepolia Testing'
 ```
 
 **3. Switch to Encrypted Mode:**

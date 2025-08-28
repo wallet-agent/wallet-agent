@@ -310,7 +310,7 @@ Get trade execution history and fill details for a user.
 
 **Setup and Account Management:**
 ```
-"Import my Hyperliquid wallet using private key from HYPERLIQUID_KEY"
+"Import my Hyperliquid wallet using private key"
 "Check my Hyperliquid account balance and positions"
 "Get current mid prices for all trading pairs"
 ```

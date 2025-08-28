@@ -34,24 +34,19 @@ WalletAgent supports two wallet modes:
 
 ## Importing Private Keys
 
-### Environment Variables (Recommended)
+### Encrypted Keystore (Recommended)
 The most secure method for production use:
 
-**Setup:**
-```bash
-export WALLET_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-```
-
 **AI Agent Prompts:**
-- "Import my private key from the WALLET_PRIVATE_KEY environment variable"
-- "Load my production wallet key from environment variables"
-- "Use the private key stored in PRODUCTION_KEY environment variable"
+- "Create encrypted keystore for secure private key management"
+- "Import my private key with encryption and secure storage"
+- "Set up encrypted key management for production use"
 
 **Benefits:**
-- Keys not stored in code or configuration files
-- Different keys for different environments
-- Easy key rotation and management
-- Compatible with CI/CD systems
+- AES-256-GCM encryption with master password protection
+- Session-based access with automatic timeouts
+- Individual key encryption with unique initialization vectors
+- Enterprise-grade security with PBKDF2 key derivation
 
 ### Secure File Storage
 For local development with enhanced security:
@@ -251,62 +246,11 @@ Only for local development with test assets:
 - Tax reporting assistance
 - Audit trail maintenance
 
-## Troubleshooting
-
-### Common Issues
-
-**Import Failures:**
-**Developer:** "My private key won't import properly"
-
-**AI Agent Response:** The AI will check:
-- Private key format and validity
-- Environment variable configuration
-- File permissions and accessibility
-- Network connectivity issues
-
-**Transaction Failures:**
-**Developer:** "Transactions from my private key wallet keep failing"
-
-**AI Agent Response:** The AI will diagnose:
-- Insufficient balance for gas
-- Incorrect nonce values
-- Network congestion issues
-- Contract interaction problems
-
-**Balance Discrepancies:**
-**Developer:** "My private key wallet balance looks wrong"
-
-**AI Agent Response:** The AI will verify:
-- Blockchain network connectivity
-- Address derivation correctness
-- Network synchronization status
-- Multiple token balances if applicable
-
-### Security Incidents
-
-**Compromise Response:**
-**Developer:** "I think my private key might be compromised"
-
-**AI Agent Response:** The AI will help with immediate actions:
-1. Stop all automated operations
-2. Transfer assets to secure addresses
-3. Generate new private keys
-4. Update all configurations
-5. Implement additional security measures
-
-**Recovery Procedures:**
-**Developer:** "I need to recover from a security incident"
-
-**AI Agent Response:** The AI will guide through:
-- Asset recovery procedures
-- Security audit and review
-- Enhanced security implementation
-- Incident documentation and reporting
 
 ## Best Practices Summary
 
 ### Do's
-✅ **Use environment variables for production keys**
+✅ **Use encrypted keystore for production keys**
 ✅ **Plan for secure key migration when needed**
 ✅ **Separate keys by environment (dev/staging/prod)**
 ✅ **Monitor and audit all private key operations**
@@ -328,4 +272,3 @@ Only for local development with test assets:
 - [Encrypted Keys](encrypted-keys.md) - Enhanced security options
 - [User Instructions](user-instructions.md) - Custom security workflows
 - [Security Guide](../user-guide/security.md) - General security practices
-- [Troubleshooting](../resources/troubleshooting.md) - Common issues and solutions

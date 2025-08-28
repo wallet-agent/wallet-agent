@@ -67,31 +67,8 @@ Expected response:
 
 ## Configuration Options
 
-### Environment Variables
-
-Claude Code supports passing environment variables to MCP servers:
-
-```bash
-# Basic setup with environment variable
-claude mcp add wallet-agent bunx wallet-agent@latest -e WALLET_PRIVATE_KEY=0x...
-
-# Multiple environment variables
-claude mcp add wallet-agent bunx wallet-agent@latest \
-  -e WALLET_PRIVATE_KEY=0x... \
-  -e DEBUG=wallet-agent:* \
-  -e NODE_ENV=development
-```
-
-### Common Environment Variables
-
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `WALLET_PRIVATE_KEY` | Real wallet private key | `0x123abc...` |
-| `DEBUG` | Enable debug logging | `wallet-agent:*` |
-| `NODE_ENV` | Environment mode | `development` |
-
 {% hint style="warning" %}
-**Private Key Security**: Never commit private keys to code. Use environment variables or encrypted key storage instead.
+**Private Key Security**: For real wallet operations, use WalletAgent's encrypted keystore or import features.
 {% endhint %}
 
 ## Claude Code Features
@@ -153,61 +130,6 @@ Ask Claude Code to explain and document your Web3 operations:
 "Create a test checklist for my DApp"
 ```
 
-## Troubleshooting Claude Code
-
-### Common Issues
-
-**"MCP server not responding"**
-```bash
-# Remove and re-add the MCP server
-claude mcp remove wallet-agent
-claude mcp add wallet-agent bunx wallet-agent@latest
-```
-
-**"Command not found: claude"**
-```bash
-# Check if Claude Code CLI is installed
-which claude
-
-# If not installed, follow the official Claude Code installation guide
-# Visit: https://docs.anthropic.com/claude/docs/claude-code
-```
-
-**"Permission denied" errors**
-```bash
-# Check Node.js/Bun installation
-node --version
-bun --version
-
-# Try reinstalling WalletAgent
-claude mcp remove wallet-agent
-claude mcp add wallet-agent bunx wallet-agent@latest
-```
-
-### Debug Mode
-
-Enable detailed logging to troubleshoot issues:
-
-```bash
-claude mcp add wallet-agent bunx wallet-agent@latest -e DEBUG=wallet-agent:*
-```
-
-Check Claude Code's output for detailed error messages and debug information.
-
-### Reset Configuration
-
-If you need to start fresh:
-
-```bash
-# Remove WalletAgent
-claude mcp remove wallet-agent
-
-# Clear any cached data
-rm -rf ~/.claude/mcp/wallet-agent
-
-# Reinstall
-claude mcp add wallet-agent bunx wallet-agent@latest
-```
 
 ## Advanced Features
 
@@ -283,13 +205,7 @@ Now that WalletAgent is configured with Claude Code:
 
 ### Resources
 - **[FAQ](../resources/faq.md)** - Common questions
-- **[Troubleshooting](../resources/troubleshooting.md)** - Problem solving
 - **[GitHub Issues](https://github.com/wallet-agent/wallet-agent/issues)** - Bug reports
-
-### Claude Code Support
-- **Claude Help**: Type `/help` in Claude Code
-- **MCP Documentation**: [Claude MCP Guide](https://claude.ai/mcp)
-- **Community**: Claude Code Discord/Forums
 
 ---
 

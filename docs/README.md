@@ -12,7 +12,7 @@
 WalletAgent enhances AI coding agents with Web3 development capabilities by providing:
 
 - 🔐 **Secure Wallet Management** - Mock wallets for testing, encrypted private keys for real use
-- ⛽ **Gas-free Contract Testing** - Simulate contract calls without spending gas
+- ⛽ **Contract Testing** - Simulate contract calls without spending gas
 - 🔗 **Multi-chain Support** - Works with Ethereum, Polygon, and major EVM chains
 - 📋 **Wagmi Integration** - Extract, analyze, and test smart contract ABIs
 - 🛡️ **Security First** - Private keys never logged, comprehensive validation

@@ -88,26 +88,6 @@ The minimal configuration to get started:
 }
 ```
 
-### With Environment Variables
-
-For advanced configuration including private keys and debugging:
-
-```json
-{
-  "mcpServers": {
-    "wallet-agent": {
-      "command": "bunx",
-      "args": ["wallet-agent"],
-      "env": {
-        "WALLET_PRIVATE_KEY": "0x...",
-        "DEBUG": "wallet-agent:*",
-        "NODE_ENV": "development"
-      }
-    }
-  }
-}
-```
-
 ### Local Development
 
 If you're developing or contributing to WalletAgent:
@@ -117,65 +97,17 @@ If you're developing or contributing to WalletAgent:
   "mcpServers": {
     "wallet-agent": {
       "command": "bun",
-      "args": ["/absolute/path/to/wallet-agent/dist/index.js"],
-      "env": {
-        "DEBUG": "wallet-agent:*"
-      }
+      "args": ["/absolute/path/to/wallet-agent/dist/index.js"]
     }
   }
 }
 ```
 
-## Environment Variables
-
-### Common Variables
-
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `WALLET_PRIVATE_KEY` | Real wallet private key | `0x123abc...` |
-| `DEBUG` | Enable debug logging | `wallet-agent:*` |
-| `NODE_ENV` | Environment mode | `development` |
-
-### Security Best Practices
+## Security Best Practices
 
 {% hint style="warning" %}
-**Private Key Security**: Store private keys securely, never commit them to code repositories.
+**Private Key Security**: For real wallet operations, use WalletAgent's encrypted keystore or import features.
 {% endhint %}
-
-**Option 1: Environment File (Recommended)**
-```json
-{
-  "mcpServers": {
-    "wallet-agent": {
-      "command": "bunx",
-      "args": ["wallet-agent"],
-      "env": {
-        "WALLET_PRIVATE_KEY": "${WALLET_PRIVATE_KEY}"
-      }
-    }
-  }
-}
-```
-
-Then set the environment variable in your shell:
-```bash
-export WALLET_PRIVATE_KEY="0x..."
-```
-
-**Option 2: Secure File**
-```bash
-echo "0x..." > ~/.wallet-private-key
-chmod 600 ~/.wallet-private-key
-```
-
-Then reference it:
-```json
-{
-  "env": {
-    "WALLET_PRIVATE_KEY_FILE": "~/.wallet-private-key"
-  }
-}
-```
 
 ## Verification
 
@@ -286,89 +218,6 @@ Add WalletAgent scripts to your `package.json`:
 
 If your project uses TypeScript, WalletAgent provides full type safety and intellisense support for all operations through the AI agent interface.
 
-## Troubleshooting
-
-### Common Issues
-
-**"MCP server failed to start"**
-
-Check the Cursor output panel for errors:
-1. Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-2. Type "Output" and select "Output"
-3. Select "MCP" from the dropdown
-4. Look for WalletAgent startup errors
-
-Common causes:
-- `bunx` not in PATH: Install Bun or use `npx` instead
-- JSON syntax error: Validate your `mcp.json` file
-- Permission issues: Check file permissions
-
-**"Command 'bunx' not found"**
-
-Install Bun or use Node.js alternative:
-
-```json
-{
-  "mcpServers": {
-    "wallet-agent": {
-      "command": "npx",
-      "args": ["wallet-agent@latest"]
-    }
-  }
-}
-```
-
-**"Private key not loaded"**
-
-Verify environment variable setup:
-- Check variable name spelling
-- Ensure proper JSON escaping
-- Test with a simple debug variable first
-
-### Debug Mode
-
-Enable detailed logging to troubleshoot:
-
-```json
-{
-  "mcpServers": {
-    "wallet-agent": {
-      "command": "bunx",
-      "args": ["wallet-agent"],
-      "env": {
-        "DEBUG": "wallet-agent:*",
-        "LOG_LEVEL": "debug"
-      }
-    }
-  }
-}
-```
-
-### Configuration Validation
-
-Test your MCP configuration:
-
-1. **Syntax Check**: Validate JSON syntax using online JSON validators
-2. **Command Test**: Run the command manually:
-   ```bash
-   bunx wallet-agent
-   ```
-3. **Environment Test**: Check environment variables:
-   ```bash
-   echo $WALLET_PRIVATE_KEY
-   ```
-
-### Reset and Reinstall
-
-If you need to start fresh:
-
-```bash
-# Stop Cursor
-# Remove configuration
-rm ~/.cursor/mcp.json
-
-# Restart Cursor and reconfigure
-```
 
 ## Advanced Configuration
 
@@ -411,7 +260,7 @@ Configure different profiles for different environments:
 
 ### Security Guidelines
 
-1. **Never Commit Keys**: Use environment variables or secure files
+1. **Never Commit Keys**: Use WalletAgent's encrypted keystore
 2. **Limit Permissions**: Use restrictive file permissions (600) for key files
 3. **Regular Rotation**: Change private keys regularly
 4. **Monitor Usage**: Keep track of transactions and gas usage
@@ -435,7 +284,6 @@ Now that WalletAgent is configured with Cursor:
 
 ### Resources
 - **[FAQ](../resources/faq.md)** - Common questions and answers
-- **[Troubleshooting Guide](../resources/troubleshooting.md)** - Detailed problem solving
 - **[GitHub Issues](https://github.com/wallet-agent/wallet-agent/issues)** - Bug reports and feature requests
 
 ### Community
