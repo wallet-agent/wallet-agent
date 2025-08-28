@@ -36,24 +36,22 @@ WalletAgent includes these chains by default:
 
 ### Chain Details
 
-**Anvil (Default Chain)**
+**Get Current Chain Information**
 ```
 Get current chain info
 ```
 
 **Example Output:**
 ```
-⛓️ Current Chain: Anvil
+Current Chain: Anvil (31337)
+Native Currency: ETH
+RPC URL: http://127.0.0.1:8545
 
-🔧 Details:
-- Chain ID: 31337
-- Native Currency: ETH (18 decimals)
-- Network Type: Local Development
-- RPC: http://localhost:8545
-- Block Explorer: Local only
-
-💡 Perfect for testing and development
-✅ Mock wallets have unlimited ETH here
+Available Chains:
+- Anvil (31337) ← Current
+- Ethereum (1)
+- Sepolia (11155111)
+- Polygon (137)
 ```
 
 ## Switching Chains
@@ -115,56 +113,30 @@ Switch to Anvil
 
 ### Get Chain Status
 
-Check your current network:
+Check your current network and available options:
 
 ```
-What chain am I on?
-```
-
-**Example Output:**
-```
-📍 Current Network Status
-
-⛓️ Chain: Polygon (Chain ID: 137)
-💰 Native Currency: POL
-🏠 Your Balance: 10000.0 POL
-
-🌐 Network Details:
-- Network Type: Layer 2 Scaling Solution
-- Block Time: ~2 seconds
-- Average Gas Price: 30 gwei
-- Current Block: 52,847,291
-
-⏱️ Connected: 5 minutes ago
-✅ Network is healthy and operational
-```
-
-### List All Supported Chains
-
-See available networks:
-
-```
-What chains are supported?
+Get chain info
 ```
 
 **Example Output:**
 ```
-🌐 Supported Blockchain Networks
+Current Chain: Polygon (137)
+Native Currency: POL
+RPC URL: https://polygon-rpc.com
 
-🔧 Development:
-- Anvil (31337) - Local development chain ✅ Current
-
-🌍 Mainnet:
-- Ethereum (1) - Ethereum mainnet  
-- Polygon (137) - Polygon PoS mainnet
-
-🧪 Testnet:  
-- Sepolia (11155111) - Ethereum testnet
-
-
-💡 Use "Switch to [chain name]" to change networks
-💡 Built-in networks are ready to use without setup
+Available Chains:
+- Anvil (31337)
+- Ethereum (1)
+- Sepolia (11155111)
+- Polygon (137) ← Current
 ```
+
+The tool shows:
+- Your currently connected chain
+- Native currency symbol
+- RPC endpoint being used
+- All available chains you can switch to
 
 ## Built-in Chain Support
 
@@ -183,23 +155,14 @@ These networks are pre-configured and ready to use without additional setup.
 
 ### Get Network Details
 
-Check information about available networks:
+The chain info tool provides all essential network information in one command.
 
+Example usage:
 ```
 Get current chain info
 ```
 
-**Example Output:**
-```
-📊 Current Network Information
-
-⛓️ Chain: Polygon (Chain ID: 137)
-💰 Native Currency: POL (18 decimals)
-🌐 Network Type: Layer 2 Scaling Solution
-📈 Block Time: ~2 seconds
-
-✅ Network is operational and ready for transactions
-```
+Shows current chain, currency, RPC endpoint, and all available chains for easy switching.
 
 ## Multi-Chain Operations
 

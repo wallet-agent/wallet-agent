@@ -131,6 +131,31 @@ Get the native token balance for an address.
 
 ---
 
+### get_chain_info
+
+Get current chain information and available chains.
+
+**Tool Name:** `get_chain_info`
+
+**Parameters:** None
+
+**What the AI returns:**
+- Current chain name and ID
+- Native currency symbol
+- RPC endpoint URL  
+- List of all available chains with current chain marked
+
+**Example Prompts:**
+- "What chain am I on?"
+- "Get current chain info"
+- "Show me available chains"
+- "What chains can I switch to?"
+
+**Errors:**
+- None - always returns current state
+
+---
+
 ### get_wallet_info
 
 Get comprehensive wallet and chain configuration information.

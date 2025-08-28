@@ -93,6 +93,37 @@ export class GetBalanceHandler extends BaseToolHandler {
   }
 }
 
+/**
+ * Handler for getting chain information
+ */
+export class GetChainInfoHandler extends BaseToolHandler {
+  constructor() {
+    super("get_chain_info", "Get current chain information and available chains")
+  }
+
+  async execute(_args: unknown) {
+    const container = getContainer()
+    const chainId = container.walletEffects.getChainId()
+    const chain = container.chainAdapter.getChain(chainId)
+    const allChains = container.chainAdapter.getAllChains()
+
+    if (!chain) {
+      return this.createTextResponse(`Unknown chain: ${chainId}`)
+    }
+
+    const chainList = allChains
+      .map((c) => (c.id === chainId ? `- ${c.name} (${c.id}) ← Current` : `- ${c.name} (${c.id})`))
+      .join("\n")
+
+    return this.createTextResponse(
+      `Current Chain: ${chain.name} (${chainId})\n` +
+        `Native Currency: ${chain.nativeCurrency.symbol}\n` +
+        `RPC URL: ${chain.rpcUrls.default.http[0]}\n` +
+        `\nAvailable Chains:\n${chainList}`,
+    )
+  }
+}
+
 // Export all handlers as an array for easy registration
 export const walletHandlers = [
   new ConnectWalletHandler(),
@@ -100,4 +131,5 @@ export const walletHandlers = [
   new GetAccountsHandler(),
   new GetCurrentAccountHandler(),
   new GetBalanceHandler(),
+  new GetChainInfoHandler(),
 ]

@@ -131,6 +131,14 @@ export const toolDefinitions: Tool[] = [
     },
   },
   {
+    name: "get_chain_info",
+    description: "Get current chain information and available chains",
+    inputSchema: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
     name: "add_custom_chain",
     description: "Add a custom EVM-compatible blockchain network",
     inputSchema: {
