@@ -12,7 +12,7 @@ Testing tools enable AI agents to help developers validate transactions, simulat
 
 Simulate a contract function call without gas costs or state changes.
 
-**Tool Name:** `mcp__wallet-agent__simulate_contract_call`
+**Tool Name:** `simulate_contract_call`
 
 **What you provide:**
 - Contract name from your loaded Wagmi configuration
@@ -50,7 +50,7 @@ The AI agent will simulate the contract call and report whether it would succeed
 
 Preview the complete effects of a transaction without executing it.
 
-**Tool Name:** `mcp__wallet-agent__dry_run_transaction`
+**Tool Name:** `dry_run_transaction`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -86,7 +86,7 @@ The AI agent will provide a comprehensive transaction preview, including success
 
 Generate and run comprehensive test scenarios for a specific contract function.
 
-**Tool Name:** `mcp__wallet-agent__test_contract_function`
+**Tool Name:** `test_contract_function`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -120,7 +120,7 @@ The AI agent will generate and execute multiple test scenarios, providing a comp
 
 Run comprehensive tests on all functions in a contract.
 
-**Tool Name:** `mcp__wallet-agent__test_contract`
+**Tool Name:** `test_contract`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -152,7 +152,7 @@ The AI agent will provide a comprehensive overview of the contract's functions o
 
 Simulate a contract transaction before execution to predict success or failure.
 
-**Tool Name:** `mcp__wallet-agent__simulate_transaction`
+**Tool Name:** `simulate_transaction`
 
 **Parameters:**
 - `contract` - Contract name from loaded configuration
@@ -185,7 +185,7 @@ The AI agent will simulate the transaction and report whether it would succeed o
 
 Estimate gas cost for a transaction before execution.
 
-**Tool Name:** `mcp__wallet-agent__estimate_gas`
+**Tool Name:** `estimate_gas`
 
 **Parameters:**
 - `to` - Recipient address
@@ -216,7 +216,7 @@ The AI agent will estimate the gas cost and display it in both gas units and the
 
 Get detailed information about a completed transaction.
 
-**Tool Name:** `mcp__wallet-agent__get_transaction_receipt`
+**Tool Name:** `get_transaction_receipt`
 
 **Parameters:**
 - `hash` - Transaction hash (0x...)

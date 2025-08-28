@@ -12,7 +12,7 @@ Token tools enable AI agents to interact with ERC-20 tokens and ERC-721 NFTs thr
 
 Transfer ERC-20 tokens to another address.
 
-**Tool Name:** `mcp__wallet-agent__transfer_token`
+**Tool Name:** `transfer_token`
 
 **What you provide:**
 - Token identifier (contract name, symbol like "USDC", or contract address)
@@ -48,7 +48,7 @@ The AI agent will execute the token transfer, wait for confirmation, and report 
 
 Approve another address to spend ERC-20 tokens on your behalf.
 
-**Tool Name:** `mcp__wallet-agent__approve_token`
+**Tool Name:** `approve_token`
 
 **What you provide:**
 - Token identifier (contract name, symbol like "USDC", or contract address)
@@ -83,7 +83,7 @@ The AI agent will set the token approval, confirm the transaction, and report th
 
 Get the ERC-20 token balance for an address.
 
-**Tool Name:** `mcp__wallet-agent__get_token_balance`
+**Tool Name:** `get_token_balance`
 
 **What you provide:**
 - Token identifier (contract name, symbol like "USDC", or contract address)
@@ -117,7 +117,7 @@ The AI agent will query the token balance and display it in a human-readable for
 
 Get metadata information about an ERC-20 token.
 
-**Tool Name:** `mcp__wallet-agent__get_token_info`
+**Tool Name:** `get_token_info`
 
 **What you provide:**
 - Token identifier (contract name, symbol like "USDC", or contract address)
@@ -149,7 +149,7 @@ The AI agent will display comprehensive token information including name, symbol
 
 Transfer an ERC-721 NFT to another address.
 
-**Tool Name:** `mcp__wallet-agent__transfer_nft`
+**Tool Name:** `transfer_nft`
 
 **What you provide:**
 - NFT contract identifier (name or contract address)
@@ -185,7 +185,7 @@ The AI agent will execute the NFT transfer, verify ownership, complete the trans
 
 Get the current owner of an ERC-721 NFT.
 
-**Tool Name:** `mcp__wallet-agent__get_nft_owner`
+**Tool Name:** `get_nft_owner`
 
 **What you provide:**
 - NFT contract identifier (name or contract address)
@@ -218,7 +218,7 @@ The AI agent will query the NFT ownership and display the current owner's addres
 
 Get metadata information about an ERC-721 NFT.
 
-**Tool Name:** `mcp__wallet-agent__get_nft_info`
+**Tool Name:** `get_nft_info`
 
 **What you provide:**
 - NFT contract identifier (name or contract address)

@@ -20,7 +20,7 @@ Encrypted key tools provide advanced security for production environments where 
 
 Create a new encrypted keystore with master password protection.
 
-**Tool Name:** `mcp__wallet-agent__create_encrypted_keystore`
+**Tool Name:** `create_encrypted_keystore`
 
 **What you provide:**
 - Master password (minimum 8 characters)
@@ -47,7 +47,7 @@ Create a new encrypted keystore with master password protection.
 
 Unlock encrypted keystore for private key operations.
 
-**Tool Name:** `mcp__wallet-agent__unlock_keystore`
+**Tool Name:** `unlock_keystore`
 
 **What you provide:**
 - Master password for the keystore
@@ -73,7 +73,7 @@ Unlock encrypted keystore for private key operations.
 
 Lock encrypted keystore and clear all decrypted keys from memory.
 
-**Tool Name:** `mcp__wallet-agent__lock_keystore`
+**Tool Name:** `lock_keystore`
 
 **Parameters:** None
 
@@ -96,7 +96,7 @@ Lock encrypted keystore and clear all decrypted keys from memory.
 
 Get current status of encrypted keystore and session information.
 
-**Tool Name:** `mcp__wallet-agent__get_keystore_status`
+**Tool Name:** `get_keystore_status`
 
 **Parameters:** None
 
@@ -120,7 +120,7 @@ Get current status of encrypted keystore and session information.
 
 Import a private key into encrypted storage with individual encryption.
 
-**Tool Name:** `mcp__wallet-agent__import_encrypted_private_key`
+**Tool Name:** `import_encrypted_private_key`
 
 **What you provide:**
 - Private key (hex string, environment variable name, or file path)
@@ -148,7 +148,7 @@ Import a private key into encrypted storage with individual encryption.
 
 List all private keys stored in encrypted keystore.
 
-**Tool Name:** `mcp__wallet-agent__list_encrypted_keys`
+**Tool Name:** `list_encrypted_keys`
 
 **Parameters:** None
 
@@ -172,7 +172,7 @@ List all private keys stored in encrypted keystore.
 
 Remove a private key from encrypted storage.
 
-**Tool Name:** `mcp__wallet-agent__remove_encrypted_key`
+**Tool Name:** `remove_encrypted_key`
 
 **What you provide:**
 - Ethereum address of the key to remove
@@ -198,7 +198,7 @@ Remove a private key from encrypted storage.
 
 Update the label for an encrypted private key.
 
-**Tool Name:** `mcp__wallet-agent__update_key_label`
+**Tool Name:** `update_key_label`
 
 **What you provide:**
 - Ethereum address of the key
@@ -224,7 +224,7 @@ Update the label for an encrypted private key.
 
 Change the master password for encrypted keystore (re-encrypts all keys).
 
-**Tool Name:** `mcp__wallet-agent__change_keystore_password`
+**Tool Name:** `change_keystore_password`
 
 **What you provide:**
 - Current master password

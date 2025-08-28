@@ -12,7 +12,7 @@ Chain tools enable AI agents to manage blockchain networks and switch between su
 
 Switch to a different blockchain network.
 
-**Tool Name:** `mcp__wallet-agent__switch_chain`
+**Tool Name:** `switch_chain`
 
 **What you provide:**
 - Chain ID number for the blockchain network you want to switch to
@@ -43,7 +43,7 @@ The AI agent will switch to the specified blockchain network and confirm the cha
 
 Add a custom EVM-compatible blockchain network.
 
-**Tool Name:** `mcp__wallet-agent__add_custom_chain`
+**Tool Name:** `add_custom_chain`
 
 **What you provide:**
 - Unique chain ID for the new network
@@ -79,7 +79,7 @@ The AI agent will add the custom chain configuration and confirm it's available 
 
 Update configuration for an existing custom chain.
 
-**Tool Name:** `mcp__wallet-agent__update_custom_chain`
+**Tool Name:** `update_custom_chain`
 
 **What you provide:**
 - Chain ID of the custom chain you want to update
@@ -113,7 +113,7 @@ The AI agent will update the specified chain configuration and report which fiel
 
 Remove a previously added custom chain.
 
-**Tool Name:** `mcp__wallet-agent__remove_custom_chain`
+**Tool Name:** `remove_custom_chain`
 
 **What you provide:**
 - Chain ID of the custom chain you want to remove
@@ -143,7 +143,7 @@ The AI agent will remove the custom chain and confirm the removal. Note that bui
 
 Get comprehensive wallet and chain configuration information.
 
-**Tool Name:** `mcp__wallet-agent__get_wallet_info`
+**Tool Name:** `get_wallet_info`
 
 **Parameters:** None
 

@@ -19,7 +19,7 @@ Hyperliquid tools enable AI agents to perform professional-grade perpetual futur
 
 Import a private key wallet for Hyperliquid trading operations.
 
-**Tool Name:** `mcp__wallet-agent__hl_import_wallet`
+**Tool Name:** `hl_import_wallet`
 
 **What you provide:**
 - Private key (64-character hex string starting with 0x)
@@ -44,7 +44,7 @@ Import a private key wallet for Hyperliquid trading operations.
 
 Get comprehensive account information including balances, positions, and margin details.
 
-**Tool Name:** `mcp__wallet-agent__hl_get_account_info`
+**Tool Name:** `hl_get_account_info`
 
 **What you provide:**
 - Optional: Ethereum address (uses imported wallet if not provided)
@@ -71,7 +71,7 @@ Get comprehensive account information including balances, positions, and margin 
 
 Place limit or market orders for perpetual futures trading.
 
-**Tool Name:** `mcp__wallet-agent__hl_place_order`
+**Tool Name:** `hl_place_order`
 
 **What you provide:**
 - `coin` - Trading pair symbol (e.g., 'BTC', 'ETH', 'SOL')
@@ -105,7 +105,7 @@ Place limit or market orders for perpetual futures trading.
 
 Cancel open orders on Hyperliquid.
 
-**Tool Name:** `mcp__wallet-agent__hl_cancel_order`
+**Tool Name:** `hl_cancel_order`
 
 **What you provide:**
 - `coin` - Trading pair symbol for the order
@@ -132,7 +132,7 @@ Cancel open orders on Hyperliquid.
 
 Get all current open orders across all trading pairs.
 
-**Tool Name:** `mcp__wallet-agent__hl_get_open_orders`
+**Tool Name:** `hl_get_open_orders`
 
 **What you provide:**
 - Optional: Ethereum address (uses imported wallet if not provided)
@@ -159,7 +159,7 @@ Get all current open orders across all trading pairs.
 
 Get current open positions and their profit/loss status.
 
-**Tool Name:** `mcp__wallet-agent__hl_get_positions`
+**Tool Name:** `hl_get_positions`
 
 **What you provide:**
 - Optional: Ethereum address (uses imported wallet if not provided)
@@ -186,7 +186,7 @@ Get current open positions and their profit/loss status.
 
 Transfer USDC funds on Hyperliquid network.
 
-**Tool Name:** `mcp__wallet-agent__hl_transfer`
+**Tool Name:** `hl_transfer`
 
 **What you provide:**
 - `destination` - Recipient Ethereum address
@@ -214,7 +214,7 @@ Transfer USDC funds on Hyperliquid network.
 
 Get current mid prices for all available trading pairs.
 
-**Tool Name:** `mcp__wallet-agent__hl_get_all_mids`
+**Tool Name:** `hl_get_all_mids`
 
 **Parameters:** None
 
@@ -238,7 +238,7 @@ Get current mid prices for all available trading pairs.
 
 Get trade execution history and fill details for a user.
 
-**Tool Name:** `mcp__wallet-agent__hl_get_user_fills`
+**Tool Name:** `hl_get_user_fills`
 
 **What you provide:**
 - Optional: Ethereum address (uses imported wallet if not provided)

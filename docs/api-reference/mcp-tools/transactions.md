@@ -12,7 +12,7 @@ Transaction tools handle all aspects of blockchain transactions including creati
 
 Send native token transactions on the current blockchain.
 
-**Tool Name:** `mcp__wallet-agent__send_transaction`
+**Tool Name:** `send_transaction`
 
 **What you provide:**
 - Recipient's wallet address
@@ -44,7 +44,7 @@ Send native token transactions on the current blockchain.
 
 Estimate gas cost for a transaction before execution.
 
-**Tool Name:** `mcp__wallet-agent__estimate_gas`
+**Tool Name:** `estimate_gas`
 
 **What you provide:**
 - Recipient's wallet address
@@ -74,7 +74,7 @@ Estimate gas cost for a transaction before execution.
 
 Get the current status of a transaction by hash.
 
-**Tool Name:** `mcp__wallet-agent__get_transaction_status`
+**Tool Name:** `get_transaction_status`
 
 **What you provide:**
 - Transaction hash (starting with 0x) that you want to check
@@ -103,7 +103,7 @@ Get the current status of a transaction by hash.
 
 Get detailed transaction receipt information.
 
-**Tool Name:** `mcp__wallet-agent__get_transaction_receipt`
+**Tool Name:** `get_transaction_receipt`
 
 **What you provide:**
 - Transaction hash (starting with 0x) for the completed transaction
@@ -134,7 +134,7 @@ Get detailed transaction receipt information.
 
 Simulate a contract transaction before execution to predict success/failure.
 
-**Tool Name:** `mcp__wallet-agent__simulate_transaction`
+**Tool Name:** `simulate_transaction`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -169,7 +169,7 @@ Simulate a contract transaction before execution to predict success/failure.
 
 Sign an arbitrary message with the connected wallet.
 
-**Tool Name:** `mcp__wallet-agent__sign_message`
+**Tool Name:** `sign_message`
 
 **What you provide:**
 - Text message you want to sign with your wallet
@@ -196,7 +196,7 @@ Sign an arbitrary message with the connected wallet.
 
 Sign EIP-712 structured data with the connected wallet.
 
-**Tool Name:** `mcp__wallet-agent__sign_typed_data`
+**Tool Name:** `sign_typed_data`
 
 **What you provide:**
 - EIP-712 domain information (app name, version, chain ID, verifying contract)

@@ -12,7 +12,7 @@ Wallet tools provide the foundation for all blockchain interactions. They handle
 
 List all available mock accounts for testing.
 
-**Tool Name:** `mcp__wallet-agent__get_accounts`
+**Tool Name:** `get_accounts`
 
 **Parameters:** None
 
@@ -35,7 +35,7 @@ List all available mock accounts for testing.
 
 Connect to a wallet using the specified address.
 
-**Tool Name:** `mcp__wallet-agent__connect_wallet`
+**Tool Name:** `connect_wallet`
 
 **What you provide:**
 - Ethereum wallet address you want to connect to
@@ -61,7 +61,7 @@ Connect to a wallet using the specified address.
 
 Disconnect the currently connected wallet.
 
-**Tool Name:** `mcp__wallet-agent__disconnect_wallet`
+**Tool Name:** `disconnect_wallet`
 
 **Parameters:** None
 
@@ -83,7 +83,7 @@ Disconnect the currently connected wallet.
 
 Get information about the currently connected account.
 
-**Tool Name:** `mcp__wallet-agent__get_current_account`
+**Tool Name:** `get_current_account`
 
 **Parameters:** None
 
@@ -107,7 +107,7 @@ Get information about the currently connected account.
 
 Get the native token balance for an address.
 
-**Tool Name:** `mcp__wallet-agent__get_balance`
+**Tool Name:** `get_balance`
 
 **What you provide:**
 - Wallet address to check balance for (optional - defaults to your connected wallet)
@@ -135,7 +135,7 @@ Get the native token balance for an address.
 
 Get comprehensive wallet and chain configuration information.
 
-**Tool Name:** `mcp__wallet-agent__get_wallet_info`
+**Tool Name:** `get_wallet_info`
 
 **Parameters:** None
 
@@ -164,7 +164,7 @@ Get comprehensive wallet and chain configuration information.
 
 Import a private key for use with real blockchain transactions.
 
-**Tool Name:** `mcp__wallet-agent__import_private_key`
+**Tool Name:** `import_private_key`
 
 **What you provide:**
 - Private key (starting with 0x), environment variable name, or secure file path
@@ -195,7 +195,7 @@ Import a private key for use with real blockchain transactions.
 
 List all imported private key wallets.
 
-**Tool Name:** `mcp__wallet-agent__list_imported_wallets`
+**Tool Name:** `list_imported_wallets`
 
 **Parameters:** None
 
@@ -218,7 +218,7 @@ List all imported private key wallets.
 
 Remove an imported private key wallet.
 
-**Tool Name:** `mcp__wallet-agent__remove_private_key`
+**Tool Name:** `remove_private_key`
 
 **What you provide:**
 - Wallet address of the private key you want to remove
@@ -242,7 +242,7 @@ Remove an imported private key wallet.
 
 Switch between mock and private key wallet types.
 
-**Tool Name:** `mcp__wallet-agent__set_wallet_type`
+**Tool Name:** `set_wallet_type`
 
 **What you provide:**
 - Wallet type to switch to ("mock" for safe testing or "privateKey" for real transactions)

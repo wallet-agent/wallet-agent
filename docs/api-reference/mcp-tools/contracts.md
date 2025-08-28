@@ -12,7 +12,7 @@ Contract tools enable AI agents to interact with smart contracts through prompts
 
 Load Wagmi-generated contract configuration from a file.
 
-**Tool Name:** `mcp__wallet-agent__load_wagmi_config`
+**Tool Name:** `load_wagmi_config`
 
 **What you provide:**
 - File path to your Wagmi-generated configuration file
@@ -41,7 +41,7 @@ The AI agent will load the specified Wagmi configuration file and make all defin
 
 List all available contracts from the loaded configuration.
 
-**Tool Name:** `mcp__wallet-agent__list_contracts`
+**Tool Name:** `list_contracts`
 
 **Parameters:** None
 
@@ -69,7 +69,7 @@ The AI agent will display a formatted list of all loaded contracts, showing thei
 
 Read data from a smart contract function.
 
-**Tool Name:** `mcp__wallet-agent__read_contract`
+**Tool Name:** `read_contract`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -105,7 +105,7 @@ The AI agent will call the specified contract function and return the result in 
 
 Execute a state-changing function on a smart contract.
 
-**Tool Name:** `mcp__wallet-agent__write_contract`
+**Tool Name:** `write_contract`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -235,7 +235,7 @@ The AI agent will execute the contract function, wait for transaction confirmati
 
 Analyze contract capabilities and detect standard interfaces like ERC20, ERC721.
 
-**Tool Name:** `mcp__wallet-agent__analyze_wagmi_contract`
+**Tool Name:** `analyze_wagmi_contract`
 
 **What you provide:**
 - Contract name from your loaded Wagmi configuration
@@ -264,7 +264,7 @@ Analyze contract capabilities and detect standard interfaces like ERC20, ERC721.
 
 Extract the ABI for a specific contract in various formats.
 
-**Tool Name:** `mcp__wallet-agent__extract_wagmi_abi`
+**Tool Name:** `extract_wagmi_abi`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -292,7 +292,7 @@ Extract the ABI for a specific contract in various formats.
 
 Export contract ABI to a file in the specified format.
 
-**Tool Name:** `mcp__wallet-agent__export_wagmi_abi`
+**Tool Name:** `export_wagmi_abi`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -320,7 +320,7 @@ Export contract ABI to a file in the specified format.
 
 List all callable functions for a contract with filtering options.
 
-**Tool Name:** `mcp__wallet-agent__list_wagmi_functions`
+**Tool Name:** `list_wagmi_functions`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -348,7 +348,7 @@ List all callable functions for a contract with filtering options.
 
 List all events that a contract can emit.
 
-**Tool Name:** `mcp__wallet-agent__list_wagmi_events`
+**Tool Name:** `list_wagmi_events`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -376,7 +376,7 @@ List all events that a contract can emit.
 
 Simulate a contract function call without gas costs or state changes.
 
-**Tool Name:** `mcp__wallet-agent__simulate_contract_call`
+**Tool Name:** `simulate_contract_call`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -409,7 +409,7 @@ Simulate a contract function call without gas costs or state changes.
 
 Preview the complete effects of a transaction without executing it.
 
-**Tool Name:** `mcp__wallet-agent__dry_run_transaction`
+**Tool Name:** `dry_run_transaction`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -441,7 +441,7 @@ Preview the complete effects of a transaction without executing it.
 
 Generate and run comprehensive test scenarios for a specific function.
 
-**Tool Name:** `mcp__wallet-agent__test_contract_function`
+**Tool Name:** `test_contract_function`
 
 **What you provide:**
 - Contract name from your loaded configuration
@@ -471,7 +471,7 @@ Generate and run comprehensive test scenarios for a specific function.
 
 Run comprehensive tests on all functions in a contract.
 
-**Tool Name:** `mcp__wallet-agent__test_contract`
+**Tool Name:** `test_contract`
 
 **What you provide:**
 - Contract name from your loaded configuration
