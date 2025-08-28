@@ -106,6 +106,8 @@
     "test:e2e:claude:tokens": "NODE_ENV=test bun test test/e2e/claude-sdk/token-nft-scenarios.e2e.ts",
     "test:e2e:claude:chains": "NODE_ENV=test bun test test/e2e/claude-sdk/chain-scenarios.e2e.ts",
     "test:e2e:mcp": "NODE_ENV=test bun test test/e2e/mcp-direct.test.ts",
+    "test:integration:ens": "NODE_ENV=test bun test test/integration/ens-integration.test.ts",
+    "test:integration:contracts": "NODE_ENV=test bun test test/integration/contract-development-workflow.test.ts",
     "test:ci": "./scripts/test-ci.sh",
     "test:ci:separate": "./scripts/test-ci-separate.sh",
     "typecheck": "tsc --noEmit",
