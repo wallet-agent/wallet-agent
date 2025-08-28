@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "wallet-agent": {
+      "command": "bun",
+      "args": ["run", "src/index.ts"],
+      "env": {
+        "NODE_ENV": "test"
+      }
+    }
+  }
+}

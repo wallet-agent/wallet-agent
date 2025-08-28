@@ -99,6 +99,9 @@
     "test:anvil": "USE_REAL_ANVIL=true NODE_ENV=test bun test",
     "test:anvil:setup": "anvil --host 0.0.0.0 --port 8545",
     "test:anvil:tokens": "USE_REAL_ANVIL=true NODE_ENV=test bun test test/integration/handlers/token.test.ts",
+    "test:e2e:claude": "NODE_ENV=test bun test test/e2e/claude-sdk/",
+    "test:e2e:claude:docs": "NODE_ENV=test bun test test/e2e/claude-sdk/documentation-examples.e2e.ts",
+    "test:e2e:claude:wallet": "NODE_ENV=test bun test test/e2e/claude-sdk/wallet-scenarios.e2e.ts",
     "test:ci": "./scripts/test-ci.sh",
     "test:ci:separate": "./scripts/test-ci-separate.sh",
     "typecheck": "tsc --noEmit",
@@ -114,6 +117,7 @@
   },
   "simple-git-hooks-comment": "These hooks are for standalone wallet-agent repo. In monorepo context, root hooks take precedence.",
   "devDependencies": {
+    "@anthropic-ai/claude-code": "^1.0.96",
     "@biomejs/biome": "2.1.4",
     "@types/bun": "latest",
     "cross-env": "^10.0.0",
