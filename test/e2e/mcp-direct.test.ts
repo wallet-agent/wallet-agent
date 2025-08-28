@@ -2,11 +2,11 @@ import { describe, expect, test } from "bun:test"
 import { spawn } from "bun"
 
 describe("Direct MCP Server Test", () => {
-  test("should start MCP server and respond to ping", async () => {
+  test("should start MCP server and respond to initialization", async () => {
     console.log("🔍 Testing MCP server directly via stdio")
 
     const server = spawn({
-      cmd: ["/opt/homebrew/bin/bun", "run", "src/index.ts"],
+      cmd: ["bun", "run", "src/cli.ts"],
       env: { NODE_ENV: "test" },
       stdio: ["pipe", "pipe", "pipe"],
     })
