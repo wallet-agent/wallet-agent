@@ -97,19 +97,11 @@ Estimate gas for sending 1 ETH to 0x7099
 
 **Example Output:**
 ```
-⛽ Gas Estimation
-
-💰 Transaction: Send 1.0 ETH
-📍 To: 0x70997...79C8
-📦 Estimated Gas: 21,000
-
-💸 Cost Estimates:
-- Slow: 0.00021 ETH (~$0.50)
-- Standard: 0.000441 ETH (~$1.05)  
-- Fast: 0.000672 ETH (~$1.60)
-- Fastest: 0.000882 ETH (~$2.10)
-
-💡 Standard speed recommended for most transactions
+Gas Estimation:
+- Estimated Gas: 21000 units
+- Gas Price: 21.00 Gwei
+- Estimated Cost: 0.000441 ETH
+- Estimated Cost (Wei): 441000000000000
 ```
 
 
@@ -156,44 +148,9 @@ This is useful for:
 - Multi-signature wallets
 - Custom transaction metadata
 
-## Transaction History
-
-### View Recent Transactions
-
-See your transaction history:
-
-```
-Show my recent transactions
-```
-
-**Example Output:**
-```
-📜 Transaction History (Last 10)
-
-1. Sent 1.0 ETH to 0x7099...
-   ⏱️ 2 minutes ago | ✅ Confirmed
-   🔗 0xabc123...
-
-2. 📨 Received 0.5 ETH from 0x3C44...
-   ⏱️ 1 hour ago | ✅ Confirmed
-   🔗 0xdef456...
-
-3. 🔄 Contract interaction: USDC Transfer
-   ⏱️ 2 hours ago | ✅ Confirmed  
-   🔗 0x789abc...
-
-💡 Use "Get transaction details [hash]" for more info
-```
-
-### Filter Transaction History
-
-View specific types of transactions:
-
-```
-Show my outgoing transactions
-Show my incoming transactions  
-Show my failed transactions
-```
+{% hint style="info" %}
+**Transaction History**: WalletAgent currently doesn't include transaction history functionality. Use blockchain explorers or the transaction status/receipt tools to track specific transactions by hash.
+{% endhint %}
 
 ## Multi-Chain Transactions
 

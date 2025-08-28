@@ -29,17 +29,10 @@ Show me all my token balances
 
 **Example Output:**
 ```
-💰 Token Portfolio
-
-🪙 USDC: 1000.0 USDC ($1,000.00)
-🪙 USDT: 1000.0 USDT ($1,000.00)  
-🪙 WETH: 100.0 WETH ($185,000.00)
-🪙 DAI: 500.0 DAI ($500.00)
-
-📊 Total Value: ~$186,500.00
-⛓️ Chain: Anvil (31337)
-
-💡 These are test tokens with mock prices
+Token Balance:
+Amount: 1000.0 USDC
+Raw: 1000000000
+Decimals: 6
 ```
 
 ### Get Token Information
@@ -52,23 +45,10 @@ Get USDC token info
 
 **Example Output:**
 ```
-🪙 Token Information: USDC
-
-📋 Details:
-- Name: USD Coin
-- Symbol: USDC
-- Decimals: 6
-- Type: ERC-20
-
-📍 Contract: 0xA0b86991c431B...
-⛓️ Chain: Anvil (31337)
-
-🔍 Features:
-- Stablecoin pegged to USD
-- Centrally issued by Centre
-- Widely used in DeFi protocols
-
-💡 Mock version for safe testing
+Token Information:
+Name: USD Coin
+Symbol: USDC
+Decimals: 6
 ```
 
 ## Token Transfers
@@ -142,18 +122,11 @@ Approve 1000 USDC spending for 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
 
 **Example Output:**
 ```
-✅ Token Approval Successful!
-
-💰 Approved Amount: 1000.0 USDC
-📍 Token: USD Coin (USDC)  
-📍 Spender: 0x1f9840...F984
-📍 Owner: 0xf39Fd...2266
-
-🔗 Transaction: 0xdef456abc789...
-⛽ Gas Used: 46,000
-💸 Gas Fee: 0.000966 ETH
-
-💡 The spender can now transfer up to 1000.0 USDC from your wallet
+Token approval successful
+Transaction hash: 0xdef456abc789...
+Token: USDC
+Spender: 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
+Amount: 1000
 ```
 
 ### Unlimited Approval
@@ -166,17 +139,12 @@ Approve unlimited USDC spending for 0x1f9840
 
 **Example Output:**
 ```
-⚠️ Unlimited Approval Granted
-
-💰 Approved Amount: Unlimited USDC
-📍 Token: USD Coin (USDC)
-📍 Spender: 0x1f9840...F984
-
-🔗 Transaction: 0x789abc123def...
-
-⚠️ Security Notice:
-- Spender can transfer ANY amount of USDC from your wallet
-- Only approve trusted contracts
+Token approval successful
+Transaction hash: 0x789abc123def...
+Token: USDC
+Spender: 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
+Amount: max
+```
 - Consider revoking approval when done
 
 💡 Use "Revoke USDC approval for 0x1f9840" to remove this permission
@@ -186,51 +154,21 @@ Approve unlimited USDC spending for 0x1f9840
 **Security Warning**: Unlimited approvals are convenient but risky. Only grant unlimited approvals to contracts you absolutely trust, and revoke them when no longer needed.
 {% endhint %}
 
-### Check Current Approvals
-
-See how much a spender is approved to spend:
-
-```
-Check USDC approval for 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
-```
-
-**Example Output:**
-```
-🔍 Token Approval Status
-
-📍 Token: USDC
-📍 Owner: 0xf39Fd...2266  
-📍 Spender: 0x1f9840...F984
-💰 Approved Amount: 1000.0 USDC
-
-⏱️ Last Updated: 5 minutes ago
-🔗 Approval Transaction: 0xdef456...
-
-💡 Spender can transfer up to 1000.0 USDC from your wallet
-```
-
 ### Revoke Token Approvals
 
-Remove spending permission for security:
+Revoke approval by setting amount to 0:
 
 ```
-Revoke USDC approval for 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
+Approve 0 USDC spending for 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
 ```
 
 **Example Output:**
 ```
-🛡️ Token Approval Revoked
-
-📍 Token: USDC
-📍 Spender: 0x1f9840...F984  
-💰 Previous Approval: 1000.0 USDC
-💰 New Approval: 0.0 USDC
-
-🔗 Transaction: 0x123abc456def...
-⛽ Gas Used: 46,000
-
-✅ Spender can no longer access your USDC
-💡 Your tokens are now protected from this contract
+Token approval successful
+Transaction hash: 0x123abc456def...
+Token: USDC
+Spender: 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
+Amount: 0
 ```
 
 ## Multi-Chain Token Operations

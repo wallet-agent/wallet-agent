@@ -15,15 +15,10 @@ Get owner of NFT token ID 42 from MyNFTCollection
 
 **Example Output:**
 ```
-👤 NFT Ownership
-
-🎨 Collection: MyNFTCollection
-🆔 Token ID: 42
-📍 Owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-📍 Contract: 0x1234567890abcdef...
-
-✅ You own this NFT!
-💡 Ready for transfer or marketplace listing
+NFT Owner:
+Contract: MyNFTCollection
+Token ID: 42
+Owner: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 ```
 
 ### Check by Contract Address
@@ -68,19 +63,11 @@ Transfer NFT token ID 42 from MyNFTCollection to 0x70997970C51812dc3A010C7d01b50
 
 **Example Output:**
 ```
-🎨 NFT Transfer Successful!
-
-📦 Collection: MyNFTCollection
-🆔 Token ID: 42
-📍 From: 0xf39Fd...2266
-📍 To: 0x70997...79C8
-
-🔗 Transaction: 0xabc123def456...
-⛽ Gas Used: 85,000
-💸 Gas Fee: 0.001785 ETH
-
-✅ NFT ownership transferred successfully!
-💡 New owner can now manage this NFT
+NFT transfer successful
+Transaction hash: 0xabc123def456...
+NFT: MyNFTCollection
+Token ID: 42
+To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 ```
 
 ### Transfer by Contract Address
@@ -109,30 +96,10 @@ Get NFT info for token ID 42 from MyNFTCollection
 
 **Example Output:**
 ```
-🎨 NFT Information
-
-📋 Basic Details:
-- Collection: MyNFTCollection
-- Token ID: 42
-- Standard: ERC-721
-- Contract: 0x1234567890abcdef...
-
-📍 Ownership:
-- Current Owner: 0xf39Fd...2266  
-- Minted: 2024-01-15 10:30:45
-
-🔗 Metadata:
-- Name: "Awesome Digital Art #42"
-- Description: "A unique piece of digital art..."
-- Image: https://metadata.example.com/images/42.png
-- Attributes:
-  - Background: Blue
-  - Eyes: Green  
-  - Rarity: Common
-
-🌐 External Links:
-- OpenSea: https://opensea.io/assets/...
-- Website: https://mynftcollection.com/42
+NFT Information:
+Name: Awesome Digital Art #42
+Symbol: AWESOME
+Token URI: https://metadata.mynftcollection.com/42.json
 ```
 
 ### Get Collection Information
@@ -199,143 +166,17 @@ Get token URI for NFT token ID 42 from MyNFTCollection
 💡 This URI contains all the NFT's metadata and properties
 ```
 
-## NFT Marketplace Operations
+## Available NFT Operations
 
-### Approve NFT for Trading
+WalletAgent currently supports these ERC-721 NFT operations:
 
-Allow marketplace contracts to transfer your NFTs:
+1. **Transfer NFTs** - Move NFTs between addresses
+2. **Check NFT Ownership** - See who owns a specific NFT
+3. **Get NFT Information** - View NFT metadata and properties
 
-```
-Approve NFT MyNFTCollection for OpenSea marketplace
-```
-
-**Example Output:**
-```
-✅ NFT Collection Approved for Trading
-
-🎨 Collection: MyNFTCollection
-📍 Operator: OpenSea Marketplace (0x1E0049783F008A0085193E00003D00cd54003c71)
-🔑 Approval: All tokens in collection
-
-🔗 Transaction: 0xdef456abc789...
-⛽ Gas Used: 46,000
-
-💡 OpenSea can now transfer any NFT from this collection on your behalf
-⚠️ Only approve trusted marketplaces!
-```
-
-### Check NFT Approvals
-
-See which contracts can transfer your NFTs:
-
-```
-Check NFT approvals for MyNFTCollection
-```
-
-**Example Output:**
-```
-🔍 NFT Approval Status
-
-🎨 Collection: MyNFTCollection
-👤 Owner: 0xf39Fd...2266
-
-✅ Approved Operators:
-- OpenSea: 0x1E0049783F008A0085193E00003D00cd54003c71
-  - Approved: All tokens
-  - Since: 1 hour ago
-  
-- LooksRare: 0x59728544B08AB483533076417FbBB2fD0B17CE3a  
-  - Approved: All tokens
-  - Since: 2 days ago
-
-💡 These contracts can transfer your NFTs from this collection
-```
-
-### Revoke NFT Approvals
-
-Remove marketplace permissions for security:
-
-```
-Revoke NFT approval for MyNFTCollection from OpenSea
-```
-
-**Example Output:**
-```
-🛡️ NFT Approval Revoked
-
-🎨 Collection: MyNFTCollection
-📍 Operator: OpenSea (0x1E0049783F008A0085193E00003D00cd54003c71)
-🔑 Previous Status: Approved (all tokens)
-🔑 New Status: Not approved
-
-🔗 Transaction: 0x123abc456def...
-
-✅ OpenSea can no longer transfer your NFTs
-💡 Your NFTs are now protected from this marketplace
-```
-
-## Advanced NFT Operations
-
-### NFT Batch Operations (ERC-1155)
-
-For gaming and multi-token collections:
-
-```
-Get balance of token ID 1 from GameItems for my address
-Transfer 5 units of token ID 1 from GameItems to 0x7099
-```
-
-**Example Output:**
-```
-🎮 Gaming Token Balance
-
-🎯 Collection: GameItems (ERC-1155)
-🆔 Token ID: 1 (Magic Sword)
-📍 Owner: 0xf39Fd...2266
-💰 Balance: 3 items
-
-📊 Item Details:
-- Name: Magic Sword +5
-- Type: Weapon
-- Rarity: Rare
-- Transferable: Yes
-
-💡 You can transfer up to 3 of these items
-```
-
-### NFT Enumeration
-
-List NFTs owned by an address:
-
-```
-List all NFTs owned by 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 in MyNFTCollection
-```
-
-**Example Output:**
-```
-🎨 NFT Portfolio
-
-👤 Owner: 0xf39Fd...2266
-🎯 Collection: MyNFTCollection
-
-🖼️ Owned NFTs:
-1. Token ID: 42
-   - Name: "Awesome Digital Art #42"
-   - Rarity: Common
-   
-2. Token ID: 156  
-   - Name: "Awesome Digital Art #156"
-   - Rarity: Rare
-
-3. Token ID: 789
-   - Name: "Awesome Digital Art #789"  
-   - Rarity: Epic
-
-📊 Portfolio Summary:
-- Total NFTs: 3
-- Floor Value: ~2.5 ETH
-- Rarest: Epic (Token #789)
-```
+{% hint style="info" %}
+**Note**: NFT marketplace operations (approvals, batch operations, enumeration) are not currently implemented. Use contract interaction tools for advanced NFT operations.
+{% endhint %}
 
 ## Multi-Chain NFT Management
 
