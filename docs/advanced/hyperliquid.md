@@ -11,7 +11,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Account Setup
 
 **Wallet Import with MCP Tools:**
-**Developer:** "Import my Hyperliquid trading wallet using private key 0x..."
+```
+Import my Hyperliquid trading wallet using private key 0x...
+```
 
 **AI Agent Response:** Uses `hl_import_wallet` tool to:
 1. Securely import your private key for Hyperliquid operations
@@ -20,7 +22,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 4. Confirm wallet is ready for trading operations
 
 **Account Information:**
-**Developer:** "Show me my Hyperliquid account information and balances"
+```
+Show me my Hyperliquid account information and balances
+```
 
 **AI Agent Response:** Uses `hl_get_account_info` tool to display:
 - USDC balance and available margin
@@ -31,7 +35,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Initial Configuration
 
 **API Connection:**
-**Developer:** "Connect to Hyperliquid mainnet with my trading account"
+```
+Connect to Hyperliquid mainnet with my trading account
+```
 
 **AI Agent Response:** The AI will:
 - Establish connection to Hyperliquid's API
@@ -44,7 +50,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Order Placement
 
 **Market Orders:**
-**Developer:** "Buy 1 BTC perp at market price"
+```
+Buy 1 BTC perp at market price
+```
 
 **AI Agent Response:** Uses `hl_place_order` tool with market order parameters:
 1. Uses `hl_get_all_mids` to check current BTC perpetual price
@@ -53,7 +61,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 4. Reports order execution details and transaction hash
 
 **Limit Orders:**
-**Developer:** "Place a limit order to buy 0.5 ETH perp at $1800"
+```
+Place a limit order to buy 0.5 ETH perp at $1800
+```
 
 **AI Agent Response:** Uses `hl_place_order` tool with limit order parameters:
 1. Validates limit price against current market using `hl_get_all_mids`
@@ -62,7 +72,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 4. Provides order ID from response for tracking with `hl_get_open_orders`
 
 **Advanced Order Types:**
-**Developer:** "Set up a stop-loss at $1750 for my ETH position"
+```
+Set up a stop-loss at $1750 for my ETH position
+```
 
 **AI Agent Response:** The AI will:
 - Analyze your current ETH position
@@ -73,7 +85,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Position Management
 
 **Position Monitoring:**
-**Developer:** "Show me all my current positions and their PnL"
+```
+Show me all my current positions and their PnL
+```
 
 **AI Agent Response:** Uses `hl_get_positions` tool to display:
 - All open positions with entry prices and current sizes
@@ -82,7 +96,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - Overall portfolio performance and risk metrics
 
 **Position Adjustment:**
-**Developer:** "Reduce my BTC position by half"
+```
+Reduce my BTC position by half
+```
 
 **AI Agent Response:** Uses multiple MCP tools for position reduction:
 1. Uses `hl_get_positions` to calculate current BTC position size
@@ -91,7 +107,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 4. Uses `hl_get_user_fills` to report execution details and realized PnL
 
 **Position Closing:**
-**Developer:** "Close my entire SOL position at market"
+```
+Close my entire SOL position at market
+```
 
 **AI Agent Response:** The AI will:
 1. Identify current SOL position details
@@ -102,7 +120,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Order Management
 
 **Order Status:**
-**Developer:** "Check the status of my pending orders"
+```
+Check the status of my pending orders
+```
 
 **AI Agent Response:** The AI will show:
 - All open limit orders with prices and sizes
@@ -111,7 +131,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - Estimated time to fill based on market conditions
 
 **Order Modification:**
-**Developer:** "Change my ETH limit order price to $1820"
+```
+Change my ETH limit order price to $1820
+```
 
 **AI Agent Response:** The AI will:
 1. Cancel the existing order
@@ -120,7 +142,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 4. Provide new order tracking information
 
 **Order Cancellation:**
-**Developer:** "Cancel all my open orders for BTC"
+```
+Cancel all my open orders for BTC
+```
 
 **AI Agent Response:** The AI will:
 1. Identify all BTC-related open orders
@@ -133,7 +157,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Performance Tracking
 
 **PnL Analysis:**
-**Developer:** "Show me my trading performance for the last 30 days"
+```
+Show me my trading performance for the last 30 days
+```
 
 **AI Agent Response:** The AI will provide:
 - Total realized and unrealized PnL
@@ -142,7 +168,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - Daily PnL chart and trends
 
 **Risk Metrics:**
-**Developer:** "Analyze my current portfolio risk exposure"
+```
+Analyze my current portfolio risk exposure
+```
 
 **AI Agent Response:** The AI will calculate:
 - Total portfolio delta and exposure
@@ -153,7 +181,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Trade History
 
 **Transaction History:**
-**Developer:** "Show me all my trades from yesterday"
+```
+Show me all my trades from yesterday
+```
 
 **AI Agent Response:** The AI will display:
 - All executed trades with timestamps
@@ -162,7 +192,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - Trading fees and costs
 
 **Fill Analysis:**
-**Developer:** "Analyze my order fill rates and slippage"
+```
+Analyze my order fill rates and slippage
+```
 
 **AI Agent Response:** The AI will provide:
 - Fill rate statistics by order type
@@ -175,7 +207,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Multi-Asset Strategies
 
 **Portfolio Hedging:**
-**Developer:** "Help me hedge my long ETH position with short BTC"
+```
+Help me hedge my long ETH position with short BTC
+```
 
 **AI Agent Response:** The AI will:
 1. Analyze correlation between ETH and BTC
@@ -184,7 +218,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 4. Execute hedging strategy if approved
 
 **Pair Trading:**
-**Developer:** "Set up a pairs trade between ETH and SOL"
+```
+Set up a pairs trade between ETH and SOL
+```
 
 **AI Agent Response:** The AI will:
 - Analyze historical price relationship
@@ -195,7 +231,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Risk Management
 
 **Position Sizing:**
-**Developer:** "Calculate optimal position size for 2% portfolio risk on BTC trade"
+```
+Calculate optimal position size for 2% portfolio risk on BTC trade
+```
 
 **AI Agent Response:** The AI will:
 1. Analyze current portfolio value
@@ -204,7 +242,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 4. Recommend leverage and margin requirements
 
 **Automated Risk Controls:**
-**Developer:** "Set up automatic position limits and stop-losses"
+```
+Set up automatic position limits and stop-losses
+```
 
 **AI Agent Response:** The AI will configure:
 - Maximum position size per asset
@@ -217,7 +257,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Market Data
 
 **Price Information:**
-**Developer:** "What's the current BTC perpetual price and funding rate?"
+```
+What's the current BTC perpetual price and funding rate?
+```
 
 **AI Agent Response:** The AI will provide:
 - Current mark price and index price
@@ -226,7 +268,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - Recent price action and volatility
 
 **Order Book Analysis:**
-**Developer:** "Show me the ETH order book depth and liquidity"
+```
+Show me the ETH order book depth and liquidity
+```
 
 **AI Agent Response:** The AI will display:
 - Current bid/ask spread
@@ -237,7 +281,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Trading Opportunities
 
 **Market Scanning:**
-**Developer:** "Scan for high-volume trading opportunities across all perpetuals"
+```
+Scan for high-volume trading opportunities across all perpetuals
+```
 
 **AI Agent Response:** The AI will identify:
 - Assets with unusual volume or volatility
@@ -250,7 +296,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Common Issues
 
 **Connection Problems:**
-**Developer:** "I can't connect to Hyperliquid or my orders aren't going through"
+```
+I can't connect to Hyperliquid or my orders aren't going through
+```
 
 **AI Agent Response:** The AI will diagnose:
 - API connectivity and authentication status
@@ -259,7 +307,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - Hyperliquid system status
 
 **Trading Errors:**
-**Developer:** "My trade was rejected - why did this happen?"
+```
+My trade was rejected - why did this happen?
+```
 
 **AI Agent Response:** The AI will check:
 - Insufficient margin or balance
@@ -268,7 +318,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - Order parameters and validation
 
 **Position Discrepancies:**
-**Developer:** "My position size doesn't match what I expected"
+```
+My position size doesn't match what I expected
+```
 
 **AI Agent Response:** The AI will verify:
 - Recent trade execution history
@@ -279,7 +331,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Performance Issues
 
 **Latency Problems:**
-**Developer:** "My orders are executing slower than expected"
+```
+My orders are executing slower than expected
+```
 
 **AI Agent Response:** The AI will analyze:
 - Network latency to Hyperliquid servers
@@ -288,7 +342,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 - System performance and optimization
 
 **Slippage Issues:**
-**Developer:** "I'm experiencing high slippage on my trades"
+```
+I'm experiencing high slippage on my trades
+```
 
 **AI Agent Response:** The AI will review:
 - Order sizing relative to market depth
@@ -339,7 +395,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### DeFi Yield Strategies
 
 **Yield Arbitrage:**
-**Developer:** "Help me arbitrage funding rates between Hyperliquid and other platforms"
+```
+Help me arbitrage funding rates between Hyperliquid and other platforms
+```
 
 **AI Agent Response:** The AI will:
 - Compare funding rates across platforms
@@ -350,7 +408,9 @@ Hyperliquid is a high-performance decentralized exchange focused on perpetual fu
 ### Portfolio Management
 
 **Automated Rebalancing:**
-**Developer:** "Set up automated portfolio rebalancing based on my risk targets"
+```
+Set up automated portfolio rebalancing based on my risk targets
+```
 
 **AI Agent Response:** The AI will:
 - Define target allocations per asset

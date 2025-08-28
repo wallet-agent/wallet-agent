@@ -1,19 +1,8 @@
 # Security
 
-Learn essential security practices for safe Web3 operations, private key management, and protecting your assets when using WalletAgent.
+Security practices for private key management and safe Web3 operations with WalletAgent.
 
-## Security Fundamentals
-
-### Web3 Security Principles
-
-Web3 security is **your responsibility**. Unlike traditional banking, there's no central authority to reverse fraudulent transactions or recover lost funds. Key principles:
-
-- **Private Keys = Complete Control** - Whoever has your private key owns your assets
-- **Transactions are Irreversible** - No "undo" or "chargeback" options
-- **Smart Contracts are Immutable** - Code flaws can be permanent
-- **You are the Bank** - Complete responsibility for asset security
-
-### WalletAgent Security Features
+## WalletAgent Security Features
 
 WalletAgent includes multiple security layers:
 

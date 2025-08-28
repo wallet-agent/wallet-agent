@@ -16,13 +16,12 @@ Get wallet info
 
 **Expected Output:**
 ```
-🔧 Wallet Configuration
-- Type: Mock (safe for testing)  
-- Available Accounts: 3
-- Current Chain: Anvil (Chain ID: 31337)
-- Native Currency: ETH
-
-💡 You're in mock mode - perfect for learning!
+Current wallet configuration:
+- Type: mock
+- Available addresses: 3
+  - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+  - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
 ```
 
 {% hint style="info" %}
@@ -39,13 +38,8 @@ Connect to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
 **Expected Output:**
 ```
-✅ Connected to wallet successfully!
-
-📍 Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-⛓️ Chain: Anvil (Chain ID: 31337)  
-💰 Balance: 10000.0 ETH
-
-Ready for Web3 operations.
+Connected to wallet: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Chain: 31337
 ```
 
 **What just happened?**
@@ -63,9 +57,8 @@ Check my balance
 
 **Expected Output:**
 ```
-💰 Balance: 10000.0 ETH
-📍 Address: 0xf39Fd...2266
-⛓️ Chain: Anvil (31337)
+Balance: 10000.0 ETH
+Raw: 10000000000000000000000 wei
 ```
 
 ### Step 4: Send Your First Transaction
@@ -78,15 +71,8 @@ Send 1 ETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **Expected Output:**
 ```
-Transaction Sent Successfully
-
-📍 From: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-📍 To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
-💰 Amount: 1.0 ETH
-⛽ Gas Used: 21000
-🔗 Hash: 0xabc123...
-
-✅ Transaction confirmed in block 1234
+Transaction sent successfully
+Hash: 0x1234567890abcdef...
 ```
 
 **Congratulations.** You just sent your first Web3 transaction using prompts.
@@ -101,42 +87,14 @@ Switch to Polygon
 
 **Expected Output:**
 ```
-🔄 Switched to Polygon successfully!
-
-⛓️ Chain: Polygon (Chain ID: 137)
-💰 Balance: 10000.0 POL
-🌐 RPC: https://polygon-rpc.com
-
-💡 Native currency is now POL instead of ETH
+Switched to Polygon (Chain ID: 137)
 ```
 
-## Understanding the Commands
+## Key Features
 
-Let's break down what makes WalletAgent special:
-
-### Prompt Interface
-
-Instead of complex function calls, you use everyday language:
-
-```
-❌ Complex: Technical function calls with parameters
-✅ Simple: "Send 100 USDC to my friend's address"
-```
-
-### Intelligent Context
-
-WalletAgent remembers your state:
-- Current wallet connection
-- Active blockchain network  
-- Recent transactions
-- Available tokens and contracts
-
-### Rich Feedback  
-
-Every operation provides detailed, helpful information:
-- Transaction hashes and block confirmations
-- Gas costs and optimization tips
-- Error explanations with debugging help
+- **Natural Language Interface**: Use prompts instead of function calls
+- **State Management**: Maintains wallet, chain, and contract context  
+- **Comprehensive Feedback**: Transaction details, gas costs, and error diagnostics
 - Next step suggestions
 
 ## Exploring Token Operations
@@ -154,13 +112,11 @@ Get my USDC balance
 ```
 
 **Expected Output:**
-```  
-💰 Token Balance: 1000.0 USDC
-📍 Token: USDC (0x1234...)
-📍 Wallet: 0xf39Fd...2266
-⛓️ Chain: Anvil (31337)
-
-💡 USDC is a mock token for testing
+```
+Token Balance:
+Amount: 1000.0 USDC
+Raw: 1000000000
+Decimals: 6
 ```
 
 ### Transfer Tokens
@@ -171,15 +127,11 @@ Transfer 100 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **Expected Output:**
 ```
-🎯 Token Transfer Successful!
-
-📍 Token: USDC
-💰 Amount: 100.0 USDC
-📍 From: 0xf39Fd...2266  
-📍 To: 0x70997...79C8
-🔗 Hash: 0xdef456...
-
-✅ Transfer confirmed!
+Token transfer successful
+Transaction hash: 0xdef456789abcdef...
+Token: USDC
+To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+Amount: 100.0
 ```
 
 ## Smart Contract Interaction
@@ -199,20 +151,15 @@ Load my contract configuration for AI interactions
 Test contract functions without spending gas:
 
 ```
-Simulate balanceOf function for USDC with account 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Read USDC contract balanceOf function with account 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 ```
 
 **Expected Output:**
 ```
-🧪 Contract Simulation: USDC.balanceOf()
-
-✅ Status: Success
-📤 Return Value: 900000000 (900.0 USDC)
-⛽ Estimated Gas: 0 (simulation)
-
-💡 Next Steps:
-- Function call would succeed if executed
-- No gas cost for simulations
+Contract read successful:
+Result: 900000000
+Contract: USDC
+Function: balanceOf
 ```
 
 This is **very useful** for development - you can test any contract function without spending gas or affecting blockchain state.
@@ -227,16 +174,8 @@ Import my Hyperliquid wallet using private key
 
 **Expected Output:**
 ```
-✅ Hyperliquid wallet imported successfully!
-
-📍 Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-🏛️ Exchange: Hyperliquid (Testnet)
-💼 Ready for perpetual futures trading
-
-Next steps:
-- Check account balance and positions
-- View current market prices  
-- Place your first trading order
+Hyperliquid wallet imported successfully
+Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 ```
 
 **Try Some Trading Commands:**

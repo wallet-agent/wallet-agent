@@ -1,25 +1,7 @@
 # NFT Operations
 
-Learn how to manage Non-Fungible Tokens (NFTs) including transfers, ownership verification, and metadata retrieval using WalletAgent.
+ERC-721 and ERC-1155 NFT management including transfers, ownership verification, and metadata retrieval.
 
-## Understanding NFTs
-
-### What are NFTs?
-
-Non-Fungible Tokens (NFTs) are unique digital assets on the blockchain. Unlike ERC-20 tokens which are interchangeable, each NFT has:
-
-- **Unique Token ID** - Distinguishes it from other NFTs
-- **Ownership Record** - Stored on blockchain
-- **Metadata** - Description, image, properties
-- **Smart Contract** - Defines behavior and rules
-
-### Common NFT Standards
-
-| Standard | Description | Use Cases |
-|----------|-------------|-----------|
-| **ERC-721** | Single unique tokens | Art, collectibles, domain names |
-| **ERC-1155** | Multi-token standard | Gaming items, batch operations |
-| **ERC-998** | Composable NFTs | NFTs that can own other tokens |
 
 ## Checking NFT Ownership
 

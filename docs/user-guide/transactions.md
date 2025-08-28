@@ -14,16 +14,8 @@ Send 1 ETH to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **Example Output:**
 ```
-Transaction Sent Successfully
-
-📍 From: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-📍 To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8  
-💰 Amount: 1.0 ETH
-⛽ Gas Used: 21,000
-🔗 Hash: 0xabc123def456...
-
-✅ Transaction confirmed in block 1234
-💡 Transaction completed successfully!
+Transaction sent successfully
+Hash: 0xabc123def456789abcdef...
 ```
 
 ### Send to Short Address
@@ -62,19 +54,13 @@ Get transaction status 0xabc123def456...
 
 **Example Output:**
 ```
-📊 Transaction Status
-
-🔗 Hash: 0xabc123def456...
-✅ Status: Confirmed (Success)
-📦 Block: 1234 (15 confirmations)
-⛽ Gas: 21,000 used / 21,000 limit
-💰 Fee: 0.000441 ETH
-
-📍 From: 0xf39Fd...2266
-📍 To: 0x70997...79C8
-💸 Value: 1.0 ETH
-
-⏱️ Confirmed: 2 minutes ago
+Transaction Status:
+- Hash: 0xabc123def456...
+- Status: confirmed
+- From: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+- To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+- Value: 1.0 ETH
+- Block Number: 1234
 ```
 
 ### Get Transaction Receipt
@@ -87,25 +73,16 @@ Get transaction receipt 0xabc123def456...
 
 **Example Output:**
 ```
-📋 Transaction Receipt
-
-🔗 Hash: 0xabc123def456...
-📦 Block: 1234
-📍 Position: 0 (first transaction in block)
-✅ Status: Success
-
-⛽ Gas Details:
-- Used: 21,000
-- Limit: 21,000  
-- Price: 21 gwei
-- Total Fee: 0.000441 ETH
-
-📊 Network:
-- Chain: Anvil (31337)
-- Confirmations: 15
-- Timestamp: 2024-01-15 10:30:45
-
-💡 Transaction executed successfully with no reverts
+Transaction Receipt:
+- Hash: 0xabc123def456...
+- Status: success
+- Block Number: 1234
+- From: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+- To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+- Gas Used: 21000 units
+- Effective Gas Price: 21.0 Gwei
+- Total Cost: 0.000441 ETH
+- Logs: 0 events
 ```
 
 ## Gas Management
@@ -135,20 +112,6 @@ Estimate gas for sending 1 ETH to 0x7099
 💡 Standard speed recommended for most transactions
 ```
 
-### Understanding Gas
-
-**Gas Limit**: Maximum gas willing to spend
-**Gas Price**: Price per gas unit (in gwei)
-**Gas Used**: Actual gas consumed by transaction
-**Total Fee**: Gas Used × Gas Price
-
-{% hint style="info" %}
-**Gas Tips**: 
-- Simple ETH transfers use exactly 21,000 gas
-- Smart contract interactions use variable gas
-- Higher gas price = faster confirmation
-- Unused gas is automatically refunded
-{% endhint %}
 
 ## Advanced Transaction Features
 

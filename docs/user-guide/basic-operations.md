@@ -14,13 +14,12 @@ Get wallet info
 
 **Example Output:**
 ```
-🔧 Wallet Configuration
-- Type: Mock (safe for testing)
-- Available Accounts: 3
-- Current Chain: Anvil (Chain ID: 31337)
-- Native Currency: ETH
-
-💡 You're in mock mode - perfect for learning!
+Current wallet configuration:
+- Type: mock
+- Available addresses: 3
+  - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+  - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
 ```
 
 This command shows:
@@ -39,21 +38,10 @@ Get accounts
 
 **Example Output:**
 ```
-📋 Available Mock Accounts
-
-1. 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-   💰 Balance: 10000.0 ETH
-   📝 Label: Main test wallet
-
-2. 0x70997970C51812dc3A010C7d01b50e0d17dc79C8  
-   💰 Balance: 10000.0 ETH
-   📝 Label: Secondary wallet
-
-3. 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
-   💰 Balance: 10000.0 ETH
-   📝 Label: Third wallet
-
-💡 These are test wallets with unlimited funds for safe learning!
+Available mock accounts:
+0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
 ```
 
 ## Wallet Connection
@@ -68,14 +56,8 @@ Connect to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
 **Example Output:**
 ```
-✅ Connected to wallet successfully!
-
-📍 Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-⛓️ Chain: Anvil (Chain ID: 31337)
-💰 Balance: 10000.0 ETH
-🎯 Status: Ready for transactions
-
-You can now send transactions and interact with contracts.
+Connected to wallet: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Chain: 31337
 ```
 
 ### Connect Using Short Address
@@ -98,14 +80,9 @@ Get current account
 
 **Example Output:**
 ```
-👤 Current Account
-
-📍 Address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-💰 Balance: 9999.0 ETH
-⛓️ Chain: Anvil (31337)
-🕒 Connected: 5 minutes ago
-
-✅ Wallet is connected and ready for operations
+Connected: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Chain ID: 31337
+Connector: Mock Connector
 ```
 
 ## Balance Checking
@@ -120,13 +97,8 @@ Check my balance
 
 **Example Output:**
 ```
-💰 Balance: 9999.0 ETH
-
-📍 Address: 0xf39Fd...2266
-⛓️ Chain: Anvil (31337)
-📊 Last Updated: Just now
-
-💡 This is your native token balance (ETH on Ethereum, POL on Polygon)
+Balance: 10000.0 ETH
+Raw: 10000000000000000000000 wei
 ```
 
 ### Check Specific Address Balance
@@ -139,13 +111,8 @@ Get balance of 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **Example Output:**
 ```
-💰 Balance: 10001.0 ETH
-
-📍 Address: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
-⛓️ Chain: Anvil (31337)
-📊 Last Updated: Just now
-
-ℹ️ This wallet received 1.0 ETH recently
+Balance: 10000.0 ETH
+Raw: 10000000000000000000000 wei
 ```
 
 ## Disconnecting Wallets
@@ -160,13 +127,7 @@ Disconnect wallet
 
 **Example Output:**
 ```
-🔌 Wallet Disconnected Successfully
-
-📍 Previous Address: 0xf39Fd...2266
-⛓️ Chain: Anvil (31337)
-🛡️ Session Cleared: All sensitive data removed
-
-💡 Connect to another wallet whenever you're ready!
+Wallet disconnected
 ```
 
 After disconnecting:
@@ -174,46 +135,12 @@ After disconnecting:
 - You can't send transactions until reconnecting
 - All session data is cleared for security
 
-## Understanding Mock Wallets
+## Mock Wallets
 
-### What Are Mock Wallets?
-
-Mock wallets are **completely safe** test accounts that:
-- ✅ Have unlimited test ETH and tokens
-- ✅ Work on all supported test networks
-- ✅ Never risk real funds
-- ✅ Reset to original state regularly
-- ❌ Can't interact with real mainnet
-
-### Mock Wallet Features
-
-**Unlimited Funds**: Each wallet starts with 10,000 ETH and regenerates automatically.
-
-**Pre-configured Tokens**: Mock wallets include test versions of popular tokens:
-- USDC (1000.0 balance)
-- USDT (1000.0 balance)  
-- WETH (100.0 balance)
-- DAI (500.0 balance)
-
-**All Networks**: Mock wallets work across all supported chains with appropriate native currencies.
-
-### When to Use Mock vs Real Wallets
-
-**Use Mock Wallets For:**
-- ✅ Learning WalletAgent commands
-- ✅ Testing smart contract interactions
-- ✅ Experimenting with DeFi protocols
-- ✅ Training and education
-- ✅ Development and debugging
-
-**Use Real Wallets For:**
-- 🔄 Testnet development and integration
-- 🔄 Pre-production testing
-- 🔄 Mainnet preparation (testnets only!)
-- ❌ **Never for mainnet with real funds**
+Mock wallets provide safe testing with pre-funded accounts (10,000 ETH) and test tokens (USDC, USDT, WETH, DAI). Use for development, testing, and contract interactions without risk.
 
 {% hint style="warning" %}
-**Mainnet Warning**: WalletAgent is beta software. Never use real wallets with mainnet funds or valuable assets.
+**Beta Software**: Use only on testnets or local development environments.
 {% endhint %}
 
 ## Common Operations

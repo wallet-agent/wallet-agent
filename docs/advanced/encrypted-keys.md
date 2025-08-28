@@ -59,7 +59,9 @@ WalletAgent provides a complete encrypted key management system with 9 specializ
 The most common method for encrypted key storage:
 
 **Setup Process:**
-**Developer:** "Set up passphrase-encrypted storage for my private keys"
+```
+Set up passphrase-encrypted storage for my private keys
+```
 
 **AI Agent Response:** The AI will guide through:
 1. Choose a strong passphrase for key encryption
@@ -68,7 +70,9 @@ The most common method for encrypted key storage:
 4. Configure decryption process for operations
 
 **Usage Workflow:**
-**Developer:** "Import my encrypted private key with passphrase authentication"
+```
+Import my encrypted private key with passphrase authentication
+```
 
 **AI Agent Response:** The AI will:
 1. Prompt for the encrypted key location
@@ -81,7 +85,9 @@ The most common method for encrypted key storage:
 For enhanced security with encrypted key files:
 
 **Setup Process:**
-**Developer:** "Create an encrypted key file for production deployment"
+```
+Create an encrypted key file for production deployment
+```
 
 **AI Agent Response:** The AI will help:
 1. Generate or encrypt existing private key
@@ -90,7 +96,9 @@ For enhanced security with encrypted key files:
 4. Document recovery and backup procedures
 
 **File Management:**
-**Developer:** "Load my encrypted key from secure file storage"
+```
+Load my encrypted key from secure file storage
+```
 
 **AI Agent Response:** The AI will:
 1. Locate and verify encrypted key file
@@ -103,7 +111,9 @@ For enhanced security with encrypted key files:
 ### Passphrase Management
 
 **Strong Passphrase Creation:**
-**Developer:** "Help me create a secure passphrase for key encryption"
+```
+Help me create a secure passphrase for key encryption
+```
 
 **AI Agent Response:** The AI will recommend:
 - Use long, complex passphrases (20+ characters)
@@ -112,7 +122,9 @@ For enhanced security with encrypted key files:
 - Consider passphrase generators for maximum security
 
 **Passphrase Storage:**
-**Developer:** "What's the best way to manage my encryption passphrases?"
+```
+What's the best way to manage my encryption passphrases?
+```
 
 **AI Agent Response:** The AI will suggest:
 - Use dedicated password managers
@@ -174,7 +186,9 @@ chmod 600 /secure/path/prod-key
 ```
 
 **Access Control:**
-**Developer:** "Implement proper access controls for encrypted key operations"
+```
+Implement proper access controls for encrypted key operations
+```
 
 **AI Agent Response:** The AI will help with:
 - Role-based access to encrypted keys
@@ -189,7 +203,9 @@ chmod 600 /secure/path/prod-key
 For maximum security in enterprise environments:
 
 **HSM Integration:**
-**Developer:** "Integrate with hardware security modules for key protection"
+```
+Integrate with hardware security modules for key protection
+```
 
 **AI Agent Response:** The AI will guide through:
 1. HSM compatibility and requirements

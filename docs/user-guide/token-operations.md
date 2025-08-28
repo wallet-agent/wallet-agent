@@ -1,27 +1,7 @@
 # Token Operations
 
-Master ERC-20 token operations including transfers, approvals, balance management, and token information retrieval.
+ERC-20 token operations: transfers, approvals, balance management, and token information retrieval.
 
-## Token Basics
-
-### Understanding ERC-20 Tokens
-
-ERC-20 tokens are smart contracts that follow a standard interface, allowing them to be used across different applications. Popular examples include:
-
-- **USDC** - USD Coin (stablecoin)
-- **USDT** - Tether (stablecoin)  
-- **WETH** - Wrapped Ether
-- **DAI** - Dai stablecoin
-- **UNI** - Uniswap token
-
-### Token vs ETH
-
-| Aspect | ETH (Native) | ERC-20 Tokens |
-|--------|--------------|---------------|
-| Type | Native blockchain currency | Smart contract tokens |
-| Gas | Used to pay for gas | Requires ETH for gas |
-| Transfer | Simple value transfer | Smart contract interaction |
-| Decimals | Always 18 | Varies (usually 18, sometimes 6) |
 
 ## Checking Token Balances
 
@@ -35,15 +15,10 @@ Get my USDC balance
 
 **Example Output:**
 ```
-💰 Token Balance: 1000.0 USDC
-
-📍 Token: USD Coin (USDC)
-📍 Contract: 0xA0b86991c431B...
-📍 Wallet: 0xf39Fd...2266
-⛓️ Chain: Anvil (31337)
-📊 Decimals: 6
-
-💡 This is a mock token with unlimited supply for testing
+Token Balance:
+Amount: 1000.0 USDC
+Raw: 1000000000
+Decimals: 6
 ```
 
 ### Check Multiple Token Balances
@@ -108,19 +83,11 @@ Transfer 100 USDC to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 
 **Example Output:**
 ```
-🎯 Token Transfer Successful!
-
-💰 Amount: 100.0 USDC
-📍 Token: USD Coin (USDC)
-📍 From: 0xf39Fd...2266
-📍 To: 0x70997...79C8
-
-🔗 Transaction: 0xabc123def456...
-⛽ Gas Used: 65,000
-💸 Gas Fee: 0.001365 ETH
-
-✅ Transfer confirmed in block 1235
-💡 Recipient balance updated successfully
+Token transfer successful
+Transaction hash: 0xabc123def456...
+Token: USDC
+To: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+Amount: 100.0
 ```
 
 ### Transfer Using Token Address

@@ -14,11 +14,17 @@ WalletAgent enables AI-driven smart contract interaction through:
 
 ### 1. Generate Contract ABIs
 
-**Prompt Examples:**
-- "Set up Wagmi CLI for contract ABI generation in my project"
-- "Create a wagmi configuration file for my Counter contract deployed at address 0x5FbDB2315678afecb367f032d93F642f64180aa3 on Anvil"
-- "Generate TypeScript types from my smart contracts using Wagmi"
-- "Help me configure Wagmi to work with Foundry deployments"
+```
+Set up Wagmi CLI for contract ABI generation in my project
+```
+
+```
+Create a wagmi configuration file for my Counter contract deployed at address 0x5FbDB2315678afecb367f032d93F642f64180aa3 on Anvil
+```
+
+```
+Generate TypeScript types from my smart contracts using Wagmi
+```
 
 **What the AI agent will do:**
 - Guide you through installing Wagmi CLI for contract configuration
@@ -28,21 +34,36 @@ WalletAgent enables AI-driven smart contract interaction through:
 
 ### 2. Load Contract Configuration
 
-**Prompt Examples:**
-- "Load my Wagmi-generated contracts into the wallet agent"
-- "Show me all the contracts available in my current configuration"
-- "Import the contract ABIs from my generated.ts file"
-- "List all the contracts and their deployed addresses"
+```
+Load my Wagmi-generated contracts into the wallet agent
+```
+
+```
+Show me all the contracts available in my current configuration
+```
+
+```
+Import the contract ABIs from my generated.ts file
+```
 
 ## Contract Interaction Patterns
 
 ### Reading from Contracts
 
-**Prompt Examples:**
-- "Read the current number from my Counter contract"
-- "Get the balance of address 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532 from my ERC20Token contract"
-- "Call the totalSupply function on my token contract"
-- "Check the owner of token ID 123 in my NFT contract"
+```
+Read the current number from my Counter contract
+```
+
+```
+Get the balance of address 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532 from my ERC20Token contract
+```
+
+```
+Call the totalSupply function on my token contract
+```
+```
+Check the owner of token ID 123 in my NFT contract
+```
 
 **What the AI agent will do:**
 - Call the specified read function on your contract
@@ -52,12 +73,17 @@ WalletAgent enables AI-driven smart contract interaction through:
 
 ### Writing to Contracts
 
-**Prompt Examples:**
-- "Increment the counter in my Counter contract"
-- "Deposit 0.1 ETH into my PayableContract with amount parameter 1000"
-- "Transfer 100 tokens to address 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532"
-- "Mint NFT token ID 456 to my wallet address"
-- "Approve the spender address to use 1000 of my tokens"
+```
+Increment the counter in my Counter contract
+```
+
+```
+Deposit 0.1 ETH into my PayableContract with amount parameter 1000
+```
+
+```
+Transfer 100 tokens to address 0x742d35Cc6634C0532925a3b8D7389C4e0C5F0532
+```
 
 **What the AI agent will do:**
 - Execute the contract write function with your parameters
