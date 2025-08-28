@@ -1,8 +1,8 @@
-import { describe, test, expect, beforeEach } from "bun:test"
-import { TestContainer } from "../../src/test-container.js"
+import { beforeEach, describe, expect, test } from "bun:test"
+import { existsSync, unlinkSync, writeFileSync } from "node:fs"
+import { join } from "node:path"
 import type { McpServer } from "../../src/server.js"
-import { writeFileSync, unlinkSync, existsSync } from "fs"
-import { join } from "path"
+import { TestContainer } from "../../src/test-container.js"
 
 describe("Contract Development Workflow Integration Test", () => {
   let testContainer: TestContainer
@@ -20,48 +20,48 @@ describe("Contract Development Workflow Integration Test", () => {
             name: "name",
             inputs: [],
             outputs: [{ type: "string", name: "" }],
-            stateMutability: "view"
+            stateMutability: "view",
           },
           {
             type: "function",
             name: "symbol",
             inputs: [],
             outputs: [{ type: "string", name: "" }],
-            stateMutability: "view"
+            stateMutability: "view",
           },
           {
             type: "function",
             name: "totalSupply",
             inputs: [],
             outputs: [{ type: "uint256", name: "" }],
-            stateMutability: "view"
+            stateMutability: "view",
           },
           {
             type: "function",
             name: "balanceOf",
             inputs: [{ type: "address", name: "account" }],
             outputs: [{ type: "uint256", name: "" }],
-            stateMutability: "view"
+            stateMutability: "view",
           },
           {
             type: "function",
             name: "transfer",
             inputs: [
               { type: "address", name: "to" },
-              { type: "uint256", name: "amount" }
+              { type: "uint256", name: "amount" },
             ],
             outputs: [{ type: "bool", name: "" }],
-            stateMutability: "nonpayable"
+            stateMutability: "nonpayable",
           },
           {
             type: "function",
             name: "approve",
             inputs: [
               { type: "address", name: "spender" },
-              { type: "uint256", name: "amount" }
+              { type: "uint256", name: "amount" },
             ],
             outputs: [{ type: "bool", name: "" }],
-            stateMutability: "nonpayable"
+            stateMutability: "nonpayable",
           },
           {
             type: "event",
@@ -69,8 +69,8 @@ describe("Contract Development Workflow Integration Test", () => {
             inputs: [
               { type: "address", name: "from", indexed: true },
               { type: "address", name: "to", indexed: true },
-              { type: "uint256", name: "value", indexed: false }
-            ]
+              { type: "uint256", name: "value", indexed: false },
+            ],
           },
           {
             type: "event",
@@ -78,10 +78,10 @@ describe("Contract Development Workflow Integration Test", () => {
             inputs: [
               { type: "address", name: "owner", indexed: true },
               { type: "address", name: "spender", indexed: true },
-              { type: "uint256", name: "value", indexed: false }
-            ]
-          }
-        ]
+              { type: "uint256", name: "value", indexed: false },
+            ],
+          },
+        ],
       },
       Counter: {
         address: "0x0987654321098765432109876543210987654321",
@@ -91,38 +91,38 @@ describe("Contract Development Workflow Integration Test", () => {
             name: "count",
             inputs: [],
             outputs: [{ type: "uint256", name: "" }],
-            stateMutability: "view"
+            stateMutability: "view",
           },
           {
             type: "function",
             name: "increment",
             inputs: [],
             outputs: [],
-            stateMutability: "nonpayable"
+            stateMutability: "nonpayable",
           },
           {
             type: "function",
             name: "decrement",
             inputs: [],
             outputs: [],
-            stateMutability: "nonpayable"
+            stateMutability: "nonpayable",
           },
           {
             type: "function",
             name: "incrementBy",
             inputs: [{ type: "uint256", name: "value" }],
             outputs: [],
-            stateMutability: "nonpayable"
-          }
-        ]
-      }
-    }
+            stateMutability: "nonpayable",
+          },
+        ],
+      },
+    },
   }
 
   beforeEach(() => {
     testContainer = TestContainer.createForTest({})
     server = testContainer.get("server")
-    
+
     // Create temporary Wagmi config file
     tempWagmiFile = join(process.cwd(), "test-wagmi-config.json")
     writeFileSync(tempWagmiFile, JSON.stringify(sampleWagmiConfig, null, 2))
@@ -255,7 +255,7 @@ describe("Contract Development Workflow Integration Test", () => {
       await server.callTool("load_wagmi_config", {
         filePath: tempWagmiFile,
       })
-      
+
       await server.callTool("connect_wallet", {
         address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       })
@@ -320,7 +320,7 @@ describe("Contract Development Workflow Integration Test", () => {
       await server.callTool("load_wagmi_config", {
         filePath: tempWagmiFile,
       })
-      
+
       await server.callTool("connect_wallet", {
         address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       })

@@ -1,6 +1,6 @@
-import { describe, test, expect, beforeEach } from "bun:test"
-import { TestContainer } from "../../src/test-container.js"
+import { beforeEach, describe, expect, test } from "bun:test"
 import type { McpServer } from "../../src/server.js"
+import { TestContainer } from "../../src/test-container.js"
 
 describe("ENS Integration Test", () => {
   let testContainer: TestContainer
@@ -70,10 +70,11 @@ describe("ENS Integration Test", () => {
 
       const resolvedAddress = ensResult.content[0].text.match(/0x[a-fA-F0-9]{40}/)?.[0]
       expect(resolvedAddress).toBeDefined()
+      if (!resolvedAddress) return
 
       // Then try to connect using the resolved address
       const connectResult = await server.callTool("connect_wallet", {
-        address: resolvedAddress!,
+        address: resolvedAddress,
       })
 
       expect(connectResult.isError).toBe(false)
@@ -104,10 +105,11 @@ describe("ENS Integration Test", () => {
 
       const resolvedAddress = ensResult.content[0].text.match(/0x[a-fA-F0-9]{40}/)?.[0]
       expect(resolvedAddress).toBeDefined()
+      if (!resolvedAddress) return
 
       // Check balance of resolved address
       const balanceResult = await server.callTool("get_balance", {
-        address: resolvedAddress!,
+        address: resolvedAddress,
       })
 
       expect(balanceResult.isError).toBe(false)
@@ -135,7 +137,7 @@ describe("ENS Integration Test", () => {
     test("should validate ENS name format", async () => {
       const invalidNames = [
         "just-text",
-        "domain.com", 
+        "domain.com",
         "123",
         "special@chars.eth",
         ".eth",
@@ -158,38 +160,38 @@ describe("ENS Integration Test", () => {
   describe("ENS Performance and Caching", () => {
     test("should resolve the same ENS name consistently", async () => {
       const ensName = "vitalik.eth"
-      
+
       // Resolve twice
       const result1 = await server.callTool("resolve_ens_name", {
         ensName,
       })
-      
+
       const result2 = await server.callTool("resolve_ens_name", {
         ensName,
       })
 
       expect(result1.isError).toBe(false)
       expect(result2.isError).toBe(false)
-      
+
       if (!result1.isError && !result2.isError) {
         const address1 = result1.content[0].text.match(/0x[a-fA-F0-9]{40}/)?.[0]
         const address2 = result2.content[0].text.match(/0x[a-fA-F0-9]{40}/)?.[0]
-        
+
         expect(address1).toBe(address2)
       }
     }, 20000)
 
     test("should handle multiple concurrent ENS resolutions", async () => {
       const ensNames = ["vitalik.eth", "nick.eth", "brantly.eth"]
-      
-      const promises = ensNames.map(name => 
-        server.callTool("resolve_ens_name", { ensName: name })
+
+      const promises = ensNames.map((name) =>
+        server.callTool("resolve_ens_name", { ensName: name }),
       )
 
       const results = await Promise.all(promises)
-      
+
       // At least some should succeed (depending on network conditions)
-      const successCount = results.filter(r => !r.isError).length
+      const successCount = results.filter((r) => !r.isError).length
       expect(successCount).toBeGreaterThan(0)
     }, 30000)
   })
@@ -216,6 +218,7 @@ describe("ENS Integration Test", () => {
 
       const resolvedAddress = ensResult.content[0].text.match(/0x[a-fA-F0-9]{40}/)?.[0]
       expect(resolvedAddress).toBeDefined()
+      if (!resolvedAddress) return
 
       // Switch to Polygon and check balance of resolved address
       await server.callTool("switch_chain", {
@@ -223,7 +226,7 @@ describe("ENS Integration Test", () => {
       })
 
       const polygonBalance = await server.callTool("get_balance", {
-        address: resolvedAddress!,
+        address: resolvedAddress,
       })
 
       expect(polygonBalance.isError).toBe(false)

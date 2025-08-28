@@ -108,6 +108,7 @@
     "test:e2e:mcp": "NODE_ENV=test bun test test/e2e/mcp-direct.test.ts",
     "test:integration:ens": "NODE_ENV=test bun test test/integration/ens-integration.test.ts",
     "test:integration:contracts": "NODE_ENV=test bun test test/integration/contract-development-workflow.test.ts",
+    "test:integration:keys": "NODE_ENV=test bun test test/integration/private-key-management.test.ts",
     "test:ci": "./scripts/test-ci.sh",
     "test:ci:separate": "./scripts/test-ci-separate.sh",
     "typecheck": "tsc --noEmit",
