@@ -1,6 +1,5 @@
 import { expect } from "bun:test"
 import { $ } from "bun"
-import path from "path"
 
 /**
  * Expected behavior for test prompt validation
@@ -38,14 +37,14 @@ export async function testPrompt(
   try {
     // For now, use direct Claude CLI without MCP config to avoid timeout issues
     // This tests the basic Claude functionality but may not use all MCP tools
-    const escapedPrompt = userPrompt.replace(/"/g, '\\"').replace(/\$/g, '\\$')
-    
+    const escapedPrompt = userPrompt.replace(/"/g, '\\"').replace(/\$/g, "\\$")
+
     // Use the global MCP configuration (local development server) with permission bypass
     const result = await Promise.race([
       $`echo "${escapedPrompt}" | claude --print --dangerously-skip-permissions`.quiet(),
-      new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error("Claude CLI timeout after 30 seconds")), 30000)
-      )
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Claude CLI timeout after 30 seconds")), 30000),
+      ),
     ])
 
     const stdout = result.stdout.toString().trim()
@@ -59,7 +58,7 @@ export async function testPrompt(
 
     const finalResult = stdout
     const error = success ? undefined : stderr || `Process exited with code ${result.exitCode}`
-    
+
     // Extract tool usage from output
     const toolsUsed = extractToolsFromOutput(finalResult)
 
@@ -67,7 +66,9 @@ export async function testPrompt(
     if (error) {
       console.log(`❌ Error: ${error.slice(0, 200)}${error.length > 200 ? "..." : ""}`)
     } else {
-      console.log(`✅ Success: ${finalResult.slice(0, 150)}${finalResult.length > 150 ? "..." : ""}`)
+      console.log(
+        `✅ Success: ${finalResult.slice(0, 150)}${finalResult.length > 150 ? "..." : ""}`,
+      )
     }
 
     const testResult: TestResult = {
@@ -76,7 +77,7 @@ export async function testPrompt(
       finalResult,
       error,
       stdout,
-      stderr
+      stderr,
     }
 
     // Validate result if expectations provided
@@ -88,14 +89,14 @@ export async function testPrompt(
   } catch (e) {
     const error = e instanceof Error ? e.message : String(e)
     console.log(`❌ CLI Error: ${error}`)
-    
+
     return {
       success: false,
       toolsUsed: [],
       finalResult: "",
       error,
       stdout: "",
-      stderr: error
+      stderr: error,
     }
   }
 }
@@ -105,48 +106,84 @@ export async function testPrompt(
  */
 function extractToolsFromOutput(output: string): string[] {
   const tools: string[] = []
-  
+
   // Claude often mentions tools it uses in natural language
   // Look for MCP tool patterns
   const mcpToolPattern = /mcp__wallet-agent__(\w+)/g
-  let match
-  while ((match = mcpToolPattern.exec(output)) !== null) {
+  let match: RegExpExecArray | null = null
+  match = mcpToolPattern.exec(output)
+  while (match !== null) {
     tools.push(match[1]) // Just the tool name without prefix
+    match = mcpToolPattern.exec(output)
   }
-  
+
   // Look for common tool patterns in natural language output
   const toolMentions = [
-    'connect_wallet', 'disconnect_wallet', 'get_balance', 'send_transaction',
-    'switch_chain', 'add_custom_chain', 'estimate_gas', 'get_transaction_status',
-    'transfer_token', 'approve_token', 'get_token_balance', 'get_token_info',
-    'transfer_nft', 'get_nft_owner', 'get_nft_info', 'resolve_ens_name',
-    'import_private_key', 'sign_message', 'load_wagmi_config', 'list_contracts',
-    'read_contract', 'write_contract', 'simulate_transaction', 'get_accounts'
+    "connect_wallet",
+    "disconnect_wallet",
+    "get_balance",
+    "send_transaction",
+    "switch_chain",
+    "add_custom_chain",
+    "estimate_gas",
+    "get_transaction_status",
+    "transfer_token",
+    "approve_token",
+    "get_token_balance",
+    "get_token_info",
+    "transfer_nft",
+    "get_nft_owner",
+    "get_nft_info",
+    "resolve_ens_name",
+    "import_private_key",
+    "sign_message",
+    "load_wagmi_config",
+    "list_contracts",
+    "read_contract",
+    "write_contract",
+    "simulate_transaction",
+    "get_accounts",
   ]
-  
+
   const lowerOutput = output.toLowerCase()
-  
+
   // Detect tools based on response content patterns
-  if (lowerOutput.includes('connected to wallet') || lowerOutput.includes('wallet on') || lowerOutput.includes('chain (')) {
-    tools.push('connect_wallet')
+  if (
+    lowerOutput.includes("connected to wallet") ||
+    lowerOutput.includes("wallet on") ||
+    lowerOutput.includes("chain (")
+  ) {
+    tools.push("connect_wallet")
   }
-  if (lowerOutput.includes('mock accounts') || lowerOutput.includes('accounts are available') || lowerOutput.includes('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266')) {
-    tools.push('get_accounts')
+  if (
+    lowerOutput.includes("mock accounts") ||
+    lowerOutput.includes("accounts are available") ||
+    lowerOutput.includes("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")
+  ) {
+    tools.push("get_accounts")
   }
-  if (lowerOutput.includes('balance:') || lowerOutput.includes('eth balance') || lowerOutput.includes('balance is')) {
-    tools.push('get_balance')
+  if (
+    lowerOutput.includes("balance:") ||
+    lowerOutput.includes("eth balance") ||
+    lowerOutput.includes("balance is")
+  ) {
+    tools.push("get_balance")
   }
-  if (lowerOutput.includes('transaction hash') || lowerOutput.includes('transaction sent') || lowerOutput.includes('0x' + '0'.repeat(64))) {
-    tools.push('send_transaction')
+  if (
+    lowerOutput.includes("transaction hash") ||
+    lowerOutput.includes("transaction sent") ||
+    lowerOutput.includes(`0x${"0".repeat(64)}`)
+  ) {
+    tools.push("send_transaction")
   }
-  
+
   // Also check for explicit tool mentions
   for (const tool of toolMentions) {
-    if (lowerOutput.includes(tool.replace('_', ' ')) || lowerOutput.includes(tool)) {
+    if (lowerOutput.includes(tool.replace("_", " ")) || lowerOutput.includes(tool)) {
       tools.push(tool)
     }
   }
-  
+
   return [...new Set(tools)] // Remove duplicates
 }
 
