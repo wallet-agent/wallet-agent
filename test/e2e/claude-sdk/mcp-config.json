@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "wallet-agent": {
-      "command": "bun",
-      "args": ["run", "src/index.ts"],
+      "command": "/opt/homebrew/bin/bun",
+      "args": ["run", "/Users/blockshane/github.com/wallet-agent/wallet-agent/src/index.ts"],
       "env": {
         "NODE_ENV": "test"
       }
