@@ -29,6 +29,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# WalletAgent runtime storage
+.wallet-agent/
+
 # Testing
 coverage/
 .nyc_output/
