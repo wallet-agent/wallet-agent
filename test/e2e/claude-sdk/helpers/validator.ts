@@ -265,6 +265,6 @@ export function validateResponseStructure(result: TestResult) {
   expect(result).toHaveProperty("finalResult")
 
   expect(Array.isArray(result.toolsUsed)).toBe(true)
-  expect(Array.isArray(result.messages)).toBe(true)
+  // messages property not part of TestResult interface
   expect(typeof result.finalResult).toBe("string")
 }

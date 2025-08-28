@@ -1,4 +1,4 @@
-import { beforeAll, describe, test } from "bun:test"
+import { beforeAll, describe, expect, test } from "bun:test"
 import { validateResponseStructure } from "./helpers/validator.js"
 import { setupClaudeSDKTests, TEST_DATA, testPrompt, testWorkflow } from "./setup.js"
 
@@ -107,9 +107,12 @@ describe("Key Management Operations via Natural Language", () => {
 
     test("should import from encrypted keystore", async () => {
       // First create a keystore
-      const _keystoreResult = await testPrompt(
+      const keystoreResult = await testPrompt(
         "Create encrypted keystore with password 'test123' for private key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
       )
+
+      // Verify keystore was created successfully
+      expect(keystoreResult.success).toBe(true)
 
       // Extract keystore from result (simplified for test)
       const result = await testPrompt(
@@ -192,7 +195,10 @@ describe("Key Management Operations via Natural Language", () => {
 
     test("should import wallet from mnemonic", async () => {
       // First generate a mnemonic
-      const _mnemonicResult = await testPrompt("Generate a 12-word mnemonic phrase")
+      const mnemonicResult = await testPrompt("Generate a 12-word mnemonic phrase")
+
+      // Verify mnemonic generation
+      expect(mnemonicResult.success).toBe(true)
 
       const result = await testPrompt(
         "Import wallet from mnemonic: 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about'",

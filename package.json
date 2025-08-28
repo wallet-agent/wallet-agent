@@ -114,7 +114,8 @@
     "test:integration:transactions": "NODE_ENV=test bun test test/integration/transaction-lifecycle.test.ts",
     "test:ci": "./scripts/test-ci.sh",
     "test:ci:separate": "./scripts/test-ci-separate.sh",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.dev.json",
+    "typecheck:src": "tsc --noEmit",
     "lint": "biome check .",
     "lint:fix": "biome check --write --unsafe .",
     "format": "biome format --write .",
@@ -123,7 +124,7 @@
     "prepublishOnly": "bun run build"
   },
   "simple-git-hooks": {
-    "pre-commit": "bun run typecheck && bun run format && bun run lint"
+    "pre-commit": "bun run typecheck:src && bun run format && bun run lint"
   },
   "simple-git-hooks-comment": "These hooks are for standalone wallet-agent repo. In monorepo context, root hooks take precedence.",
   "devDependencies": {

@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === "test") {
   }
 
   // Add mock responses for transaction queries
-  const mockResponses = new Map([
+  const mockResponses = new Map<string, (params: unknown[]) => unknown>([
     // Mock transaction that doesn't exist
     [
       "eth_getTransactionByHash",
@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === "test") {
       },
     ],
     // Mock eth_getCode to return no code for all addresses (no contracts deployed)
-    ["eth_getCode", "0x"],
+    ["eth_getCode", () => "0x"],
   ])
 
   ;(global as { __testTransport?: unknown }).__testTransport = createTestTransport({

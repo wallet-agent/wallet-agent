@@ -68,7 +68,7 @@ export async function deployTestContracts(): Promise<DeployedContracts> {
     console.log("Deploying ERC721 NFT...")
     const erc721Hash = await walletClient.deployContract({
       abi: MINIMAL_ERC721.abi,
-      bytecode: MINIMAL_ERC721.bytecode,
+      bytecode: MINIMAL_ERC721.bytecode as `0x${string}`,
     })
 
     const erc721Receipt = await publicClient.waitForTransactionReceipt({

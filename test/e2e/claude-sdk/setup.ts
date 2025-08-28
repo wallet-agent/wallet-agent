@@ -113,7 +113,9 @@ function extractToolsFromOutput(output: string): string[] {
   let match: RegExpExecArray | null = null
   match = mcpToolPattern.exec(output)
   while (match !== null) {
-    tools.push(match[1]) // Just the tool name without prefix
+    if (match[1]) {
+      tools.push(match[1]) // Just the tool name without prefix
+    }
     match = mcpToolPattern.exec(output)
   }
 
@@ -258,7 +260,9 @@ export async function testWorkflow(
   const results: TestResult[] = []
 
   for (let i = 0; i < prompts.length; i++) {
-    const { prompt, expected } = prompts[i]
+    const promptConfig = prompts[i]
+    if (!promptConfig) continue
+    const { prompt, expected } = promptConfig
     console.log(`\n📍 Step ${i + 1}/${prompts.length}`)
 
     const result = await testPrompt(prompt, expected)

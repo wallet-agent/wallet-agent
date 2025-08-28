@@ -45,15 +45,10 @@ export function createTestTransport(config: TestTransportConfig = {}): Transport
   // Use mock transport
   const mockTransport = createMockTransport(mergedConfig.mockResponses)
 
-  // Wrap the transport to log calls in CI
-  if (process.env.CI) {
-    return (() => ({
-      request: async (args: { method: string; params?: unknown[] }) => {
-        console.log(`[Mock Transport] RPC call: ${args.method}`)
-        return mockTransport().request(args)
-      },
-    })) as Transport
-  }
+  // Note: Logging disabled due to TypeScript complexity with Transport wrapping
+  // if (process.env.CI) {
+  //   console.log("[Test Transport] CI logging would be enabled here")
+  // }
 
   return mockTransport
 }

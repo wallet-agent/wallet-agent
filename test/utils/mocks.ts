@@ -66,6 +66,14 @@ export function createMockChainAdapter(chains: Chain[] = []): ChainAdapter {
       chainMap.set(chain.id, chain)
       chains.push(chain)
     }),
+    updateCustomChain: mock((_chainId: number, _updates: unknown) => {
+      // Mock implementation
+    }),
+    removeCustomChain: mock((chainId: number) => {
+      chainMap.delete(chainId)
+      const index = chains.findIndex((c) => c.id === chainId)
+      if (index >= 0) chains.splice(index, 1)
+    }),
   }
 }
 
