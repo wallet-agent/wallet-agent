@@ -111,6 +111,7 @@
     "test:integration:keys": "NODE_ENV=test bun test test/integration/private-key-management.test.ts",
     "test:integration:multichain": "NODE_ENV=test bun test test/integration/multi-chain-development.test.ts",
     "test:integration:gas": "NODE_ENV=test bun test test/integration/gas-optimization.test.ts",
+    "test:integration:transactions": "NODE_ENV=test bun test test/integration/transaction-lifecycle.test.ts",
     "test:ci": "./scripts/test-ci.sh",
     "test:ci:separate": "./scripts/test-ci-separate.sh",
     "typecheck": "tsc --noEmit",
