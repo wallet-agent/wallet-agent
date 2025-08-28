@@ -36,6 +36,8 @@
   * [Token Tools](api-reference/mcp-tools/tokens.md)
   * [Testing Tools](api-reference/mcp-tools/testing.md)
   * [Chain Tools](api-reference/mcp-tools/chains.md)
+  * [Encrypted Key Tools](api-reference/mcp-tools/encrypted-keys.md)
+  * [Hyperliquid Tools](api-reference/mcp-tools/hyperliquid.md)
 
 ## Advanced Topics
 * [Overview](advanced/README.md)
