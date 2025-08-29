@@ -148,7 +148,6 @@ describe("Wagmi ABI Handlers", () => {
   let resolveContractSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-
     // Create temporary directory for export tests
     tempDir = `/tmp/wagmi-abi-test-${Date.now()}-${Math.random().toString(36).slice(2)}`
 

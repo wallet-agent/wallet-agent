@@ -47,7 +47,6 @@ describe("Contract Testing Handlers", () => {
   let runTestScenariosSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-
     // Mock the listContracts function
     listContractsSpy = spyOn(contractOps, "listContracts").mockReturnValue([
       { name: "TestToken", chains: [31337] },

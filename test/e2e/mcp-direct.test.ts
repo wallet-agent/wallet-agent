@@ -37,33 +37,35 @@ describe("Direct MCP Server Test", () => {
     // Set timeout for response
     const timeout = new Promise<string>((resolve) => setTimeout(() => resolve(""), 5000))
 
-    const readOutput = new Promise<string>(async (resolve, reject) => {
-      let data = ""
-      if (server.stdout) {
-        try {
-          const reader = server.stdout.getReader()
-          const decoder = new TextDecoder()
+    const readOutput = new Promise<string>((resolve, reject) => {
+      ;(async () => {
+        let data = ""
+        if (server.stdout) {
+          try {
+            const reader = server.stdout.getReader()
+            const decoder = new TextDecoder()
 
-          while (true) {
-            const { done, value } = await reader.read()
-            if (done) break
+            while (true) {
+              const { done, value } = await reader.read()
+              if (done) break
 
-            const chunk = decoder.decode(value, { stream: true })
-            data += chunk
-            if (data.includes("\n")) {
-              reader.releaseLock()
-              resolve(data)
-              return
+              const chunk = decoder.decode(value, { stream: true })
+              data += chunk
+              if (data.includes("\n")) {
+                reader.releaseLock()
+                resolve(data)
+                return
+              }
             }
+            reader.releaseLock()
+            resolve(data)
+          } catch (error) {
+            reject(error)
           }
-          reader.releaseLock()
-          resolve(data)
-        } catch (error) {
-          reject(error)
+        } else {
+          resolve("")
         }
-      } else {
-        resolve("")
-      }
+      })()
     })
 
     try {

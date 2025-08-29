@@ -8,7 +8,6 @@ import {
   simulateContractCall,
 } from "../../src/core/contract-testing.js"
 
-
 // Mock ERC20 ABI for testing
 const mockERC20Abi: Abi = [
   {
@@ -44,7 +43,6 @@ describe("Contract Testing Core", () => {
   let resolveContractSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-
     // Mock the resolveContract function
     resolveContractSpy = spyOn(contractResolution, "resolveContract").mockImplementation(
       (contractName: string) => {
@@ -223,7 +221,10 @@ describe("Contract Testing Core", () => {
 
       expect(results.totalTests).toBe(1)
       expect(results.results).toHaveLength(1)
-      expect(results.results?.[0]?.scenario).toEqual(mockScenarios[0]!)
+      const firstScenario = mockScenarios[0]
+      if (firstScenario) {
+        expect(results.results?.[0]?.scenario).toEqual(firstScenario)
+      }
       expect(results.results?.[0]).toHaveProperty("result")
       expect(results.results?.[0]).toHaveProperty("passed")
     })

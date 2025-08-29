@@ -23,7 +23,7 @@ describe("Transaction Lifecycle Integration Test", () => {
     if (response.isError || response.content.length === 0) {
       return response.error || "No content"
     }
-    return response.content[0]?.text
+    return response.content[0]?.text || ""
   }
 
   // Test wallet details (Anvil default accounts)
@@ -100,7 +100,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
       let txHash: string | null = null
       if (!txResult.isError) {
-        const response = txResult.content[0]?.text
+        const response = txResult.content[0]?.text || ""
         expect(response).toMatch(/transaction.*sent|hash.*0x/i)
 
         const hashMatch = response.match(/0x[a-fA-F0-9]{64}/)
@@ -155,7 +155,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
       expect(txResult.isError).toBe(false)
       if (!txResult.isError) {
-        const response = txResult.content[0]?.text
+        const response = txResult.content[0]?.text || ""
         expect(response).toMatch(/transaction.*sent|hash.*0x/i)
 
         const hashMatch = response.match(/0x[a-fA-F0-9]{64}/)
@@ -596,7 +596,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
       let txHash: string | null = null
       if (!txResult.isError) {
-        const response = txResult.content[0]?.text
+        const response = txResult.content[0]?.text || ""
         expect(response).toMatch(/transaction.*sent|hash.*0x/i)
 
         const hashMatch = response.match(/0x[a-fA-F0-9]{64}/)
@@ -618,7 +618,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
           expect(statusResult.isError).toBe(false)
           if (!statusResult.isError) {
-            const statusText = statusResult.content[0]?.text
+            const statusText = statusResult.content[0]?.text || ""
             if (statusText.match(/(success|confirmed|mined)/i)) {
               confirmed = true
             }
@@ -637,7 +637,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         expect(receiptResult.isError).toBe(false)
 
         if (!receiptResult.isError) {
-          const receiptText = receiptResult.content[0]?.text
+          const receiptText = receiptResult.content[0]?.text || ""
           expect(receiptText).toMatch(/(receipt|gas.*used|status.*success)/i)
 
           // Verify gas usage is close to estimate

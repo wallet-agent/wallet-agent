@@ -18,7 +18,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
   let testContainer: TestContainer
 
   const testPrivateKey1 = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-  const testPrivateKey2 = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d" 
+  const testPrivateKey2 = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
   const testPrivateKey3 = "0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a"
   const testAddress1 = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
   const testAddress2 = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -46,7 +46,9 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
         } catch (error) {
           return {
             isError: true,
-            content: [{ text: error instanceof Error ? error.message : String(error), type: "text" }],
+            content: [
+              { text: error instanceof Error ? error.message : String(error), type: "text" },
+            ],
             error: error instanceof Error ? error.message : String(error),
           }
         }
@@ -80,7 +82,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       if (!result.isError) {
         const signature = result.content[0].text
         expect(signature).toMatch(/^0x[a-fA-F0-9]{130}$/)
-        console.log("✓ Complex message signed successfully:", signature.substring(0, 20) + "...")
+        console.log("✓ Complex message signed successfully:", `${signature.substring(0, 20)}...`)
       }
     })
 
@@ -89,7 +91,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
         privateKey: testPrivateKey1,
       })
 
-      const binaryMessage = "0x" + "deadbeef".repeat(32)
+      const binaryMessage = `0x${"deadbeef".repeat(32)}`
 
       const result = await server.callTool("sign_message", {
         message: binaryMessage,
@@ -170,21 +172,28 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       }
 
       expect(signatures.length).toBe(3)
-      expect(new Set(signatures.map(s => s.signature)).size).toBe(3)
+      expect(new Set(signatures.map((s) => s.signature)).size).toBe(3)
       console.log("✓ Multi-wallet signing coordination successful")
 
-      const signaturesByAddress = signatures.reduce((acc, sig) => {
-        acc[sig.address] = sig.signature
-        return acc
-      }, {} as Record<string, string>)
+      const signaturesByAddress = signatures.reduce(
+        (acc, sig) => {
+          acc[sig.address] = sig.signature
+          return acc
+        },
+        {} as Record<string, string>,
+      )
 
-      console.log("✓ Signature mapping complete:", Object.keys(signaturesByAddress).length, "signatures")
+      console.log(
+        "✓ Signature mapping complete:",
+        Object.keys(signaturesByAddress).length,
+        "signatures",
+      )
     })
 
     test("should handle sequential signing workflow", async () => {
       const signingWorkflow = [
         { step: 1, wallet: testPrivateKey1, address: testAddress1, action: "initiate" },
-        { step: 2, wallet: testPrivateKey2, address: testAddress2, action: "approve" }, 
+        { step: 2, wallet: testPrivateKey2, address: testAddress2, action: "approve" },
         { step: 3, wallet: testPrivateKey3, address: testAddress3, action: "finalize" },
       ]
 
@@ -252,7 +261,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       }
 
       expect(chainSignatures.length).toBe(3)
-      expect(new Set(chainSignatures.map(cs => cs.signature)).size).toBe(3)
+      expect(new Set(chainSignatures.map((cs) => cs.signature)).size).toBe(3)
       console.log("✓ All chain-specific signatures are unique")
     })
 
@@ -348,7 +357,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       }
 
       expect(multiSigSignatures.length).toBe(3)
-      expect(new Set(multiSigSignatures.map(ms => ms.signature)).size).toBe(3)
+      expect(new Set(multiSigSignatures.map((ms) => ms.signature)).size).toBe(3)
       console.log("✓ Multi-party EIP-712 signatures collected successfully")
     })
 
@@ -416,10 +425,10 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       const baseMessage = "Uniqueness test"
       const variations = [
         baseMessage,
-        baseMessage + " ",
+        `${baseMessage} `,
         baseMessage.toUpperCase(),
-        baseMessage + "!",
-        baseMessage + "\n",
+        `${baseMessage}!`,
+        `${baseMessage}\n`,
       ]
 
       const signatureAnalysis = []
@@ -441,11 +450,11 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       }
 
       expect(signatureAnalysis.length).toBe(variations.length)
-      
-      const uniqueSignatures = new Set(signatureAnalysis.map(sa => sa.signature))
+
+      const uniqueSignatures = new Set(signatureAnalysis.map((sa) => sa.signature))
       expect(uniqueSignatures.size).toBe(variations.length)
-      
-      const allSameLength = signatureAnalysis.every(sa => sa.length === 130)
+
+      const allSameLength = signatureAnalysis.every((sa) => sa.length === 130)
       expect(allSameLength).toBe(true)
 
       console.log("✓ Signature uniqueness analysis complete:")
@@ -460,13 +469,13 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       })
 
       const edgeCases = [
-        "",  // Empty string
-        " ",  // Single space
+        "", // Empty string
+        " ", // Single space
         "\n", // Single newline
         "0", // Single character
         "a".repeat(1000), // Very long message
         "🚀", // Single emoji
-        JSON.stringify({test: "value"}), // JSON string
+        JSON.stringify({ test: "value" }), // JSON string
       ]
 
       let successCount = 0
@@ -480,14 +489,20 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
           successCount++
           const signature = result.content[0].text
           expect(signature).toMatch(/^0x[a-fA-F0-9]{130}$/)
-          console.log(`✓ Edge case handled: "${edgeCase.length > 20 ? edgeCase.substring(0, 20) + "..." : edgeCase}"`)
+          console.log(
+            `✓ Edge case handled: "${edgeCase.length > 20 ? `${edgeCase.substring(0, 20)}...` : edgeCase}"`,
+          )
         } else {
-          console.log(`! Edge case failed: "${edgeCase.length > 20 ? edgeCase.substring(0, 20) + "..." : edgeCase}"`)
+          console.log(
+            `! Edge case failed: "${edgeCase.length > 20 ? `${edgeCase.substring(0, 20)}...` : edgeCase}"`,
+          )
         }
       }
 
       expect(successCount).toBeGreaterThan(0)
-      console.log(`✓ Edge case analysis: ${successCount}/${edgeCases.length} cases handled successfully`)
+      console.log(
+        `✓ Edge case analysis: ${successCount}/${edgeCases.length} cases handled successfully`,
+      )
     })
   })
 })

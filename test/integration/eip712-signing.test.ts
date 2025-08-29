@@ -42,7 +42,9 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
         } catch (error) {
           return {
             isError: true,
-            content: [{ text: error instanceof Error ? error.message : String(error), type: "text" }],
+            content: [
+              { text: error instanceof Error ? error.message : String(error), type: "text" },
+            ],
             error: error instanceof Error ? error.message : String(error),
           }
         }
@@ -93,7 +95,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
         const response = result.content[0].text
         expect(response).toContain("0x")
         expect(response).toMatch(/^0x[a-fA-F0-9]{130}$/)
-        console.log("✓ EIP-712 permit signature:", response.substring(0, 20) + "...")
+        console.log("✓ EIP-712 permit signature:", `${response.substring(0, 20)}...`)
       }
     })
 
@@ -123,7 +125,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
           wallet: testAddress,
         },
         to: {
-          name: "Bob", 
+          name: "Bob",
           wallet: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         },
         contents: "Hello, Bob!",
@@ -141,7 +143,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
         const response = result.content[0].text
         expect(response).toContain("0x")
         expect(response).toMatch(/^0x[a-fA-F0-9]{130}$/)
-        console.log("✓ EIP-712 mail signature:", response.substring(0, 20) + "...")
+        console.log("✓ EIP-712 mail signature:", `${response.substring(0, 20)}...`)
       }
     })
 
@@ -180,7 +182,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
       const result = await server.callTool("sign_typed_data", {
         domain,
         types,
-        primaryType: "Order", 
+        primaryType: "Order",
         message,
       })
 
@@ -189,7 +191,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
         const response = result.content[0].text
         expect(response).toContain("0x")
         expect(response).toMatch(/^0x[a-fA-F0-9]{130}$/)
-        console.log("✓ EIP-712 order signature:", response.substring(0, 20) + "...")
+        console.log("✓ EIP-712 order signature:", `${response.substring(0, 20)}...`)
       }
     })
   })
@@ -211,7 +213,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
     test("should handle invalid types", async () => {
       const result = await server.callTool("sign_typed_data", {
         domain: { name: "Test", version: "1", chainId: 31337 },
-        types: {}, 
+        types: {},
         primaryType: "NonExistent",
         message: {},
       })
@@ -226,9 +228,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
       const result = await server.callTool("sign_typed_data", {
         domain: { name: "Test", version: "1", chainId: 31337 },
         types: {
-          Test: [
-            { name: "requiredField", type: "string" },
-          ],
+          Test: [{ name: "requiredField", type: "string" }],
         },
         primaryType: "Test",
         message: {
@@ -276,7 +276,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
         const result = await server.callTool("sign_typed_data", {
           domain: {
             name: "CrossChainTest",
-            version: "1", 
+            version: "1",
             chainId,
           },
           ...baseTypedData,
@@ -286,7 +286,7 @@ describe("EIP-712 Typed Data Signing Integration Test", () => {
         if (!result.isError) {
           const signature = result.content[0].text
           signatures.push(signature)
-          console.log(`✓ Chain ${chainId} signature:`, signature.substring(0, 20) + "...")
+          console.log(`✓ Chain ${chainId} signature:`, `${signature.substring(0, 20)}...`)
         }
       }
 

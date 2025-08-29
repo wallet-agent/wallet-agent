@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, test } from "bun:test"
 import { TestContainer } from "../../src/test-container.js"
 import { handleToolCall } from "../../src/tools/handlers.js"
 import {
+  type DeployedContracts,
   deployTestContracts,
   isAnvilRunning,
-  type DeployedContracts,
 } from "../setup/deploy-contracts.js"
 
 interface McpServer {
@@ -59,7 +59,9 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
         } catch (error) {
           return {
             isError: true,
-            content: [{ text: error instanceof Error ? error.message : String(error), type: "text" }],
+            content: [
+              { text: error instanceof Error ? error.message : String(error), type: "text" },
+            ],
             error: error instanceof Error ? error.message : String(error),
           }
         }
@@ -78,7 +80,7 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
   describe("Transaction Simulation", () => {
     test("should simulate successful contract write transaction", async () => {
       const simulateResult = await server.callTool("simulate_transaction", {
-        contract: "Storage", 
+        contract: "Storage",
         address: deployedContracts.storage,
         function: "store",
         args: [999],
@@ -90,7 +92,7 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
         expect(response).toMatch(/(simulation|success|gas)/i)
         expect(response).toContain("store")
         expect(response).toContain("999")
-        console.log("✓ Storage contract simulation:", response.substring(0, 100) + "...")
+        console.log("✓ Storage contract simulation:", `${response.substring(0, 100)}...`)
       }
     })
 
@@ -119,7 +121,11 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
         args: [recipientAddress, "999999999999999999999999999"],
       })
 
-      if (simulateResult.isError || simulateResult.content[0].text.includes("revert") || simulateResult.content[0].text.includes("insufficient")) {
+      if (
+        simulateResult.isError ||
+        simulateResult.content[0].text.includes("revert") ||
+        simulateResult.content[0].text.includes("insufficient")
+      ) {
         console.log("✓ Simulation correctly predicted failure")
         expect(true).toBe(true)
       } else {
@@ -154,7 +160,7 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
         args: [42],
       })
 
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const simulateResult = await server.callTool("simulate_contract_call", {
         contract: "Storage",
@@ -174,7 +180,7 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
       const simulateResult = await server.callTool("simulate_contract_call", {
         contract: "ERC20",
         address: deployedContracts.erc20,
-        function: "balanceOf", 
+        function: "balanceOf",
         args: [testAddress],
       })
 
@@ -188,7 +194,7 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
 
     test("should simulate with different caller addresses", async () => {
       const callers = [testAddress, recipientAddress]
-      
+
       for (const caller of callers) {
         const simulateResult = await server.callTool("simulate_contract_call", {
           contract: "ERC20",
@@ -200,7 +206,10 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
 
         expect(simulateResult.isError).toBe(false)
         if (!simulateResult.isError) {
-          console.log(`✓ Simulation for caller ${caller}:`, simulateResult.content[0].text.substring(0, 50))
+          console.log(
+            `✓ Simulation for caller ${caller}:`,
+            simulateResult.content[0].text.substring(0, 50),
+          )
         }
       }
     })
@@ -219,7 +228,7 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
       if (!dryRunResult.isError) {
         const response = dryRunResult.content[0].text
         expect(response).toMatch(/(dry.run|preview|effects|777)/i)
-        console.log("✓ Dry run preview:", response.substring(0, 100) + "...")
+        console.log("✓ Dry run preview:", `${response.substring(0, 100)}...`)
       }
 
       const currentValueResult = await server.callTool("read_contract", {
@@ -253,11 +262,7 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
     })
 
     test("should dry run multiple state changes", async () => {
-      const operations = [
-        { value: 100 },
-        { value: 200 },
-        { value: 300 },
-      ]
+      const operations = [{ value: 100 }, { value: 200 }, { value: 300 }]
 
       for (const op of operations) {
         const dryRunResult = await server.callTool("dry_run_transaction", {
@@ -357,9 +362,9 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
           const response = simulateResult.content[0].text
           const gasMatch = response.match(/(\d+)\s*(gas|units)/i)
           if (gasMatch) {
-            gasEstimates.push({ 
-              operation: op.function, 
-              gas: parseInt(gasMatch[1]!) 
+            gasEstimates.push({
+              operation: op.function,
+              gas: parseInt(gasMatch[1] || "0"),
             })
           }
         }
@@ -367,12 +372,14 @@ describe.skipIf(!useRealAnvil)("Contract Simulation Integration Test", () => {
 
       if (gasEstimates.length >= 2) {
         console.log("✓ Gas comparison:", gasEstimates)
-        const storeGas = gasEstimates.find(e => e.operation === "store")?.gas
-        const retrieveGas = gasEstimates.find(e => e.operation === "retrieve")?.gas
-        
+        const storeGas = gasEstimates.find((e) => e.operation === "store")?.gas
+        const retrieveGas = gasEstimates.find((e) => e.operation === "retrieve")?.gas
+
         if (storeGas && retrieveGas) {
           expect(storeGas).toBeGreaterThan(retrieveGas)
-          console.log(`✓ Store operation (${storeGas}) uses more gas than retrieve (${retrieveGas})`)
+          console.log(
+            `✓ Store operation (${storeGas}) uses more gas than retrieve (${retrieveGas})`,
+          )
         }
       }
     })

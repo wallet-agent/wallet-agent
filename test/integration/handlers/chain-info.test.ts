@@ -82,7 +82,7 @@ describe("Chain Info Tool Integration", () => {
       expect(initialChainMatch).toBeTruthy()
       const initialChainIdStr = initialChainMatch?.[1]
       expect(initialChainIdStr).toBeDefined()
-      const initialChainId = Number.parseInt(initialChainIdStr!)
+      const initialChainId = Number.parseInt(initialChainIdStr || "0")
 
       // Find a different chain to switch to
       const availableChains = initialText.match(/- .+ \((\d+)\)/g) || []

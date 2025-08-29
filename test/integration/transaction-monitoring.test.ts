@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, test } from "bun:test"
 import { TestContainer } from "../../src/test-container.js"
 import { handleToolCall } from "../../src/tools/handlers.js"
 import {
+  type DeployedContracts,
   deployTestContracts,
   isAnvilRunning,
-  type DeployedContracts,
 } from "../setup/deploy-contracts.js"
 
 interface McpServer {
@@ -58,7 +58,9 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
         } catch (error) {
           return {
             isError: true,
-            content: [{ text: error instanceof Error ? error.message : String(error), type: "text" }],
+            content: [
+              { text: error instanceof Error ? error.message : String(error), type: "text" },
+            ],
             error: error instanceof Error ? error.message : String(error),
           }
         }
@@ -86,11 +88,11 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
 
       const hashMatch = sendResult.content[0].text.match(/Hash: (0x[a-fA-F0-9]{64})/)
       expect(hashMatch).toBeDefined()
-      const txHash = hashMatch![1]
+      const txHash = hashMatch?.[1]
 
       console.log("✓ Transaction sent with hash:", txHash)
 
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const statusResult = await server.callTool("get_transaction_status", {
         hash: txHash,
@@ -115,9 +117,9 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
       if (sendResult.isError) return
 
       const hashMatch = sendResult.content[0].text.match(/Hash: (0x[a-fA-F0-9]{64})/)
-      const txHash = hashMatch![1]
+      const txHash = hashMatch?.[1]
 
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const receiptResult = await server.callTool("get_transaction_receipt", {
         hash: txHash,
@@ -147,9 +149,9 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
       if (storeResult.isError) return
 
       const hashMatch = storeResult.content[0].text.match(/Hash: (0x[a-fA-F0-9]{64})/)
-      const txHash = hashMatch![1]
+      const txHash = hashMatch?.[1]
 
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const statusResult = await server.callTool("get_transaction_status", {
         hash: txHash,
@@ -188,9 +190,9 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
       if (transferResult.isError) return
 
       const hashMatch = transferResult.content[0].text.match(/Hash: (0x[a-fA-F0-9]{64})/)
-      const txHash = hashMatch![1]
+      const txHash = hashMatch?.[1]
 
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
       const receiptResult = await server.callTool("get_transaction_receipt", {
         hash: txHash,
@@ -210,7 +212,7 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
   describe("Transaction Error Monitoring", () => {
     test("should handle non-existent transaction hash", async () => {
       const fakeHash = "0x1234567890123456789012345678901234567890123456789012345678901234"
-      
+
       const statusResult = await server.callTool("get_transaction_status", {
         hash: fakeHash,
       })
@@ -223,7 +225,7 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
 
     test("should handle invalid transaction hash format", async () => {
       const invalidHash = "0x123"
-      
+
       const statusResult = await server.callTool("get_transaction_status", {
         hash: invalidHash,
       })
@@ -247,7 +249,7 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
         if (hashMatch) {
           const txHash = hashMatch[1]
 
-          await new Promise(resolve => setTimeout(resolve, 2000))
+          await new Promise((resolve) => setTimeout(resolve, 2000))
 
           const receiptResult = await server.callTool("get_transaction_receipt", {
             hash: txHash,
@@ -266,7 +268,7 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
   describe("Transaction Timing Analysis", () => {
     test("should measure transaction confirmation times", async () => {
       const startTime = Date.now()
-      
+
       const sendResult = await server.callTool("send_transaction", {
         to: recipientAddress,
         value: "0.01",
@@ -276,7 +278,7 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
       if (sendResult.isError) return
 
       const hashMatch = sendResult.content[0].text.match(/Hash: (0x[a-fA-F0-9]{64})/)
-      const txHash = hashMatch![1]
+      const txHash = hashMatch?.[1]
       const sendTime = Date.now()
 
       let confirmed = false
@@ -284,20 +286,20 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
       const maxAttempts = 10
 
       while (!confirmed && attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
+        await new Promise((resolve) => setTimeout(resolve, 500))
+
         const statusResult = await server.callTool("get_transaction_status", {
           hash: txHash,
         })
 
         attempts++
-        
+
         if (!statusResult.isError && statusResult.content[0].text.includes("confirmed")) {
           confirmed = true
           const confirmTime = Date.now()
           const totalTime = confirmTime - startTime
           const waitTime = confirmTime - sendTime
-          
+
           console.log(`✓ Transaction confirmed in ${totalTime}ms total (${waitTime}ms after send)`)
           expect(totalTime).toBeLessThan(15000) // Should confirm within 15 seconds on Anvil
         }
@@ -310,7 +312,7 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
   describe("Batch Transaction Monitoring", () => {
     test("should monitor multiple transactions simultaneously", async () => {
       const transactions = []
-      
+
       for (let i = 0; i < 3; i++) {
         const sendResult = await server.callTool("send_transaction", {
           to: recipientAddress,
@@ -328,7 +330,7 @@ describe.skipIf(!useRealAnvil)("Transaction Monitoring Integration Test", () => 
 
       expect(transactions.length).toBe(3)
 
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
       for (const txHash of transactions) {
         const statusResult = await server.callTool("get_transaction_status", {

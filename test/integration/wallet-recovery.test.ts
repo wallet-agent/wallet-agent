@@ -47,7 +47,9 @@ describe("Wallet Recovery and Keystore Integration Test", () => {
         } catch (error) {
           return {
             isError: true,
-            content: [{ text: error instanceof Error ? error.message : String(error), type: "text" }],
+            content: [
+              { text: error instanceof Error ? error.message : String(error), type: "text" },
+            ],
             error: error instanceof Error ? error.message : String(error),
           }
         }
@@ -383,7 +385,7 @@ describe("Wallet Recovery and Keystore Integration Test", () => {
 
       currentAccount = await server.callTool("get_current_account", {})
       expect(currentAccount.isError).toBe(false)
-      
+
       if (!currentAccount.isError) {
         expect(currentAccount.content[0].text).toContain(testAddress1)
         console.log("✓ Successfully recovered from mock to encrypted keystore wallet")

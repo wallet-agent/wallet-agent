@@ -123,7 +123,8 @@ describe("Chain Switching Integration with Chain Info", () => {
         .replace(/\s+/g, " ")
         .trim()
 
-      expect(afterSwitchChains).toBe(initialChains)
+      expect(afterSwitchChains).toBe(initialChains!)
+      expect(initialChains).toBeDefined()
     })
 
     test("should show correct native currency after chain switch", async () => {
