@@ -39,7 +39,7 @@ describe("ENS Integration Test", () => {
         } catch (error) {
           return {
             isError: true,
-            content: [],
+            content: [{ text: error instanceof Error ? error.message : String(error), type: "text" }],
             error: error instanceof Error ? error.message : String(error),
           }
         }
