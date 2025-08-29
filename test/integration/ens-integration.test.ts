@@ -53,7 +53,7 @@ describe("ENS Integration Test", () => {
     test("should resolve valid ENS names to addresses", async () => {
       // First switch to mainnet for ENS resolution
       await server.callTool("switch_chain", { chainId: 1 })
-      
+
       const result = await server.callTool("resolve_ens_name", {
         name: "vitalik.eth",
       })
@@ -71,14 +71,16 @@ describe("ENS Integration Test", () => {
     test("should handle non-existent ENS names gracefully", async () => {
       // First switch to mainnet for ENS resolution
       await server.callTool("switch_chain", { chainId: 1 })
-      
+
       const result = await server.callTool("resolve_ens_name", {
         name: "this-definitely-does-not-exist-987654321.eth",
       })
 
       // ENS may return null address (0x0...0) or an error message
       if (result.isError) {
-        expect(result.content[0].text).toMatch(/not found|does not exist|cannot resolve|could not be resolved|execution reverted|ContractFunctionExecutionError/i)
+        expect(result.content[0].text).toMatch(
+          /not found|does not exist|cannot resolve|could not be resolved|execution reverted|ContractFunctionExecutionError/i,
+        )
       } else {
         // Check the resolved text
         const resolvedText = result.content[0].text
@@ -122,7 +124,7 @@ describe("ENS Integration Test", () => {
     test("should resolve ENS name and use for wallet connection", async () => {
       // First switch to mainnet for ENS resolution
       await server.callTool("switch_chain", { chainId: 1 })
-      
+
       // First resolve an ENS name
       const ensResult = await server.callTool("resolve_ens_name", {
         name: "vitalik.eth",
@@ -138,7 +140,7 @@ describe("ENS Integration Test", () => {
       // For this test, we'll just verify the resolution worked correctly
       // Attempting to connect to an arbitrary resolved address would fail since it's not in our mock accounts
       expect(resolvedAddress).toMatch(/^0x[a-fA-F0-9]{40}$/)
-      
+
       // Instead of connecting to the resolved address, let's verify the resolution format
       expect(ensResult.content[0].text).toContain(resolvedAddress)
     }, 20000)
@@ -182,7 +184,7 @@ describe("ENS Integration Test", () => {
     test("should handle network connectivity issues", async () => {
       // First switch to mainnet for ENS resolution
       await server.callTool("switch_chain", { chainId: 1 })
-      
+
       // Test with a very long timeout to simulate network issues
       const result = await server.callTool("resolve_ens_name", {
         name: "test.eth",
@@ -190,7 +192,9 @@ describe("ENS Integration Test", () => {
 
       // Should either resolve or fail gracefully with network error
       if (result.isError) {
-        expect(result.content[0].text).toMatch(/(network|timeout|connection|not found|does not exist|execution reverted|ContractFunctionExecutionError)/i)
+        expect(result.content[0].text).toMatch(
+          /(network|timeout|connection|not found|does not exist|execution reverted|ContractFunctionExecutionError)/i,
+        )
       } else {
         expect(result.content[0].text).toMatch(/0x[a-fA-F0-9]{40}/)
       }
@@ -223,7 +227,7 @@ describe("ENS Integration Test", () => {
     test("should resolve the same ENS name consistently", async () => {
       // First switch to mainnet for ENS resolution
       await server.callTool("switch_chain", { chainId: 1 })
-      
+
       const ensName = "vitalik.eth"
 
       // Resolve twice
@@ -253,12 +257,10 @@ describe("ENS Integration Test", () => {
     test("should handle multiple concurrent ENS resolutions", async () => {
       // First switch to mainnet for ENS resolution
       await server.callTool("switch_chain", { chainId: 1 })
-      
+
       const ensNames = ["vitalik.eth", "nick.eth", "brantly.eth"]
 
-      const promises = ensNames.map((name) =>
-        server.callTool("resolve_ens_name", { name: name }),
-      )
+      const promises = ensNames.map((name) => server.callTool("resolve_ens_name", { name: name }))
 
       const results = await Promise.all(promises)
 
