@@ -46,9 +46,6 @@ export function createTestTransport(config: TestTransportConfig = {}): Transport
   const mockTransport = createMockTransport(mergedConfig.mockResponses)
 
   // Note: Logging disabled due to TypeScript complexity with Transport wrapping
-  // if (process.env.CI) {
-  //   console.log("[Test Transport] CI logging would be enabled here")
-  // }
 
   return mockTransport
 }

@@ -8,7 +8,6 @@ import {
   simulateContractCall,
 } from "../../src/core/contract-testing.js"
 
-// import { TestContainer } from "../../src/test-container.js" // Unused in current tests
 
 // Mock ERC20 ABI for testing
 const mockERC20Abi: Abi = [
@@ -42,11 +41,9 @@ const mockERC20Abi: Abi = [
 ] as const
 
 describe("Contract Testing Core", () => {
-  // let _testContainer: TestContainer // Unused in current tests
   let resolveContractSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-    // _testContainer = TestContainer.createForTest({}) // Unused in current tests
 
     // Mock the resolveContract function
     resolveContractSpy = spyOn(contractResolution, "resolveContract").mockImplementation(

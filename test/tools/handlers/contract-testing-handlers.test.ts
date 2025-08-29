@@ -3,7 +3,6 @@ import type { Address } from "viem"
 import * as contractOps from "../../../src/contract-operations.js"
 import * as contractResolution from "../../../src/core/contract-resolution.js"
 import * as contractTesting from "../../../src/core/contract-testing.js"
-// import { TestContainer } from "../../../src/test-container.js"
 import {
   DryRunTransactionHandler,
   SimulateContractCallHandler,
@@ -41,7 +40,6 @@ const mockERC20Abi = [
 ] as const
 
 describe("Contract Testing Handlers", () => {
-  // let testContainer: TestContainer
   let listContractsSpy: ReturnType<typeof spyOn>
   let resolveContractSpy: ReturnType<typeof spyOn>
   let simulateContractCallSpy: ReturnType<typeof spyOn>
@@ -49,7 +47,6 @@ describe("Contract Testing Handlers", () => {
   let runTestScenariosSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-    // testContainer = TestContainer.createForTest({})
 
     // Mock the listContracts function
     listContractsSpy = spyOn(contractOps, "listContracts").mockReturnValue([

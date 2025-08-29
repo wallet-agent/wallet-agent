@@ -13,7 +13,6 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
   let deployedContracts: DeployedContracts
 
   // Don't use setupContainer() as it resets wallet state before each test
-  // setupContainer();
 
   // Helper to ensure wallet is connected
   async function ensureWalletConnected() {
