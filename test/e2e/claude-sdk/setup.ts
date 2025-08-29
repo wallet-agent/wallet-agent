@@ -40,7 +40,7 @@ export async function testPrompt(
     const escapedPrompt = userPrompt.replace(/"/g, '\\"').replace(/\$/g, "\\$")
 
     // Use the test MCP configuration with the wallet-agent server
-    const mcpConfigPath = new URL('./mcp-config.json', import.meta.url).pathname
+    const mcpConfigPath = new URL("./mcp-config.json", import.meta.url).pathname
     const result = await Promise.race([
       $`echo "${escapedPrompt}" | claude --print --dangerously-skip-permissions --mcp-config ${mcpConfigPath}`.quiet(),
       new Promise<never>((_, reject) =>

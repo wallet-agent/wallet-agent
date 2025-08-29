@@ -42,4 +42,4 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
-*~
+*~test/contracts/wagmi-counter-deployed.ts
