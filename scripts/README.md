@@ -1,8 +1,27 @@
-# Test Scripts
+# Scripts
 
-This folder contains utility scripts for running integration tests with Anvil.
+This folder contains utility scripts for the Wallet Agent project.
+
+## TypeScript Configuration
+
+All scripts in this directory are type-checked using `tsconfig.scripts.json`. Run type checking with:
+
+```bash
+bun run typecheck:scripts
+```
 
 ## Scripts
+
+### compile-counter.ts
+Compiles the Solidity Counter contract and generates TypeScript artifacts:
+- Compiles `contracts/Counter.sol` using solc
+- Generates artifacts in `test/contracts/counter-artifacts.ts`
+- Creates Wagmi config in `test/contracts/wagmi-counter.ts`
+
+**Usage:**
+```bash
+bun run scripts/compile-counter.ts
+```
 
 ### test-ci.sh
 All-in-one CI testing script that:

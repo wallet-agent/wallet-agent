@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Enable proper module support for scripts
+    "module": "ES2022",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    
+    // Enable features needed for scripts
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false,
+    
+    // Script-specific settings
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
+  },
+  "include": ["scripts/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

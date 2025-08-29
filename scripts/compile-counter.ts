@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import solc from "solc"
+import * as solc from "solc"
 
 const CONTRACTS_DIR = "contracts"
 const OUTPUT_DIR = "test/contracts"
@@ -85,7 +85,8 @@ export const counterContract = {
   }
 }
 
-if (import.meta.main) {
+// Check if this script is being run directly
+if (typeof import.meta !== "undefined" && import.meta.url === `file://${process.argv[1]}`) {
   try {
     compileContract()
     console.log("🎉 Compilation completed successfully!")
