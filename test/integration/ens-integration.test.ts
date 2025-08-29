@@ -50,13 +50,17 @@ describe("ENS Integration Test", () => {
   })
 
   // Helper function to check if ENS resolution should be skipped
-  function shouldSkipENS(result: { isError: boolean; content: { text: string }[] }) {
-    return result.isError && (
-      result.content[0].text.includes("execution reverted") ||
-      result.content[0].text.includes("returned no data") ||
-      result.content[0].text.includes("network") ||
-      result.content[0].text.includes("timeout") ||
-      result.content[0].text.includes("ContractFunctionExecutionError")
+  function shouldSkipENS(result: {
+    isError: boolean
+    content: [{ text: string; type: string }, ...Array<{ text: string; type: string }>]
+  }) {
+    return (
+      result.isError &&
+      (result.content[0]?.text.includes("execution reverted") ||
+        result.content[0]?.text.includes("returned no data") ||
+        result.content[0]?.text.includes("network") ||
+        result.content[0]?.text.includes("timeout") ||
+        result.content[0]?.text.includes("ContractFunctionExecutionError"))
     )
   }
 
@@ -71,7 +75,7 @@ describe("ENS Integration Test", () => {
       const result = await server.callTool("resolve_ens_name", {
         name: "vitalik.eth",
       })
-      
+
       // Skip test if ENS resolution not available (network issues, mock environment, etc.)
       if (shouldSkipENS(result)) {
         console.log("⚠️ ENS resolution not available in test environment, skipping test")
@@ -303,7 +307,7 @@ describe("ENS Integration Test", () => {
       const results = await Promise.all(promises)
 
       // Skip test if ENS resolution not available (check first result)
-      if (results.length > 0 && shouldSkipENS(results[0])) {
+      if (results.length > 0 && results[0] && shouldSkipENS(results[0])) {
         console.log("⚠️ ENS resolution not available in test environment, skipping test")
         return
       }

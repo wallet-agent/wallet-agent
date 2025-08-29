@@ -162,6 +162,10 @@ describe("Contract Development Workflow Integration Test", () => {
     }
 
     tempWagmiFile = join(process.cwd(), "test-wagmi-config.json")
+    console.log(
+      "📝 Writing Wagmi config:",
+      JSON.stringify(sampleWagmiConfig, null, 2).substring(0, 300),
+    )
     writeFileSync(tempWagmiFile, JSON.stringify(sampleWagmiConfig, null, 2))
   })
 
@@ -179,14 +183,19 @@ describe("Contract Development Workflow Integration Test", () => {
         filePath: tempWagmiFile,
       })
 
+      if (loadResult.isError) {
+        console.log("❌ Wagmi config load error:", loadResult.content[0].text)
+      }
       expect(loadResult.isError).toBe(false)
       if (!loadResult.isError) {
+        console.log("✅ Load result:", loadResult.content?.[0]?.text)
         expect(loadResult.content?.[0]?.text).toContain("Loaded")
         expect(loadResult.content?.[0]?.text).toContain("contracts")
       }
 
       // List available contracts
       const listResult = await server.callTool("list_contracts", {})
+      console.log("📋 Available contracts:", listResult.content?.[0]?.text)
 
       expect(listResult.isError).toBe(false)
       if (!listResult.isError) {

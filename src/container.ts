@@ -119,10 +119,37 @@ export class Container {
     const privateKeyClientFactory = new PrivateKeyWalletClientFactory(this.privateKeyWallets)
 
     // Initialize storage manager first (unless disabled for testing)
-    if (options.enableStorage !== false && process.env.NODE_ENV !== "test") {
-      // Check if we're in a project context first
-      const projectStoragePath = findProjectStorage()
+    // Allow override via WALLET_AGENT_ENABLE_STORAGE environment variable
+    const forceEnableStorage = process.env.WALLET_AGENT_ENABLE_STORAGE === "true"
+    const isTestMode = process.env.WALLET_AGENT_STORAGE_TEST_MODE === "true"
 
+    // Check if we're in a project with existing .wallet-agent directory
+    const projectStoragePath = findProjectStorage()
+    const hasProjectStorage = !!projectStoragePath
+
+    // Enable storage if:
+    // 1. Not explicitly disabled in options AND
+    // 2. (Not in test mode OR force enabled OR test mode enabled OR has project storage)
+    const shouldEnableStorage =
+      options.enableStorage !== false &&
+      (process.env.NODE_ENV !== "test" || forceEnableStorage || isTestMode || hasProjectStorage)
+
+    // Debug logging for encrypted keystore e2e tests
+    if (process.env.NODE_ENV !== "production") {
+      logger.debug({
+        msg: "Storage initialization check",
+        NODE_ENV: process.env.NODE_ENV,
+        WALLET_AGENT_ENABLE_STORAGE: process.env.WALLET_AGENT_ENABLE_STORAGE,
+        WALLET_AGENT_STORAGE_TEST_MODE: process.env.WALLET_AGENT_STORAGE_TEST_MODE,
+        forceEnableStorage,
+        isTestMode,
+        hasProjectStorage,
+        shouldEnableStorage,
+        enableStorageOption: options.enableStorage,
+      })
+    }
+
+    if (shouldEnableStorage) {
       if (projectStoragePath) {
         // Use project storage if available
         this.storageManager = new ProjectStorageManager(projectStoragePath)

@@ -185,7 +185,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
           const signatureMatch = responseText.match(/0x[a-fA-F0-9]{130}/)
           expect(signatureMatch).toBeTruthy()
           const signature = signatureMatch ? signatureMatch[0] : responseText
-          
+
           signatures.push({
             role: wallet.role,
             address: wallet.address,
@@ -262,9 +262,9 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       await server.callTool("import_private_key", {
         privateKey: testPrivateKey1,
       })
-      
+
       await server.callTool("set_wallet_type", { type: "privateKey" })
-      
+
       await server.callTool("connect_wallet", {
         address: testAddress1,
       })
@@ -286,7 +286,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
           const signatureMatch = responseText.match(/0x[a-fA-F0-9]{130}/)
           expect(signatureMatch).toBeTruthy()
           const signature = signatureMatch ? signatureMatch[0] : responseText
-          
+
           chainSignatures.push({
             chainId,
             message: chainSpecificMessage,
@@ -360,7 +360,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
       const multiSigSignatures = []
 
       for (let i = 0; i < signers.length; i++) {
-        const signer = signers[i]
+        const signer = signers[i]!
         await server.callTool("import_private_key", {
           privateKey: signer.key,
         })
@@ -390,7 +390,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
           const signatureMatch = responseText.match(/0x[a-fA-F0-9]{130}/)
           expect(signatureMatch).toBeTruthy()
           const signature = signatureMatch ? signatureMatch[0] : responseText
-          
+
           multiSigSignatures.push({
             signer: signer.address,
             signature: signature,
@@ -401,7 +401,9 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
 
       expect(multiSigSignatures.length).toBe(3)
       // In mock environment, signatures may be identical, so we test coordination success
-      expect(multiSigSignatures.every((ms) => ms.signature.match(/^0x[a-fA-F0-9]{130}$/))).toBe(true)
+      expect(multiSigSignatures.every((ms) => ms.signature.match(/^0x[a-fA-F0-9]{130}$/))).toBe(
+        true,
+      )
       console.log("✓ Multi-party EIP-712 signatures collected successfully")
     })
 
@@ -436,9 +438,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
           { token: testAddress1, amount: "1000000000000000000" },
           { token: testAddress2, amount: "2000000000000000000" },
         ],
-        takerAssets: [
-          { token: testAddress3, amount: "3000000000000000000" },
-        ],
+        takerAssets: [{ token: testAddress3, amount: "3000000000000000000" }],
         expiry: Math.floor(Date.now() / 1000) + 86400,
       }
 
