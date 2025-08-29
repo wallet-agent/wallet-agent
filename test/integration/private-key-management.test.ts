@@ -24,15 +24,6 @@ describe("Private Key Management Integration Test", () => {
   const testAddress2 = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
   const testMasterPassword = "secure-test-password-123"
 
-  // Helper function to check if encrypted keystore is available
-  async function checkEncryptedKeystoreAvailability() {
-    const testResult = await server.callTool("create_encrypted_keystore", {
-      masterPassword: "test-password-123"
-    })
-    encryptedKeystoreAvailable = !testResult.isError
-    return encryptedKeystoreAvailable
-  }
-
   beforeEach(async () => {
     testContainer = TestContainer.createForTest({})
 
@@ -118,8 +109,8 @@ describe("Private Key Management Integration Test", () => {
         expect(response).toContain(testAddress1)
         expect(response).toContain(testAddress2)
         // Should show both wallets in the list (format may vary)
-        const lines = response.split('\n')
-        const walletLines = lines.filter(line => line.includes('0x'))
+        const lines = response.split("\n")
+        const walletLines = lines.filter((line) => line.includes("0x"))
         expect(walletLines.length).toBe(2)
       }
     })
@@ -284,7 +275,9 @@ describe("Private Key Management Integration Test", () => {
 
       expect(unlockResult.isError).toBe(true)
       if (unlockResult.isError) {
-        expect(unlockResult.content[0].text).toMatch(/(incorrect|invalid|wrong|password|not available|storage)/i)
+        expect(unlockResult.content[0].text).toMatch(
+          /(incorrect|invalid|wrong|password|not available|storage)/i,
+        )
       }
     })
 
@@ -307,7 +300,7 @@ describe("Private Key Management Integration Test", () => {
       const createResult = await server.callTool("create_encrypted_keystore", {
         masterPassword: testMasterPassword,
       })
-      
+
       // Set availability flag for individual tests to check
       encryptedKeystoreAvailable = !createResult.isError
     })
@@ -318,7 +311,7 @@ describe("Private Key Management Integration Test", () => {
         console.log("⚠️ Encrypted keystore not available in test environment, skipping test")
         return
       }
-      
+
       // Import key into encrypted store
       const importResult = await server.callTool("import_encrypted_private_key", {
         privateKey: testPrivateKey1,
@@ -348,7 +341,7 @@ describe("Private Key Management Integration Test", () => {
         console.log("⚠️ Encrypted keystore not available in test environment, skipping test")
         return
       }
-      
+
       // Import key with initial label
       await server.callTool("import_encrypted_private_key", {
         privateKey: testPrivateKey1,
@@ -383,7 +376,7 @@ describe("Private Key Management Integration Test", () => {
         console.log("⚠️ Encrypted keystore not available in test environment, skipping test")
         return
       }
-      
+
       // Import two keys
       await server.callTool("import_encrypted_private_key", {
         privateKey: testPrivateKey1,
@@ -432,7 +425,7 @@ describe("Private Key Management Integration Test", () => {
         console.log("⚠️ Encrypted keystore not available in test environment, skipping test")
         return
       }
-      
+
       const newPassword = "new-secure-password-456"
 
       // Import a key first
@@ -502,7 +495,7 @@ describe("Private Key Management Integration Test", () => {
       const createResult = await server.callTool("create_encrypted_keystore", {
         masterPassword: testMasterPassword,
       })
-      
+
       // Skip test if encrypted keystore not available
       if (createResult.isError && createResult.content[0].text.includes("not available")) {
         console.log("⚠️ Encrypted keystore not available in test environment, skipping test")
@@ -519,14 +512,18 @@ describe("Private Key Management Integration Test", () => {
 
       expect(importResult.isError).toBe(true)
       if (importResult.isError) {
-        expect(importResult.content[0].text).toMatch(/(locked|unlock|keystore|not available|storage)/i)
+        expect(importResult.content[0].text).toMatch(
+          /(locked|unlock|keystore|not available|storage)/i,
+        )
       }
 
       // Try to list keys when locked
       const listResult = await server.callTool("list_encrypted_keys", {})
       expect(listResult.isError).toBe(true)
       if (listResult.isError) {
-        expect(listResult.content[0].text).toMatch(/(locked|unlock|keystore|not available|storage)/i)
+        expect(listResult.content[0].text).toMatch(
+          /(locked|unlock|keystore|not available|storage)/i,
+        )
       }
     })
 
@@ -557,7 +554,9 @@ describe("Private Key Management Integration Test", () => {
 
       expect(duplicateResult.isError).toBe(false) // Should handle gracefully
       if (!duplicateResult.isError) {
-        expect(duplicateResult.content[0].text).toMatch(/(already|exists|updated|imported|successfully)/i)
+        expect(duplicateResult.content[0].text).toMatch(
+          /(already|exists|updated|imported|successfully)/i,
+        )
       }
     })
   })
@@ -638,13 +637,13 @@ describe("Private Key Management Integration Test", () => {
       const createResult = await server.callTool("create_encrypted_keystore", {
         masterPassword: testMasterPassword,
       })
-      
+
       // Skip test if encrypted keystore not available
       if (createResult.isError && createResult.content[0].text.includes("not available")) {
         console.log("⚠️ Encrypted keystore not available in test environment, skipping test")
         return
       }
-      
+
       expect(createResult.isError).toBe(false)
 
       // 2. Import multiple keys with labels
