@@ -117,8 +117,13 @@ describe("Token Registry", () => {
       const address1 = resolveTokenAddress("usdc", 1)
       const address2 = resolveTokenAddress("USDC", 1)
       const address3 = resolveTokenAddress("Usdc", 1)
-      expect(address1).toBe(address2)
-      expect(address2).toBe(address3)
+      expect(address1).toBeDefined()
+      expect(address2).toBeDefined()
+      expect(address3).toBeDefined()
+      if (address1 && address2 && address3) {
+        expect(address1).toBe(address2)
+        expect(address2).toBe(address3)
+      }
     })
   })
 
@@ -143,7 +148,11 @@ describe("Token Registry", () => {
     it("is case-insensitive for addresses", () => {
       const info1 = getTokenInfoByAddress("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", 1)
       const info2 = getTokenInfoByAddress("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 1)
-      expect(info1).toEqual(info2)
+      expect(info1).toBeDefined()
+      expect(info2).toBeDefined()
+      if (info1 && info2) {
+        expect(info1).toEqual(info2)
+      }
     })
   })
 
@@ -168,7 +177,11 @@ describe("Token Registry", () => {
     it("is case-insensitive", () => {
       const info1 = getTokenInfoBySymbol("usdc", 1)
       const info2 = getTokenInfoBySymbol("USDC", 1)
-      expect(info1).toEqual(info2)
+      expect(info1).toBeDefined()
+      expect(info2).toBeDefined()
+      if (info1 && info2) {
+        expect(info1).toEqual(info2)
+      }
     })
   })
 

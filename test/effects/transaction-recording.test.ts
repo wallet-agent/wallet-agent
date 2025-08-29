@@ -147,7 +147,9 @@ describe("Transaction Recording Integration", () => {
       expect(transactions).toHaveLength(2)
 
       // Both should be recorded as "send" type (contract type determined at higher level)
-      expect(transactions.every((tx) => tx.metadata.type === "send")).toBe(true)
+      expect(
+        transactions.every((tx: { metadata: { type: string } }) => tx.metadata.type === "send"),
+      ).toBe(true)
     })
   })
 

@@ -210,7 +210,7 @@ export const TestContractAddress = {
 
       const result = await fileReader.read(testFile)
       expect(result).toBe(content)
-      expect(result.split("\n")[1].length).toBe(5000)
+      expect(result.split("\n")?.[1]?.length).toBe(5000)
     })
 
     test("handles multiple file reads concurrently", async () => {
@@ -233,7 +233,11 @@ export const TestContractAddress = {
 
       // Verify all results
       for (let i = 0; i < numFiles; i++) {
-        expect(results[i]).toBe(contents[i])
+        const result = results[i]
+        const content = contents[i]
+        if (result !== undefined && content !== undefined) {
+          expect(result).toBe(content)
+        }
       }
     })
 

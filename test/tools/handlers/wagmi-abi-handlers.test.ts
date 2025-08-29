@@ -5,7 +5,7 @@ import { join } from "node:path"
 import type { Abi, Address } from "viem"
 import * as contractOps from "../../../src/contract-operations.js"
 import * as contractResolution from "../../../src/core/contract-resolution.js"
-import { TestContainer } from "../../../src/test-container.js"
+// import { TestContainer } from "../../../src/test-container.js"
 import {
   AnalyzeWagmiContractHandler,
   ExportWagmiAbiHandler,
@@ -144,13 +144,13 @@ const mockStorageAbi: Abi = [
 ] as const
 
 describe("Wagmi ABI Handlers", () => {
-  let _testContainer: TestContainer
+  // let testContainer: TestContainer
   let tempDir: string
   let listContractsSpy: ReturnType<typeof spyOn>
   let resolveContractSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-    _testContainer = TestContainer.createForTest({})
+    // testContainer = TestContainer.createForTest({})
 
     // Create temporary directory for export tests
     tempDir = `/tmp/wagmi-abi-test-${Date.now()}-${Math.random().toString(36).slice(2)}`

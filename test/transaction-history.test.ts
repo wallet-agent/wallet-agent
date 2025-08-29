@@ -53,7 +53,7 @@ describe("Transaction History", () => {
     }
 
     // Load built-in ERC20 contract
-    const contractStore = testContainer.contractAdapter as { hasContract(name: string): boolean }
+    const contractStore = testContainer.contractAdapter as any
     expect(contractStore.hasContract("builtin:ERC20")).toBe(true)
 
     // Connect a wallet

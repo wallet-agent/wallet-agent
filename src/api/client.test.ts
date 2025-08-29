@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 import { WalletAgentAPIClient } from "./client.js"
 
 // Mock fetch globally
 // biome-ignore lint/suspicious/noExplicitAny: Mock types for testing
-global.fetch = vi.fn() as any
+global.fetch = mock(() => Promise.resolve()) as any
 
 describe("WalletAgentAPIClient", () => {
   let client: WalletAgentAPIClient
@@ -12,7 +12,7 @@ describe("WalletAgentAPIClient", () => {
   beforeEach(() => {
     // Reset environment
     process.env = { ...originalEnv }
-    vi.clearAllMocks()
+    // Note: Bun test doesn't have clearAllMocks equivalent
   })
 
   afterEach(() => {
@@ -20,7 +20,7 @@ describe("WalletAgentAPIClient", () => {
   })
 
   describe("constructor and configuration", () => {
-    it("should initialize and detect configuration", () => {
+    test("should initialize and detect configuration", () => {
       // Test without API key
       const originalKey = process.env.WALLET_AGENT_API_KEY
       delete process.env.WALLET_AGENT_API_KEY
@@ -31,7 +31,7 @@ describe("WalletAgentAPIClient", () => {
       if (originalKey) process.env.WALLET_AGENT_API_KEY = originalKey
     })
 
-    it("should create client instance", () => {
+    test("should create client instance", () => {
       client = new WalletAgentAPIClient()
       expect(client).toBeDefined()
       expect(client).toBeInstanceOf(WalletAgentAPIClient)
@@ -43,7 +43,7 @@ describe("WalletAgentAPIClient", () => {
       client = new WalletAgentAPIClient()
     })
 
-    it("should return error when API key is not configured", async () => {
+    test("should return error when API key is not configured", async () => {
       // This test depends on whether WALLET_AGENT_API_KEY is set in environment
       // If it's not set, we get the error. If it is set, we skip this test.
       const hasKey = !!process.env.WALLET_AGENT_API_KEY
@@ -57,7 +57,7 @@ describe("WalletAgentAPIClient", () => {
       }
     })
 
-    it("should handle API calls with mocked fetch", async () => {
+    test("should handle API calls with mocked fetch", async () => {
       // Only test if we have an API key configured
       const hasKey = !!process.env.WALLET_AGENT_API_KEY
 
@@ -77,7 +77,7 @@ describe("WalletAgentAPIClient", () => {
       }
     })
 
-    it("should handle fetch errors gracefully", async () => {
+    test("should handle fetch errors gracefully", async () => {
       const hasKey = !!process.env.WALLET_AGENT_API_KEY
 
       if (hasKey) {
@@ -95,7 +95,7 @@ describe("WalletAgentAPIClient", () => {
       client = new WalletAgentAPIClient()
     })
 
-    it("should return array of tools or empty array", async () => {
+    test("should return array of tools or empty array", async () => {
       const hasKey = !!process.env.WALLET_AGENT_API_KEY
 
       if (hasKey) {
@@ -122,7 +122,7 @@ describe("WalletAgentAPIClient", () => {
       }
     })
 
-    it("should handle failures gracefully", async () => {
+    test("should handle failures gracefully", async () => {
       const hasKey = !!process.env.WALLET_AGENT_API_KEY
 
       if (hasKey) {

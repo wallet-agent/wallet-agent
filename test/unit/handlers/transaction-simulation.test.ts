@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from "bun:test"
 import type { Chain } from "viem"
 import { TestContainer } from "../../../src/test-container.js"
 import { transactionSimulationHandlers } from "../../../src/tools/handlers/transaction-simulation.js"
-import type { TestGlobalThis, TestHandler } from "../../../src/types/test-globals.js"
+import type { TestGlobalThis } from "../../../src/types/test-globals.js"
 
 describe("Transaction Simulation Handlers", () => {
   let testContainer: TestContainer
@@ -28,15 +28,11 @@ describe("Transaction Simulation Handlers", () => {
 
     testContainer.walletEffects.getChainId = () => 1
     testContainer.walletEffects.getAddress = () => "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7"
-    testContainer.walletEffects.getAccount = () => ({
-      address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7",
-      isConnected: true,
-      connector: { name: "Mock Connector", id: "mock" },
-    })
+    // Remove getAccount as it doesn't exist on WalletEffects
     testContainer.walletEffects.getCurrentAccount = () => ({
       address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7",
       isConnected: true,
-      connector: { name: "Mock Connector", id: "mock" },
+      connector: "mock",
     })
     testContainer.walletEffects.getBalance = async () => ({
       balance: BigInt("1000000000000000000"), // 1 ETH
@@ -64,18 +60,21 @@ describe("Transaction Simulation Handlers", () => {
 
     testContainer.transactionEffects.simulateTransaction = async (
       contract: string,
-      functionName?: string,
+      functionName: string,
       _args?: unknown[],
+      _value?: string,
+      _address?: `0x${string}`,
     ) => {
       if (contract === "TestContract") {
-        return { success: true, result: null }
+        return { success: true, result: null, willRevert: false }
       }
       if (contract === "USDC" && functionName === "transfer") {
-        return { success: true, result: null }
+        return { success: true, result: null, willRevert: false }
       }
       return {
         success: false,
         error: `Contract ${contract} not found. Provide an address or load the contract first.`,
+        willRevert: true,
       }
     }
 
@@ -97,7 +96,7 @@ describe("Transaction Simulation Handlers", () => {
   })
 
   // Helper to execute handlers with isolated test container
-  async function executeWithTestContainer(handler: TestHandler, args: unknown) {
+  async function executeWithTestContainer(handler: any, args: unknown) {
     const testGlobal = globalThis as TestGlobalThis
     // Store original singleton instance
     const originalInstance = testGlobal.__walletAgentTestContainer
@@ -127,9 +126,9 @@ describe("Transaction Simulation Handlers", () => {
         simulate: true,
       })
 
-      expect(result.content[0].type).toBe("text")
-      expect(result.content[0].text).toContain("Transaction Sent Successfully")
-      expect(result.content[0].text).toContain("0xmockedtxhash123")
+      expect(result.content?.[0]?.type).toBe("text")
+      expect(result.content?.[0]?.text).toContain("Transaction Sent Successfully")
+      expect(result.content?.[0]?.text).toContain("0xmockedtxhash123")
     })
 
     test("should warn when sending to contract without data", async () => {
@@ -139,8 +138,8 @@ describe("Transaction Simulation Handlers", () => {
         simulate: true,
       })
 
-      expect(result.content[0].text).toContain("Warnings:")
-      expect(result.content[0].text).toContain("contract address without data")
+      expect(result.content?.[0]?.text).toContain("Warnings:")
+      expect(result.content?.[0]?.text).toContain("contract address without data")
     })
 
     test("should detect insufficient balance", async () => {
@@ -150,8 +149,8 @@ describe("Transaction Simulation Handlers", () => {
         simulate: true,
       })
 
-      expect(result.content[0].text).toContain("Simulation Failed")
-      expect(result.content[0].text).toContain("Insufficient balance")
+      expect(result.content?.[0]?.text).toContain("Simulation Failed")
+      expect(result.content?.[0]?.text).toContain("Insufficient balance")
     })
 
     test("should skip simulation when simulate=false", async () => {
@@ -161,8 +160,8 @@ describe("Transaction Simulation Handlers", () => {
         simulate: false,
       })
 
-      expect(result.content[0].text).toContain("without simulation")
-      expect(result.content[0].text).toContain("0xmockedtxhash123")
+      expect(result.content?.[0]?.text).toContain("without simulation")
+      expect(result.content?.[0]?.text).toContain("0xmockedtxhash123")
     })
 
     test("should execute transaction when no warnings", async () => {
@@ -172,8 +171,8 @@ describe("Transaction Simulation Handlers", () => {
         simulate: true,
       })
 
-      expect(result.content[0].text).toContain("Transaction Sent Successfully")
-      expect(result.content[0].text).not.toContain("Confirmation Required")
+      expect(result.content?.[0]?.text).toContain("Transaction Sent Successfully")
+      expect(result.content?.[0]?.text).not.toContain("Confirmation Required")
     })
   })
 
@@ -188,9 +187,9 @@ describe("Transaction Simulation Handlers", () => {
         simulate: true,
       })
 
-      expect(result.content[0].text).toContain("Contract Write Simulation Successful")
-      expect(result.content[0].text).toContain("Simulation passed")
-      expect(result.content[0].text).toContain(
+      expect(result.content?.[0]?.text).toContain("Contract Write Simulation Successful")
+      expect(result.content?.[0]?.text).toContain("Simulation passed")
+      expect(result.content?.[0]?.text).toContain(
         "To execute, run the command again with simulate=false",
       )
     })
@@ -205,8 +204,8 @@ describe("Transaction Simulation Handlers", () => {
 
       // This will likely fail with contract not found since the real writeContract is called
       // But the test shows the handler structure is working
-      expect(result.content[0].text).toContain("Contract Write Failed")
-      expect(result.content[0].text).toContain("Error:")
+      expect(result.content?.[0]?.text).toContain("Contract Write Failed")
+      expect(result.content?.[0]?.text).toContain("Error:")
     })
   })
 
@@ -221,9 +220,9 @@ describe("Transaction Simulation Handlers", () => {
         simulate: true,
       })
 
-      expect(result.content[0].text).toContain("Token Transfer Simulation Successful")
-      expect(result.content[0].text).toContain("Simulation passed")
-      expect(result.content[0].text).toContain(
+      expect(result.content?.[0]?.text).toContain("Token Transfer Simulation Successful")
+      expect(result.content?.[0]?.text).toContain("Simulation passed")
+      expect(result.content?.[0]?.text).toContain(
         "To execute, run the command again with simulate=false",
       )
     })
@@ -236,8 +235,8 @@ describe("Transaction Simulation Handlers", () => {
         simulate: false,
       })
 
-      expect(result.content[0].text).toContain("Token Transfer Successful")
-      expect(result.content[0].text).toContain("0xtokentxhash")
+      expect(result.content?.[0]?.text).toContain("Token Transfer Successful")
+      expect(result.content?.[0]?.text).toContain("0xtokentxhash")
     })
   })
 

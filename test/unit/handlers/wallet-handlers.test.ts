@@ -50,8 +50,8 @@ describe("Wallet Handlers", () => {
         address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       })
 
-      expect(result.content[0].text).toContain("Connected to wallet:")
-      expect(result.content[0].text).toContain("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+      expect(result.content?.[0]?.text).toContain("Connected to wallet:")
+      expect(result.content?.[0]?.text).toContain("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
     })
 
     test("should validate address format", async () => {
@@ -80,7 +80,7 @@ describe("Wallet Handlers", () => {
       // Then disconnect
       const result = await executeWithTestContainer(new DisconnectWalletHandler(), {})
 
-      expect(result.content[0].text).toBe("Wallet disconnected")
+      expect(result.content?.[0]?.text).toBe("Wallet disconnected")
     })
   })
 
@@ -94,9 +94,9 @@ describe("Wallet Handlers", () => {
     test("should return list of mock accounts", async () => {
       const result = await executeWithTestContainer(new GetAccountsHandler(), {})
 
-      expect(result.content[0].text).toContain("Available mock accounts:")
-      expect(result.content[0].text).toContain("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
-      expect(result.content[0].text).toContain("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+      expect(result.content?.[0]?.text).toContain("Available mock accounts:")
+      expect(result.content?.[0]?.text).toContain("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+      expect(result.content?.[0]?.text).toContain("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
     })
   })
 
@@ -115,17 +115,17 @@ describe("Wallet Handlers", () => {
 
       const result = await executeWithTestContainer(new GetCurrentAccountHandler(), {})
 
-      expect(result.content[0].text).toContain(
+      expect(result.content?.[0]?.text).toContain(
         "Connected: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       )
-      expect(result.content[0].text).toContain("Chain ID:")
-      expect(result.content[0].text).toContain("Connector:")
+      expect(result.content?.[0]?.text).toContain("Chain ID:")
+      expect(result.content?.[0]?.text).toContain("Connector:")
     })
 
     test("should indicate when no wallet is connected", async () => {
       const result = await executeWithTestContainer(new GetCurrentAccountHandler(), {})
 
-      expect(result.content[0].text).toBe("No wallet connected")
+      expect(result.content?.[0]?.text).toBe("No wallet connected")
     })
   })
 
@@ -144,8 +144,8 @@ describe("Wallet Handlers", () => {
 
       const result = await executeWithTestContainer(new GetBalanceHandler(), {})
 
-      expect(result.content[0].text).toContain("Balance:")
-      expect(result.content[0].text).toContain("ETH")
+      expect(result.content?.[0]?.text).toContain("Balance:")
+      expect(result.content?.[0]?.text).toContain("ETH")
     })
 
     test("should get balance of specific address", async () => {
@@ -153,8 +153,8 @@ describe("Wallet Handlers", () => {
         address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
       })
 
-      expect(result.content[0].text).toContain("Balance:")
-      expect(result.content[0].text).toContain("ETH")
+      expect(result.content?.[0]?.text).toContain("Balance:")
+      expect(result.content?.[0]?.text).toContain("ETH")
     })
 
     test("should validate address format", async () => {

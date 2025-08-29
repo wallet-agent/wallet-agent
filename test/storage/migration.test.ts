@@ -140,8 +140,8 @@ describe("Migration", () => {
       // Verify content
       const chainsData = await Bun.file(chainsPath).json()
       expect(chainsData).toHaveLength(2)
-      expect(chainsData[0].name).toBe("Ethereum")
-      expect(chainsData[1].name).toBe("Anvil")
+      expect(chainsData?.[0]?.name).toBe("Ethereum")
+      expect(chainsData?.[1]?.name).toBe("Anvil")
     })
 
     it("should migrate private key wallet addresses", async () => {

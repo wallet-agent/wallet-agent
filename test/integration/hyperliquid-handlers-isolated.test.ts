@@ -118,7 +118,9 @@ describe("Hyperliquid Handlers Registry Integration", () => {
         } catch (error) {
           const errorMessage = (error as Error).message
           // Should indicate validation error for missing fields (isBuy and sz are required)
-          expect(errorMessage).toContain("isBuy") || expect(errorMessage).toContain("sz")
+          const containsIsBuy = errorMessage.includes("isBuy")
+          const containsSz = errorMessage.includes("sz")
+          expect(containsIsBuy || containsSz).toBe(true)
         }
       }
     })

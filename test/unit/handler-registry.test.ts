@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, test } from "bun:test"
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
-import { BaseToolHandler, HandlerRegistry } from "../../src/tools/handler-registry.js"
+import { z } from "zod"
+import {
+  BaseToolHandler,
+  HandlerRegistry,
+  type ToolResponse,
+} from "../../src/tools/handler-registry.js"
 
 /**
  * Test handler implementation for testing
@@ -12,6 +17,15 @@ class TestHandler extends BaseToolHandler {
       throw new Error(typedArgs.message || "Test error")
     }
     return this.createTextResponse(typedArgs?.message || "Test successful")
+  }
+
+  // Public test methods to access protected functionality
+  public testCreateTextResponse(text: string): ToolResponse {
+    return this.createTextResponse(text)
+  }
+
+  public testValidateArgs<T>(schema: z.ZodSchema<T>, args: unknown): T {
+    return this.validateArgs(schema, args)
   }
 }
 
@@ -185,7 +199,7 @@ describe("HandlerRegistry", () => {
     test("should re-throw MCP errors as-is", async () => {
       // Create a handler that throws an MCP error
       class McpErrorHandler extends BaseToolHandler {
-        async execute() {
+        async execute(): Promise<ToolResponse> {
           throw new McpError(ErrorCode.InvalidParams, "Invalid parameters")
         }
       }
@@ -237,7 +251,7 @@ describe("BaseToolHandler", () => {
   describe("createTextResponse", () => {
     test("should create properly formatted response", () => {
       const handler = new TestHandler("test", "Test handler")
-      const response = handler.createTextResponse("Hello, world!")
+      const response = handler.testCreateTextResponse("Hello, world!")
 
       expect(response).toEqual({
         content: [
@@ -258,7 +272,7 @@ describe("BaseToolHandler", () => {
         age: z.number(),
       })
 
-      const result = handler.validateArgs(schema, { name: "John", age: 30 })
+      const result = handler.testValidateArgs(schema, { name: "John", age: 30 })
 
       expect(result).toEqual({ name: "John", age: 30 })
     })
@@ -271,7 +285,7 @@ describe("BaseToolHandler", () => {
       })
 
       try {
-        handler.validateArgs(schema, { name: "John", age: "thirty" })
+        handler.testValidateArgs(schema, { name: "John", age: "thirty" })
         throw new Error("Should have thrown")
       } catch (error) {
         expect(error).toBeInstanceOf(McpError)
@@ -289,7 +303,7 @@ describe("BaseToolHandler", () => {
       })
 
       try {
-        handler.validateArgs(schema, { email: "not-an-email", age: 15 })
+        handler.testValidateArgs(schema, { email: "not-an-email", age: 15 })
         throw new Error("Should have thrown")
       } catch (error) {
         const mcpError = error as McpError
@@ -308,10 +322,9 @@ describe("BaseToolHandler", () => {
         },
       } as unknown as z.ZodSchema
 
-      expect(() => handler.validateArgs(schema, {})).toThrow("Unexpected error")
+      expect(() => handler.testValidateArgs(schema, {})).toThrow("Unexpected error")
     })
   })
 })
 
-// Import zod for testing
-import { z } from "zod"
+// zod is already imported at the top

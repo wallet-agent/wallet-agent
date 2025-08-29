@@ -98,7 +98,7 @@ describe("chains.ts unit tests", () => {
   describe("removeCustomChain", () => {
     it("should prevent removing currently connected chain", async () => {
       // Add a custom chain
-      const _chain = addCustomChain(999116, "Connected Chain", "https://connected.com", {
+      addCustomChain(999116, "Connected Chain", "https://connected.com", {
         name: "Connected",
         symbol: "CONN",
         decimals: 18,

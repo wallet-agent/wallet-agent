@@ -61,7 +61,7 @@ describe("StorageManager", () => {
       const config = await storageManager.readConfig()
 
       expect(config.version).toBe(STORAGE_VERSION)
-      expect(config.preferences).toEqual(DEFAULT_CONFIG.preferences)
+      expect(config.preferences).toEqual(DEFAULT_CONFIG.preferences!)
       expect(config.createdAt).toBeDefined()
       expect(config.lastModified).toBeDefined()
     })
@@ -135,7 +135,7 @@ describe("StorageManager", () => {
       expect(config.preferences?.autoConnect).toBe(true)
       expect(config.preferences?.preferredCurrency).toBe("EUR")
       // Should preserve existing preferences
-      expect(config.preferences?.theme).toBe(initialTheme)
+      expect(config.preferences?.theme).toBe(initialTheme!)
     })
   })
 
@@ -160,13 +160,13 @@ describe("StorageManager", () => {
       expect(info.permissions.writable).toBe(true)
 
       // Check directory status
-      expect(info.directories.auth.exists).toBe(true)
-      expect(info.directories.wallets.exists).toBe(true)
-      expect(info.directories.networks.exists).toBe(true)
-      expect(info.directories.contracts.exists).toBe(true)
-      expect(info.directories.addressbook.exists).toBe(true)
-      expect(info.directories.cache.exists).toBe(true)
-      expect(info.directories.templates.exists).toBe(true)
+      expect(info.directories.auth?.exists).toBe(true)
+      expect(info.directories.wallets?.exists).toBe(true)
+      expect(info.directories.networks?.exists).toBe(true)
+      expect(info.directories.contracts?.exists).toBe(true)
+      expect(info.directories.addressbook?.exists).toBe(true)
+      expect(info.directories.cache?.exists).toBe(true)
+      expect(info.directories.templates?.exists).toBe(true)
     })
   })
 
@@ -238,9 +238,7 @@ describe("StorageManager", () => {
       expect(migratedConfig.preferences?.theme).toBe("light")
 
       // Should create backup
-      const _backupExists = existsSync(
-        `${`${layout.configPath}.backup.${Date.now()}`.slice(0, -5)}*`,
-      )
+      existsSync(`${`${layout.configPath}.backup.${Date.now()}`.slice(0, -5)}*`)
       // Note: Exact backup file detection would require mocking Date.now()
     })
   })

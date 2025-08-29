@@ -2,18 +2,19 @@ import { afterEach, beforeEach, describe, expect, test as it, jest, mock } from 
 
 // Mock fetch globally
 // biome-ignore lint/suspicious/noExplicitAny: Mock types for testing
-global.fetch = jest.fn() as any
+global.fetch = mock(() => Promise.resolve()) as any
 
 // Create mock wallet manager
-const _createMockWalletManager = () => ({
-  importPrivateKey: jest.fn(),
-  getAccount: jest.fn(),
-  getAddress: jest.fn(),
-  hasWallet: jest.fn(),
-  signMessage: jest.fn(),
-  signTypedData: jest.fn(),
-  clearWallet: jest.fn(),
-})
+// Unused mock function - keeping for potential future use
+// const _createMockWalletManager = () => ({
+//   importPrivateKey: jest.fn(),
+//   getAccount: jest.fn(),
+//   getAddress: jest.fn(),
+//   hasWallet: jest.fn(),
+//   signMessage: jest.fn(),
+//   signTypedData: jest.fn(),
+//   clearWallet: jest.fn(),
+// })
 
 // Mock the Hyperliquid SDK
 mock.module("@nktkas/hyperliquid", () => {
@@ -134,8 +135,9 @@ describe("handleHyperliquidTool", () => {
         method: "tools/call",
       })
 
-      expect(result.content[0].text).toContain("Hyperliquid wallet imported successfully")
-      expect(result.content[0].text).toMatch(/Address: 0x[a-fA-F0-9]{40}/)
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("Hyperliquid wallet imported successfully")
+      expect(result.content?.[0]?.text).toMatch(/Address: 0x[a-fA-F0-9]{40}/)
     })
 
     it("should throw error for invalid private key", async () => {
@@ -171,8 +173,9 @@ describe("handleHyperliquidTool", () => {
       })
 
       // Check that result contains expected mock data
-      expect(result.content[0].text).toContain("balance")
-      expect(result.content[0].text).toContain("1000")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("balance")
+      expect(result.content?.[0]?.text).toContain("1000")
     })
 
     it("should get account info for specified address", async () => {
@@ -187,7 +190,8 @@ describe("handleHyperliquidTool", () => {
       })
 
       // Should return mock data for any address
-      expect(result.content[0].text).toContain("balance")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("balance")
     })
 
     // Note: Testing "no wallet" is difficult with current module structure
@@ -214,7 +218,8 @@ describe("handleHyperliquidTool", () => {
       })
 
       // Should still work with custom endpoint
-      expect(result.content[0].text).toContain("balance")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("balance")
     })
   })
 
@@ -243,8 +248,9 @@ describe("handleHyperliquidTool", () => {
         method: "tools/call",
       })
 
-      expect(result.content[0].text).toContain("Order placed successfully")
-      expect(result.content[0].text).toContain("12345") // Mock order ID
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("Order placed successfully")
+      expect(result.content?.[0]?.text).toContain("12345") // Mock order ID
     })
 
     it("should validate order parameters", async () => {
@@ -286,7 +292,8 @@ describe("handleHyperliquidTool", () => {
         method: "tools/call",
       })
 
-      expect(result.content[0].text).toContain("Order cancelled successfully")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("Order cancelled successfully")
     })
 
     it("should cancel all orders for coin when no orderId provided", async () => {
@@ -307,7 +314,8 @@ describe("handleHyperliquidTool", () => {
         method: "tools/call",
       })
 
-      expect(result.content[0].text).toContain("cancelled")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("cancelled")
     })
   })
 
@@ -330,7 +338,8 @@ describe("handleHyperliquidTool", () => {
         method: "tools/call",
       })
 
-      expect(result.content[0].text).toContain("[]")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("[]")
     })
   })
 
@@ -353,7 +362,8 @@ describe("handleHyperliquidTool", () => {
         method: "tools/call",
       })
 
-      expect(result.content[0].text).toContain("[]")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("[]")
     })
   })
 
@@ -379,7 +389,8 @@ describe("handleHyperliquidTool", () => {
         method: "tools/call",
       })
 
-      expect(result.content[0].text).toContain("Transfer completed successfully")
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("Transfer completed successfully")
     })
 
     it("should validate transfer amount", async () => {

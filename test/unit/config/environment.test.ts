@@ -156,7 +156,9 @@ describe("Environment Configuration", () => {
 
       // If Hyperliquid network is set, it should be in testConfig
       if (process.env.HYPERLIQUID_NETWORK) {
-        expect(testConfig.hyperliquidNetwork).toBe(process.env.HYPERLIQUID_NETWORK)
+        expect(testConfig.hyperliquidNetwork).toBe(
+          process.env.HYPERLIQUID_NETWORK as "testnet" | "mainnet",
+        )
       } else {
         // Otherwise should default to mainnet
         expect(testConfig.hyperliquidNetwork).toBe("mainnet")

@@ -152,7 +152,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       // Parse the result from the JSON in the text
       const resultMatch = text.match(/Contract read result: (.+)/)
       expect(resultMatch).toBeDefined()
-      const parsedResult = resultMatch ? JSON.parse(resultMatch[1]) : null
+      const parsedResult = resultMatch?.[1] ? JSON.parse(resultMatch[1]) : null
       expect(parsedResult).not.toBeNull()
       console.log("✓ Storage initial value:", parsedResult)
     })
@@ -187,7 +187,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
 
       const resultMatch = readResult.text.match(/Contract read result: (.+)/)
       expect(resultMatch).toBeDefined()
-      const parsedResult = resultMatch ? JSON.parse(resultMatch[1]) : null
+      const parsedResult = resultMatch?.[1] ? JSON.parse(resultMatch[1]) : null
       expect(parsedResult).toBe(testValue)
       console.log("✓ Verified stored value:", parsedResult)
     })
@@ -201,7 +201,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       })
       const nameMatch = nameResult.text.match(/Contract read result: (.+)/)
       expect(nameMatch).toBeDefined()
-      const name = nameMatch ? JSON.parse(nameMatch[1]) : null
+      const name = nameMatch?.[1] ? JSON.parse(nameMatch[1]) : null
       expect(name).toBe("Test Token")
       console.log("✓ Token name:", name)
 
@@ -213,7 +213,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       })
       const symbolMatch = symbolResult.text.match(/Contract read result: (.+)/)
       expect(symbolMatch).toBeDefined()
-      const symbol = symbolMatch ? JSON.parse(symbolMatch[1]) : null
+      const symbol = symbolMatch?.[1] ? JSON.parse(symbolMatch[1]) : null
       expect(symbol).toBe("TEST")
       console.log("✓ Token symbol:", symbol)
 
@@ -225,7 +225,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       })
       const balanceMatch = balanceResult.text.match(/Contract read result: (.+)/)
       expect(balanceMatch).toBeDefined()
-      const balance = balanceMatch ? JSON.parse(balanceMatch[1]) : null
+      const balance = balanceMatch?.[1] ? JSON.parse(balanceMatch[1]) : null
       expect(balance).toBe("10000000000000000000000")
       console.log("✓ Token balance:", balance)
     })
@@ -258,7 +258,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
 
       const balanceMatch = balanceResult.text.match(/Contract read result: (.+)/)
       expect(balanceMatch).toBeDefined()
-      const recipientBalance = balanceMatch ? JSON.parse(balanceMatch[1]) : null
+      const recipientBalance = balanceMatch?.[1] ? JSON.parse(balanceMatch[1]) : null
       expect(recipientBalance).toBe(amount)
       console.log("✓ Recipient received tokens:", recipientBalance)
     })
@@ -273,7 +273,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       })
       const ownerMatch = ownerResult.text.match(/Contract read result: (.+)/)
       expect(ownerMatch).toBeDefined()
-      const owner = ownerMatch ? JSON.parse(ownerMatch[1]) : null
+      const owner = ownerMatch?.[1] ? JSON.parse(ownerMatch[1]) : null
       expect(owner).toBe("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
       console.log("✓ NFT owner:", owner)
 
@@ -285,7 +285,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       })
       const nameMatch = nameResult.text.match(/Contract read result: (.+)/)
       expect(nameMatch).toBeDefined()
-      const nftName = nameMatch ? JSON.parse(nameMatch[1]) : null
+      const nftName = nameMatch?.[1] ? JSON.parse(nameMatch[1]) : null
       expect(nftName).toBe("TestNFT")
       console.log("✓ NFT collection name:", nftName)
     })
@@ -319,7 +319,7 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
 
       const approvedMatch = approvedResult.text.match(/Contract read result: (.+)/)
       expect(approvedMatch).toBeDefined()
-      const approved = approvedMatch ? JSON.parse(approvedMatch[1]) : null
+      const approved = approvedMatch?.[1] ? JSON.parse(approvedMatch[1]) : null
       expect(approved).toBe(spender)
       console.log("✓ NFT approved to:", approved)
     })

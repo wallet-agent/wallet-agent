@@ -56,9 +56,9 @@ describe("Chain Handlers", () => {
         },
       })
 
-      expect(result.content[0].text).toContain("Custom chain added successfully")
-      expect(result.content[0].text).toContain("Chain ID: 99999")
-      expect(result.content[0].text).toContain("Name: Test Chain")
+      expect(result.content?.[0]?.text).toContain("Custom chain added successfully")
+      expect(result.content?.[0]?.text).toContain("Chain ID: 99999")
+      expect(result.content?.[0]?.text).toContain("Name: Test Chain")
 
       // Verify chain was added to test container
       const chains = testContainer.chainAdapter.getAllChains()
@@ -157,8 +157,8 @@ describe("Chain Handlers", () => {
         name: "Updated Chain",
       })
 
-      expect(result.content[0].text).toContain("Custom chain 88888 updated successfully")
-      expect(result.content[0].text).toContain("Name: Updated Chain")
+      expect(result.content?.[0]?.text).toContain("Custom chain 88888 updated successfully")
+      expect(result.content?.[0]?.text).toContain("Name: Updated Chain")
 
       // Verify update
       const chains = testContainer.chainAdapter.getAllChains()
@@ -172,8 +172,8 @@ describe("Chain Handlers", () => {
         rpcUrl: "https://updated.example.com",
       })
 
-      expect(result.content[0].text).toContain("Custom chain 88888 updated successfully")
-      expect(result.content[0].text).toContain("RPC URL: https://updated.example.com")
+      expect(result.content?.[0]?.text).toContain("Custom chain 88888 updated successfully")
+      expect(result.content?.[0]?.text).toContain("RPC URL: https://updated.example.com")
     })
 
     test("should update multiple properties", async () => {
@@ -188,9 +188,9 @@ describe("Chain Handlers", () => {
         },
       })
 
-      expect(result.content[0].text).toContain("Name: Multi Update")
-      expect(result.content[0].text).toContain("RPC URL: https://multi.example.com")
-      expect(result.content[0].text).toContain("Native Currency: NEW")
+      expect(result.content?.[0]?.text).toContain("Name: Multi Update")
+      expect(result.content?.[0]?.text).toContain("RPC URL: https://multi.example.com")
+      expect(result.content?.[0]?.text).toContain("Native Currency: NEW")
     })
 
     test("should handle non-existent chain", async () => {
@@ -239,7 +239,7 @@ describe("Chain Handlers", () => {
         chainId: 66666,
       })
 
-      expect(result.content[0].text).toBe("Custom chain 66666 removed successfully.")
+      expect(result.content?.[0]?.text).toBe("Custom chain 66666 removed successfully.")
 
       // Verify chain was removed
       chains = testContainer.chainAdapter.getAllChains()

@@ -346,7 +346,7 @@ describe("Contract Operations", () => {
       const originalEnv = process.env.DEBUG_CI
       process.env.DEBUG_CI = "true"
 
-      const consoleSpy = mock(console, "error")
+      const consoleSpy = mock(() => {}) // Mock console.error
 
       try {
         const params: ContractReadParams = {

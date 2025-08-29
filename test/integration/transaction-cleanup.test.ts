@@ -26,8 +26,7 @@ describe("Transaction History Cleanup Integration", () => {
     const storageManager = testContainer.getStorageManager()
     if (storageManager) {
       // Replace the transaction history manager with one using our temp directory
-      const _originalGetTransactionHistory =
-        storageManager.getTransactionHistory.bind(storageManager)
+      storageManager.getTransactionHistory.bind(storageManager)
       storageManager.getTransactionHistory = () => {
         const { TransactionHistoryManager } = require("../../src/storage/transaction-history.js")
         return new TransactionHistoryManager(join(tempStorageDir, "transactions"))
@@ -109,14 +108,14 @@ describe("Transaction History Cleanup Integration", () => {
       expect(allTransactions).toHaveLength(2)
 
       // Old transaction should be gone, recent one from old file should remain
-      const hashes = allTransactions.map((tx) => tx.hash)
+      const hashes = allTransactions.map((tx: any) => tx.hash)
       expect(hashes).not.toContain(
         "0x1111111111111111111111111111111111111111111111111111111111111111",
       ) // Old one removed
       expect(hashes).toContain("0x2222222222222222222222222222222222222222222222222222222222222222") // Recent one kept
 
       // New transaction should be present
-      expect(allTransactions.some((tx) => tx.value === "3000000000000000000")).toBe(true)
+      expect(allTransactions.some((tx: any) => tx.value === "3000000000000000000")).toBe(true)
     })
 
     test("should delete entire files with only old transactions", async () => {

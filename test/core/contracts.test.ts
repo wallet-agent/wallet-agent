@@ -26,14 +26,14 @@ export const SimpleContractABI = [
       const contracts = parseWagmiContent(content)
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("SimpleContract")
-      expect(contracts[0].abi).toBeInstanceOf(Array)
-      expect(contracts[0].abi[0]).toMatchObject({
+      expect(contracts?.[0]?.name).toBe("SimpleContract")
+      expect(contracts?.[0]?.abi).toBeInstanceOf(Array)
+      expect(contracts?.[0]?.abi?.[0]).toMatchObject({
         name: "test",
         type: "function",
         stateMutability: "view",
       })
-      expect(contracts[0].addresses).toBeUndefined()
+      expect(contracts?.[0]?.addresses).toBeUndefined()
     })
 
     test("fails to parse complex address formats (expected behavior)", () => {
@@ -50,8 +50,8 @@ export const SimpleContractAddress = {
 
       // Current implementation fails to parse addresses (expected behavior)
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("SimpleContract")
-      expect(contracts[0].addresses).toBeUndefined()
+      expect(contracts?.[0]?.name).toBe("SimpleContract")
+      expect(contracts?.[0]?.addresses).toBeUndefined()
     })
 
     test("parses contract with only ABI (no addresses)", () => {
@@ -70,9 +70,9 @@ export const OnlyABIContractABI = [
       const contracts = parseWagmiContent(content)
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("OnlyABIContract")
-      expect(contracts[0].abi).toBeInstanceOf(Array)
-      expect(contracts[0].addresses).toBeUndefined()
+      expect(contracts?.[0]?.name).toBe("OnlyABIContract")
+      expect(contracts?.[0]?.abi).toBeInstanceOf(Array)
+      expect(contracts?.[0]?.addresses).toBeUndefined()
     })
 
     test("parses multiple contracts with ABIs only", () => {
@@ -129,12 +129,12 @@ export const ComplexContractABI = [
       const contracts = parseWagmiContent(content)
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("ComplexContract")
-      expect(contracts[0].abi[0]).toMatchObject({
+      expect(contracts?.[0]?.name).toBe("ComplexContract")
+      expect(contracts?.[0]?.abi?.[0]).toMatchObject({
         name: "multiTransfer",
         type: "function",
       })
-      expect(contracts[0].abi[0].inputs[0]).toMatchObject({
+      expect((contracts?.[0]?.abi?.[0] as any)?.inputs?.[0]).toMatchObject({
         internalType: "struct Transfer",
         name: "transfer",
         type: "tuple",
@@ -157,8 +157,8 @@ export const QuotedKeysABI = [
       const contracts = parseWagmiContent(content)
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("QuotedKeys")
-      expect(contracts[0].abi[0]).toMatchObject({
+      expect(contracts?.[0]?.name).toBe("QuotedKeys")
+      expect(contracts?.[0]?.abi?.[0]).toMatchObject({
         name: "getValue",
         type: "function",
         stateMutability: "view",
@@ -206,8 +206,8 @@ export const GoodContractAddress = {
       const contracts = parseWagmiContent(content)
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("GoodContract")
-      expect(contracts[0].addresses).toBeUndefined()
+      expect(contracts?.[0]?.name).toBe("GoodContract")
+      expect(contracts?.[0]?.addresses).toBeUndefined()
     })
 
     test("handles ABI with trailing commas", () => {
@@ -224,7 +224,7 @@ export const TrailingCommaABI = [
       const contracts = parseWagmiContent(content)
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].abi[0]).toMatchObject({
+      expect(contracts?.[0]?.abi?.[0]).toMatchObject({
         name: "test",
         type: "function",
       })
@@ -245,8 +245,8 @@ export const TrailingCommaContractABI = [
       const contracts = parseWagmiContent(content)
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("TrailingCommaContract")
-      expect(contracts[0].abi[0]).toMatchObject({
+      expect(contracts?.[0]?.name).toBe("TrailingCommaContract")
+      expect(contracts?.[0]?.abi?.[0]).toMatchObject({
         name: "test",
         type: "function",
       })
@@ -317,11 +317,11 @@ export const TrailingCommaContractABI = [
       const info = getContractInfo(contracts)
 
       expect(info).toHaveLength(1)
-      expect(info[0]).toEqual({
+      expect(info?.[0]).toEqual({
         name: "SingleContract",
         chains: expect.arrayContaining([1, 5]),
       })
-      expect(info[0].chains).toHaveLength(2)
+      expect(info?.[0]?.chains).toHaveLength(2)
     })
 
     test("returns contract info for multiple contracts", () => {
@@ -424,11 +424,11 @@ export const TrailingCommaContractABI = [
       const info = getContractInfo(contracts)
 
       expect(info).toHaveLength(1)
-      expect(info[0]).toEqual({
+      expect(info?.[0]).toEqual({
         name: "DuplicateContract",
         chains: expect.arrayContaining([1, 5, 137]),
       })
-      expect(info[0].chains).toHaveLength(3)
+      expect(info?.[0]?.chains).toHaveLength(3)
     })
 
     test("handles large chain IDs correctly", () => {
@@ -446,7 +446,7 @@ export const TrailingCommaContractABI = [
       const info = getContractInfo(contracts)
 
       expect(info).toHaveLength(1)
-      expect(info[0]).toEqual({
+      expect(info?.[0]).toEqual({
         name: "LargeChainContract",
         chains: expect.arrayContaining([42161, 10]),
       })

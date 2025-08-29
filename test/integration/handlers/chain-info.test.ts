@@ -80,17 +80,26 @@ describe("Chain Info Tool Integration", () => {
       // Extract current chain ID
       const initialChainMatch = initialText.match(/Current Chain: .+ \((\d+)\)/)
       expect(initialChainMatch).toBeTruthy()
-      const initialChainId = Number.parseInt(initialChainMatch?.[1])
+      const initialChainIdStr = initialChainMatch?.[1]
+      expect(initialChainIdStr).toBeDefined()
+      const initialChainId = Number.parseInt(initialChainIdStr!)
 
       // Find a different chain to switch to
       const availableChains = initialText.match(/- .+ \((\d+)\)/g) || []
       const otherChain = availableChains.find((chain) => {
-        const chainId = Number.parseInt(chain.match(/\((\d+)\)/)?.[1])
+        const chainIdMatch = chain.match(/\((\d+)\)/)
+        if (!chainIdMatch?.[1]) return false
+        const chainId = Number.parseInt(chainIdMatch[1])
         return chainId !== initialChainId
       })
 
       if (otherChain) {
-        const targetChainId = Number.parseInt(otherChain.match(/\((\d+)\)/)?.[1])
+        const targetChainIdMatch = otherChain.match(/\((\d+)\)/)
+        expect(targetChainIdMatch).toBeTruthy()
+        if (!targetChainIdMatch || !targetChainIdMatch[1]) {
+          throw new Error("Failed to extract target chain ID")
+        }
+        const targetChainId = Number.parseInt(targetChainIdMatch[1])
 
         // Switch chain
         await expectToolSuccess("switch_chain", { chainId: targetChainId })
@@ -196,9 +205,28 @@ describe("Chain Info Tool Integration", () => {
       }
 
       // All results should have the same chain ordering
-      const firstChainList = results[0].split("Available Chains:\n")[1]
+      const firstResult = results[0]
+      expect(firstResult).toBeDefined()
+      if (!firstResult) {
+        throw new Error("No first result available")
+      }
+      const firstChainList = firstResult.split("Available Chains:\n")[1]
+      expect(firstChainList).toBeDefined()
+      if (!firstChainList) {
+        throw new Error("No first chain list available")
+      }
+
       for (let i = 1; i < results.length; i++) {
-        const chainList = results[i].split("Available Chains:\n")[1]
+        const currentResult = results[i]
+        expect(currentResult).toBeDefined()
+        if (!currentResult) {
+          throw new Error(`No result at index ${i}`)
+        }
+        const chainList = currentResult.split("Available Chains:\n")[1]
+        expect(chainList).toBeDefined()
+        if (!chainList) {
+          throw new Error(`No chain list at index ${i}`)
+        }
         expect(chainList).toBe(firstChainList)
       }
     })

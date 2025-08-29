@@ -16,10 +16,10 @@ describe("TransactionEffects", () => {
   // Mock the viem module's createPublicClient
   const mockEstimateGas = mock(() => Promise.resolve(21000n))
   const mockGetGasPrice = mock(() => Promise.resolve(20000000000n))
-  const mockGetTransaction = mock(() => Promise.resolve(null))
-  const mockGetTransactionReceipt = mock(() => Promise.resolve(null))
-  const mockGetEnsAddress = mock(() => Promise.resolve(null))
-  const mockSimulateContract = mock(() => Promise.resolve({ result: "0x123" }))
+  const mockGetTransaction = mock(() => Promise.resolve(null as any))
+  const mockGetTransactionReceipt = mock(() => Promise.resolve(null as any))
+  const mockGetEnsAddress = mock(() => Promise.resolve(null as any))
+  const mockSimulateContract = mock(() => Promise.resolve({ result: "0x123" })) as any
 
   beforeEach(() => {
     // Reset mocks
@@ -32,19 +32,20 @@ describe("TransactionEffects", () => {
 
     // Mock createPublicClient to return our mocked client
     const createPublicClientSpy = spyOn(
-      TransactionEffects.prototype as TransactionEffects & {
-        createPublicClient: () => unknown
-      },
+      TransactionEffects.prototype,
+      // @ts-expect-error - accessing private method for testing
       "createPublicClient",
     )
-    createPublicClientSpy.mockReturnValue({
+    const mockClient: Partial<import("viem").PublicClient> = {
       estimateGas: mockEstimateGas,
       getGasPrice: mockGetGasPrice,
       getTransaction: mockGetTransaction,
       getTransactionReceipt: mockGetTransactionReceipt,
       getEnsAddress: mockGetEnsAddress,
       simulateContract: mockSimulateContract,
-    })
+      getBytecode: mock(() => Promise.resolve("0x")) as any,
+    }
+    createPublicClientSpy.mockReturnValue(mockClient as any)
 
     // Mock wallet effects
     mockWalletEffects = {
@@ -477,18 +478,19 @@ describe("TransactionEffects", () => {
               inputs: [],
               outputs: [],
             },
-          ]
+          ] as const
         }
         return undefined
-      })
+      }) as (name: string) => import("viem").Abi | undefined
       ;(
         mockContractAdapter as unknown as {
           getContract: typeof mockContractAdapter.getContract
         }
-      ).getContract = mock((name: string) => {
+      ).getContract = mock((name: string, _chainId: number) => {
         if (name === "builtin:ERC20") {
           return {
-            address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            name: "builtin:ERC20",
+            address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" as `0x${string}`,
             abi: [
               {
                 type: "function",
@@ -496,11 +498,14 @@ describe("TransactionEffects", () => {
                 inputs: [],
                 outputs: [],
               },
-            ],
+            ] as const,
           }
         }
         return undefined
-      })
+      }) as (
+        name: string,
+        chainId: number,
+      ) => import("../../src/core/contracts.js").ContractConfig | undefined
 
       const result = await transactionEffects.simulateTransaction(
         "builtin:ERC20",

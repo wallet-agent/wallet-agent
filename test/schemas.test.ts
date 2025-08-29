@@ -58,7 +58,7 @@ describe("schemas", () => {
       const result = PrivateKeySchema.safeParse("0x123")
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe(
+        expect(result.error.issues?.[0]?.message).toBe(
           "Private key must be 32 bytes (64 hex characters) prefixed with 0x",
         )
       }
@@ -88,7 +88,7 @@ describe("schemas", () => {
       const result = SignMessageArgsSchema.safeParse({ message: "" })
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe("Message cannot be empty")
+        expect(result.error.issues?.[0]?.message).toBe("Message cannot be empty")
       }
     })
   })
@@ -118,7 +118,7 @@ describe("schemas", () => {
       })
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe("Value must be a numeric string")
+        expect(result.error.issues?.[0]?.message).toBe("Value must be a numeric string")
       }
     })
   })
@@ -133,7 +133,7 @@ describe("schemas", () => {
       const result = SwitchChainArgsSchema.safeParse({ chainId: -1 })
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe("Chain ID must be a positive integer")
+        expect(result.error.issues?.[0]?.message).toBe("Chain ID must be a positive integer")
       }
     })
   })
@@ -169,7 +169,7 @@ describe("schemas", () => {
       })
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe("Invalid RPC URL")
+        expect(result.error.issues?.[0]?.message).toBe("Invalid RPC URL")
       }
     })
 
@@ -180,7 +180,7 @@ describe("schemas", () => {
       })
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe("Decimals must be between 0 and 18")
+        expect(result.error.issues?.[0]?.message).toBe("Decimals must be between 0 and 18")
       }
     })
   })

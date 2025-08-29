@@ -129,8 +129,8 @@ describe("TransactionHistoryManager", () => {
 
       expect(ethContent).toHaveLength(1)
       expect(polygonContent).toHaveLength(1)
-      expect(ethContent[0].chainId).toBe(1)
-      expect(polygonContent[0].chainId).toBe(137)
+      expect(ethContent?.[0]?.chainId).toBe(1)
+      expect(polygonContent?.[0]?.chainId).toBe(137)
     })
   })
 
@@ -361,7 +361,13 @@ describe("TransactionHistoryManager", () => {
       }
 
       // Manually create file with both transactions
-      const filename = historyManager.getTransactionFilename(31337, now.toISOString())
+      const getTransactionFilename = (chainId: number, timestamp: string) => {
+        const date = new Date(timestamp)
+        const datePart = date.toISOString().split("T")[0]
+        const dateStr = datePart?.replace(/-/g, "")
+        return `${chainId}-${dateStr}.json`
+      }
+      const filename = getTransactionFilename(31337, now.toISOString())
       const filepath = join(tempDir, filename)
       await writeFile(filepath, JSON.stringify([oldTransaction, recentTransaction], null, 2))
 
@@ -387,7 +393,13 @@ describe("TransactionHistoryManager", () => {
       }
 
       // Manually create file with old transaction
-      const filename = historyManager.getTransactionFilename(31337, eightDaysAgo.toISOString())
+      const getTransactionFilename = (chainId: number, timestamp: string) => {
+        const date = new Date(timestamp)
+        const datePart = date.toISOString().split("T")[0]
+        const dateStr = datePart?.replace(/-/g, "")
+        return `${chainId}-${dateStr}.json`
+      }
+      const filename = getTransactionFilename(31337, eightDaysAgo.toISOString())
       const filepath = join(tempDir, filename)
       await writeFile(filepath, JSON.stringify([oldTransaction], null, 2))
 
@@ -429,7 +441,13 @@ describe("TransactionHistoryManager", () => {
       }
 
       // Manually create file with both transactions
-      const filename = historyManager.getTransactionFilename(31337, new Date().toISOString())
+      const getTransactionFilename = (chainId: number, timestamp: string) => {
+        const date = new Date(timestamp)
+        const datePart = date.toISOString().split("T")[0]
+        const dateStr = datePart?.replace(/-/g, "")
+        return `${chainId}-${dateStr}.json`
+      }
+      const filename = getTransactionFilename(31337, new Date().toISOString())
       const filepath = join(tempDir, filename)
       await writeFile(filepath, JSON.stringify([oldTransaction, recentTransaction], null, 2))
 

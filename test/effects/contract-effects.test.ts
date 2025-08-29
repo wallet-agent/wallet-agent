@@ -131,8 +131,8 @@ export const TestContractABI = [
 
       const storedContracts = mockContractStore.getStoredContracts()
       expect(storedContracts).toHaveLength(1)
-      expect(storedContracts[0].name).toBe("TestContract")
-      expect(storedContracts[0].abi).toBeInstanceOf(Array)
+      expect(storedContracts[0]?.name).toBe("TestContract")
+      expect(storedContracts[0]?.abi).toBeInstanceOf(Array)
     })
 
     test("parses ABI but fails on addresses with current safe parsing", async () => {
@@ -158,10 +158,10 @@ export const TestContractAddress = {
 
       const storedContracts = mockContractStore.getStoredContracts()
       expect(storedContracts).toHaveLength(1)
-      expect(storedContracts[0].name).toBe("TestContract")
-      expect(storedContracts[0].abi).toBeInstanceOf(Array)
+      expect(storedContracts[0]?.name).toBe("TestContract")
+      expect(storedContracts[0]?.abi).toBeInstanceOf(Array)
       // Address parsing fails with current implementation
-      expect(storedContracts[0].addresses).toBeUndefined()
+      expect(storedContracts[0]?.addresses).toBeUndefined()
     })
 
     test("handles file reading errors", async () => {
@@ -429,10 +429,10 @@ export const ChainContractABI = [{"type": "function", "name": "test"}] as const;
       const contracts = contractEffects.listContracts()
 
       expect(contracts).toHaveLength(1)
-      expect(contracts[0].name).toBe("ChainContract")
+      expect(contracts[0]?.name).toBe("ChainContract")
       // NOTE: The current implementation of listContracts only returns chains from
       // Wagmi contract addresses, not from registered contracts
-      expect(contracts[0].chains).toEqual([])
+      expect(contracts[0]?.chains).toEqual([])
     })
   })
 
@@ -476,12 +476,12 @@ export const BadContractABI = [invalid syntax] as const;
 
       const storedContracts = mockContractStore.getStoredContracts()
       expect(storedContracts).toHaveLength(1)
-      expect(storedContracts[0].name).toBe("GoodContract")
-      expect(storedContracts[0].abi[0]).toMatchObject({
+      expect(storedContracts[0]?.name).toBe("GoodContract")
+      expect(storedContracts[0]?.abi[0]).toMatchObject({
         name: "good",
         type: "function",
       })
-      expect(storedContracts[0].addresses).toBeUndefined()
+      expect(storedContracts[0]?.addresses).toBeUndefined()
     })
 
     test("handles contracts with ABI but no addresses", async () => {
@@ -494,8 +494,8 @@ export const OnlyABIABI = [{type: "function", name: "test"}] as const;
 
       const storedContracts = mockContractStore.getStoredContracts()
       expect(storedContracts).toHaveLength(1)
-      expect(storedContracts[0].name).toBe("OnlyABI")
-      expect(storedContracts[0].addresses).toBeUndefined()
+      expect(storedContracts[0]?.name).toBe("OnlyABI")
+      expect(storedContracts[0]?.addresses).toBeUndefined()
     })
 
     test("handles contracts with mismatched ABI and address names", async () => {
@@ -509,8 +509,8 @@ export const Contract2Address = {1: "0x1234567890123456789012345678901234567890"
 
       const storedContracts = mockContractStore.getStoredContracts()
       expect(storedContracts).toHaveLength(1)
-      expect(storedContracts[0].name).toBe("Contract1")
-      expect(storedContracts[0].addresses).toBeUndefined()
+      expect(storedContracts[0]?.name).toBe("Contract1")
+      expect(storedContracts[0]?.addresses).toBeUndefined()
     })
   })
 })

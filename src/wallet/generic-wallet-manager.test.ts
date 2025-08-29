@@ -200,13 +200,18 @@ describe("GenericWalletManager", () => {
     it("should allow reimporting after clearing", async () => {
       await manager.importPrivateKey(testPrivateKey)
       const firstAddress = manager.getAddress()
+      expect(firstAddress).toBeDefined()
 
       manager.clearWallet()
 
       await manager.importPrivateKey(testPrivateKey)
       const secondAddress = manager.getAddress()
+      expect(secondAddress).toBeDefined()
+      expect(firstAddress).toBeDefined()
 
-      expect(secondAddress).toBe(firstAddress)
+      if (secondAddress && firstAddress) {
+        expect(secondAddress).toBe(firstAddress)
+      }
     })
   })
 })

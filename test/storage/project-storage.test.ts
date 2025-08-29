@@ -130,7 +130,7 @@ describe("ProjectStorageManager", () => {
 
       const config = await manager.readConfig()
       expect(config.version).toBeDefined()
-      expect(config.projectName).toBe(testDir.split("/").pop())
+      expect(config.projectName).toBe(testDir.split("/").pop() || "")
       expect(config.preferences).toBeDefined()
       expect(config.createdAt).toBeDefined()
     })
@@ -195,7 +195,7 @@ describe("ProjectStorageManager", () => {
       const config = await manager.readConfig()
 
       expect(config.version).toBeDefined()
-      expect(config.projectName).toBe(testDir.split("/").pop())
+      expect(config.projectName).toBe(testDir.split("/").pop() || "")
       expect(config.preferences).toBeDefined()
     })
 
@@ -356,7 +356,7 @@ describe("ProjectStorageManager", () => {
   describe("integration scenarios", () => {
     it("should work correctly when called from subdirectory", async () => {
       // Initialize project in test dir
-      const _manager = await ProjectStorageManager.initializeProject(projectPath)
+      await ProjectStorageManager.initializeProject(projectPath)
 
       // Create subdirectory
       const subDir = join(testDir, "src", "contracts")
@@ -372,13 +372,13 @@ describe("ProjectStorageManager", () => {
       }
       const subManager = new ProjectStorageManager(foundPath)
       const config = await subManager.readConfig()
-      expect(config.projectName).toBe(testDir.split("/").pop())
+      expect(config.projectName).toBe(testDir.split("/").pop() || "")
     })
 
     it("should handle nested project scenarios", async () => {
       // Create parent project
       const parentProject = join(testDir, ".wallet-agent")
-      const _parentManager = await ProjectStorageManager.initializeProject(parentProject)
+      await ProjectStorageManager.initializeProject(parentProject)
 
       // Create child directory (but not child project)
       const childDir = join(testDir, "child")
@@ -393,7 +393,7 @@ describe("ProjectStorageManager", () => {
       }
       const childManager = new ProjectStorageManager(foundPath)
       const config = await childManager.readConfig()
-      expect(config.projectName).toBe(testDir.split("/").pop())
+      expect(config.projectName).toBe(testDir.split("/").pop() || "")
     })
   })
 })

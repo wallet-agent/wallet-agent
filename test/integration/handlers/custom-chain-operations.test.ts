@@ -66,7 +66,10 @@ describe("Custom Chain Operations Integration", () => {
       const { text: availableChains } = await expectToolSuccess("get_chain_info", {})
       const otherChainMatch = availableChains.match(/- (.+) \((\d+)\)(?! ← Current)/)
       expect(otherChainMatch).toBeTruthy()
-      const otherChainId = Number.parseInt(otherChainMatch?.[2])
+      if (!otherChainMatch || !otherChainMatch[2]) {
+        throw new Error("Failed to extract other chain ID")
+      }
+      const otherChainId = Number.parseInt(otherChainMatch[2])
 
       await expectToolSuccess("switch_chain", { chainId: otherChainId })
 
@@ -345,7 +348,7 @@ describe("Custom Chain Operations Integration", () => {
 
       // Switch away and remove last custom chain
       const availableChains = text.match(/- (.+) \((\d+)\)(?! ← Current)/)
-      if (availableChains) {
+      if (availableChains?.[2]) {
         const otherChainId = Number.parseInt(availableChains[2])
         await expectToolSuccess("switch_chain", { chainId: otherChainId })
       }

@@ -18,7 +18,10 @@ describe("Chain Switching Integration with Chain Info", () => {
       const { text: initialInfo } = await expectToolSuccess("get_chain_info", {})
       const initialChainMatch = initialInfo.match(/Current Chain: .+ \((\d+)\)/)
       expect(initialChainMatch).toBeTruthy()
-      const initialChainId = Number.parseInt(initialChainMatch?.[1])
+      if (!initialChainMatch || !initialChainMatch[1]) {
+        throw new Error("Failed to extract initial chain ID")
+      }
+      const initialChainId = Number.parseInt(initialChainMatch[1])
 
       // Find available chains to switch to
       const availableChains = initialInfo.match(/- (.+) \((\d+)\)(?! ← Current)/g) || []
@@ -26,10 +29,17 @@ describe("Chain Switching Integration with Chain Info", () => {
 
       // Extract first available chain that's not current
       const firstOtherChain = availableChains[0]
+      expect(firstOtherChain).toBeDefined()
+      if (!firstOtherChain) {
+        throw new Error("No other chain available to switch to")
+      }
       const targetChainMatch = firstOtherChain.match(/- (.+) \((\d+)\)/)
       expect(targetChainMatch).toBeTruthy()
-      const targetChainId = Number.parseInt(targetChainMatch?.[2])
-      const targetChainName = targetChainMatch?.[1]
+      if (!targetChainMatch || !targetChainMatch[1] || !targetChainMatch[2]) {
+        throw new Error("Failed to extract target chain info")
+      }
+      const targetChainId = Number.parseInt(targetChainMatch[2])
+      const targetChainName = targetChainMatch[1]
 
       // Switch to the target chain
       await expectToolSuccess("switch_chain", { chainId: targetChainId })
@@ -94,20 +104,22 @@ describe("Chain Switching Integration with Chain Info", () => {
 
       const { text: initialInfo } = await expectToolSuccess("get_chain_info", {})
       const initialChainList = initialInfo.split("Available Chains:\n")[1]
+      expect(initialChainList).toBeDefined()
 
       // Switch to custom chain
       await expectToolSuccess("switch_chain", { chainId: 44444 })
 
       const { text: afterSwitchInfo } = await expectToolSuccess("get_chain_info", {})
       const afterSwitchChainList = afterSwitchInfo.split("Available Chains:\n")[1]
+      expect(afterSwitchChainList).toBeDefined()
 
       // Chain list should be the same (only current marker should change)
       const initialChains = initialChainList
-        .replace(/← Current/g, "")
+        ?.replace(/← Current/g, "")
         .replace(/\s+/g, " ")
         .trim()
       const afterSwitchChains = afterSwitchChainList
-        .replace(/← Current/g, "")
+        ?.replace(/← Current/g, "")
         .replace(/\s+/g, " ")
         .trim()
 
@@ -256,7 +268,10 @@ describe("Chain Switching Integration with Chain Info", () => {
       const { text: initialInfo } = await expectToolSuccess("get_chain_info", {})
       const chainMatch = initialInfo.match(/Current Chain: .+ \((\d+)\)/)
       expect(chainMatch).toBeTruthy()
-      const currentChainId = Number.parseInt(chainMatch?.[1])
+      if (!chainMatch || !chainMatch[1]) {
+        throw new Error("Failed to extract current chain ID")
+      }
+      const currentChainId = Number.parseInt(chainMatch[1])
 
       // Switch to same chain
       const { text } = await expectToolSuccess("switch_chain", { chainId: currentChainId })
@@ -286,7 +301,7 @@ describe("Chain Switching Integration with Chain Info", () => {
       // Switch to another chain and back
       const { text: otherChains } = await expectToolSuccess("get_chain_info", {})
       const otherChainMatch = otherChains.match(/- (.+) \((\d+)\)(?! ← Current)/)
-      if (otherChainMatch) {
+      if (otherChainMatch?.[2]) {
         const otherChainId = Number.parseInt(otherChainMatch[2])
         await expectToolSuccess("switch_chain", { chainId: otherChainId })
       }

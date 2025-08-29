@@ -1,10 +1,30 @@
 import { beforeEach, describe, expect, test } from "bun:test"
-import type { McpServer } from "../../src/server.js"
 import { TestContainer } from "../../src/test-container.js"
+import { handleToolCall } from "../../src/tools/handlers.js"
+
+// Create a mock server interface that matches what the test expects
+interface MockServer {
+  callTool(
+    name: string,
+    args: any,
+  ): Promise<{
+    isError: boolean
+    content: Array<{ type: string; text: string }>
+    error?: string
+  }>
+}
 
 describe("Transaction Lifecycle Integration Test", () => {
   let testContainer: TestContainer
-  let server: McpServer
+  let server: MockServer
+
+  // Helper function to safely get response text
+  const getResponseText = (response: Awaited<ReturnType<MockServer["callTool"]>>): string => {
+    if (response.isError || response.content.length === 0) {
+      return response.error || "No content"
+    }
+    return response.content[0]?.text
+  }
 
   // Test wallet details (Anvil default accounts)
   const testAddress1 = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -14,20 +34,40 @@ describe("Transaction Lifecycle Integration Test", () => {
 
   beforeEach(async () => {
     testContainer = TestContainer.createForTest({})
-    server = testContainer.get("server")
 
-    // Setup private key wallet for all tests
-    await server.callTool("import_private_key", {
-      privateKey: testPrivateKey1,
-    })
+    // Create a mock server that uses the tool handlers
+    server = {
+      async callTool(name: string, args: any) {
+        try {
+          // Set the test container globally for handlers to use
+          ;(globalThis as any).__walletAgentTestContainer = testContainer
 
-    await server.callTool("set_wallet_type", {
-      type: "privateKey",
-    })
+          const result = await handleToolCall({
+            method: "tools/call",
+            params: {
+              name,
+              arguments: args,
+            },
+          })
+          return {
+            isError: false,
+            content: result.content || [],
+          }
+        } catch (error) {
+          return {
+            isError: true,
+            content: [],
+            error: error instanceof Error ? error.message : String(error),
+          }
+        }
+      },
+    }
 
-    await server.callTool("connect_wallet", {
-      address: testAddress1,
-    })
+    // Setup private key wallet for all tests using the container directly
+    testContainer.privateKeyWallets.set(testAddress1 as any, testPrivateKey1)
+
+    // Connect wallet using wallet effects
+    await testContainer.walletEffects.connectWallet(testAddress1)
 
     // Switch to Anvil for reliable testing
     await server.callTool("switch_chain", {
@@ -48,7 +88,7 @@ describe("Transaction Lifecycle Integration Test", () => {
       })
       expect(gasEstimate.isError).toBe(false)
       if (!gasEstimate.isError) {
-        expect(gasEstimate.content[0].text).toMatch(/gas.*\d+/i)
+        expect(getResponseText(gasEstimate)).toMatch(/gas.*\d+/i)
       }
 
       // 3. Send transaction
@@ -60,7 +100,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
       let txHash: string | null = null
       if (!txResult.isError) {
-        const response = txResult.content[0].text
+        const response = txResult.content[0]?.text
         expect(response).toMatch(/transaction.*sent|hash.*0x/i)
 
         const hashMatch = response.match(/0x[a-fA-F0-9]{64}/)
@@ -77,7 +117,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         })
         expect(statusResult.isError).toBe(false)
         if (!statusResult.isError) {
-          expect(statusResult.content[0].text).toMatch(/(status|pending|confirmed|success)/i)
+          expect(statusResult.content[0]?.text).toMatch(/(status|pending|confirmed|success)/i)
         }
 
         // 5. Get transaction receipt
@@ -86,7 +126,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         })
         expect(receiptResult.isError).toBe(false)
         if (!receiptResult.isError) {
-          const response = receiptResult.content[0].text
+          const response = receiptResult.content[0]?.text
           expect(response).toMatch(/(receipt|gas.*used|status.*success)/i)
           expect(response).toContain(testAddress1.toLowerCase())
           expect(response).toContain(testAddress2.toLowerCase())
@@ -115,7 +155,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
       expect(txResult.isError).toBe(false)
       if (!txResult.isError) {
-        const response = txResult.content[0].text
+        const response = txResult.content[0]?.text
         expect(response).toMatch(/transaction.*sent|hash.*0x/i)
 
         const hashMatch = response.match(/0x[a-fA-F0-9]{64}/)
@@ -128,7 +168,7 @@ describe("Transaction Lifecycle Integration Test", () => {
           })
           expect(receiptResult.isError).toBe(false)
           if (!receiptResult.isError) {
-            expect(receiptResult.content[0].text).toMatch(/(receipt|success)/i)
+            expect(receiptResult.content[0]?.text).toMatch(/(receipt|success)/i)
           }
         }
       }
@@ -155,7 +195,7 @@ describe("Transaction Lifecycle Integration Test", () => {
       for (const result of results) {
         expect(result.isError).toBe(false)
         if (!result.isError) {
-          const hashMatch = result.content[0].text.match(/0x[a-fA-F0-9]{64}/)
+          const hashMatch = result.content[0]?.text.match(/0x[a-fA-F0-9]{64}/)
           if (hashMatch) {
             transactions.push(hashMatch[0])
           }
@@ -171,7 +211,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         })
         expect(statusResult.isError).toBe(false)
         if (!statusResult.isError) {
-          expect(statusResult.content[0].text).toMatch(/(status|success|confirmed)/i)
+          expect(statusResult.content[0]?.text).toMatch(/(status|success|confirmed)/i)
         }
       }
     }, 15000)
@@ -194,9 +234,9 @@ describe("Transaction Lifecycle Integration Test", () => {
         expect(tokenTransferResult.content).toMatch(/(token|contract|not found|invalid)/i)
       } else {
         // If successful, should provide transaction hash
-        expect(tokenTransferResult.content[0].text).toMatch(/transaction|hash|0x/i)
+        expect(tokenTransferResult.content[0]?.text).toMatch(/transaction|hash|0x/i)
 
-        const hashMatch = tokenTransferResult.content[0].text.match(/0x[a-fA-F0-9]{64}/)
+        const hashMatch = tokenTransferResult.content[0]?.text.match(/0x[a-fA-F0-9]{64}/)
         if (hashMatch) {
           const txHash = hashMatch[0]
 
@@ -219,7 +259,7 @@ describe("Transaction Lifecycle Integration Test", () => {
       if (approvalResult.isError) {
         expect(approvalResult.content).toMatch(/(token|contract|not found|invalid)/i)
       } else {
-        expect(approvalResult.content[0].text).toMatch(/transaction|approval|hash/i)
+        expect(approvalResult.content[0]?.text).toMatch(/transaction|approval|hash/i)
       }
     })
 
@@ -234,7 +274,7 @@ describe("Transaction Lifecycle Integration Test", () => {
       if (initialBalance.isError) {
         expect(initialBalance.content).toMatch(/(token|contract|not found)/i)
       } else {
-        expect(initialBalance.content[0].text).toMatch(/balance.*\d+/i)
+        expect(initialBalance.content[0]?.text).toMatch(/balance.*\d+/i)
       }
     })
   })
@@ -254,9 +294,9 @@ describe("Transaction Lifecycle Integration Test", () => {
       if (nftTransferResult.isError) {
         expect(nftTransferResult.content).toMatch(/(nft|contract|not found|invalid|token)/i)
       } else {
-        expect(nftTransferResult.content[0].text).toMatch(/transaction|transfer|hash/i)
+        expect(nftTransferResult.content[0]?.text).toMatch(/transaction|transfer|hash/i)
 
-        const hashMatch = nftTransferResult.content[0].text.match(/0x[a-fA-F0-9]{64}/)
+        const hashMatch = nftTransferResult.content[0]?.text.match(/0x[a-fA-F0-9]{64}/)
         if (hashMatch) {
           const txHash = hashMatch[0]
 
@@ -279,7 +319,7 @@ describe("Transaction Lifecycle Integration Test", () => {
       if (ownershipResult.isError) {
         expect(ownershipResult.content).toMatch(/(nft|contract|not found|invalid)/i)
       } else {
-        expect(ownershipResult.content[0].text).toMatch(/(owner|metadata|token)/i)
+        expect(ownershipResult.content[0]?.text).toMatch(/(owner|metadata|token)/i)
       }
     })
   })
@@ -389,7 +429,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         })
 
         if (!txResult.isError) {
-          const hashMatch = txResult.content[0].text.match(/0x[a-fA-F0-9]{64}/)
+          const hashMatch = txResult.content[0]?.text.match(/0x[a-fA-F0-9]{64}/)
           if (hashMatch) {
             chainTransactions.push({ chainId, txHash: hashMatch[0] })
           }
@@ -425,7 +465,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         })
 
         if (!gasResult.isError) {
-          const gasMatch = gasResult.content[0].text.match(/(\d+)/)?.[1]
+          const gasMatch = gasResult.content[0]?.text.match(/(\d+)/)?.[1]
           if (gasMatch) {
             gasEstimates.push({ chainId, gas: parseInt(gasMatch) })
           }
@@ -465,7 +505,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
         expect(txResult.isError).toBe(false)
         if (!txResult.isError) {
-          const hashMatch = txResult.content[0].text.match(/0x[a-fA-F0-9]{64}/)
+          const hashMatch = txResult.content[0]?.text.match(/0x[a-fA-F0-9]{64}/)
           if (hashMatch) {
             batchTransactions.push(hashMatch[0])
           }
@@ -495,7 +535,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
         expect(txResult.isError).toBe(false)
         if (!txResult.isError) {
-          const hashMatch = txResult.content[0].text.match(/0x[a-fA-F0-9]{64}/)
+          const hashMatch = txResult.content[0]?.text.match(/0x[a-fA-F0-9]{64}/)
           if (hashMatch) {
             sequentialTxs.push(hashMatch[0])
           }
@@ -541,7 +581,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
       let estimatedGas: number = 21000
       if (!gasEstimate.isError) {
-        const gasMatch = gasEstimate.content[0].text.match(/(\d+)/)?.[1]
+        const gasMatch = gasEstimate.content[0]?.text.match(/(\d+)/)?.[1]
         if (gasMatch) {
           estimatedGas = parseInt(gasMatch)
         }
@@ -556,7 +596,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
       let txHash: string | null = null
       if (!txResult.isError) {
-        const response = txResult.content[0].text
+        const response = txResult.content[0]?.text
         expect(response).toMatch(/transaction.*sent|hash.*0x/i)
 
         const hashMatch = response.match(/0x[a-fA-F0-9]{64}/)
@@ -578,7 +618,7 @@ describe("Transaction Lifecycle Integration Test", () => {
 
           expect(statusResult.isError).toBe(false)
           if (!statusResult.isError) {
-            const statusText = statusResult.content[0].text
+            const statusText = statusResult.content[0]?.text
             if (statusText.match(/(success|confirmed|mined)/i)) {
               confirmed = true
             }
@@ -597,7 +637,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         expect(receiptResult.isError).toBe(false)
 
         if (!receiptResult.isError) {
-          const receiptText = receiptResult.content[0].text
+          const receiptText = receiptResult.content[0]?.text
           expect(receiptText).toMatch(/(receipt|gas.*used|status.*success)/i)
 
           // Verify gas usage is close to estimate
@@ -626,7 +666,7 @@ describe("Transaction Lifecycle Integration Test", () => {
         })
         expect(finalStatusResult.isError).toBe(false)
         if (!finalStatusResult.isError) {
-          expect(finalStatusResult.content[0].text).toMatch(/(success|confirmed)/i)
+          expect(finalStatusResult.content[0]?.text).toMatch(/(success|confirmed)/i)
         }
       }
 

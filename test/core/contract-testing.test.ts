@@ -7,7 +7,8 @@ import {
   runTestScenarios,
   simulateContractCall,
 } from "../../src/core/contract-testing.js"
-import { TestContainer } from "../../src/test-container.js"
+
+// import { TestContainer } from "../../src/test-container.js" // Unused in current tests
 
 // Mock ERC20 ABI for testing
 const mockERC20Abi: Abi = [
@@ -41,11 +42,11 @@ const mockERC20Abi: Abi = [
 ] as const
 
 describe("Contract Testing Core", () => {
-  let _testContainer: TestContainer
+  // let _testContainer: TestContainer // Unused in current tests
   let resolveContractSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-    _testContainer = TestContainer.createForTest({})
+    // _testContainer = TestContainer.createForTest({}) // Unused in current tests
 
     // Mock the resolveContract function
     resolveContractSpy = spyOn(contractResolution, "resolveContract").mockImplementation(
@@ -202,9 +203,9 @@ describe("Contract Testing Core", () => {
       expect(results.totalTests).toBe(1)
       expect(results.passed).toBe(0)
       expect(results.failed).toBe(1)
-      expect(results.results[0].passed).toBe(false)
-      expect(results.results[0].result.success).toBe(false)
-      expect(results.results[0].result.revertReason).toContain("NonExistentToken not found")
+      expect(results.results?.[0]?.passed).toBe(false)
+      expect(results.results?.[0]?.result.success).toBe(false)
+      expect(results.results?.[0]?.result.revertReason).toContain("NonExistentToken not found")
     })
 
     test("should structure results correctly", async () => {
@@ -225,9 +226,9 @@ describe("Contract Testing Core", () => {
 
       expect(results.totalTests).toBe(1)
       expect(results.results).toHaveLength(1)
-      expect(results.results[0].scenario).toEqual(mockScenarios[0])
-      expect(results.results[0]).toHaveProperty("result")
-      expect(results.results[0]).toHaveProperty("passed")
+      expect(results.results?.[0]?.scenario).toEqual(mockScenarios[0]!)
+      expect(results.results?.[0]).toHaveProperty("result")
+      expect(results.results?.[0]).toHaveProperty("passed")
     })
   })
 

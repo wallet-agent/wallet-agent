@@ -22,8 +22,9 @@ describe("handleHyperliquidTool integration tests", () => {
       })
 
       expect(result.content).toBeDefined()
-      expect(result.content[0].text).toContain("Hyperliquid wallet imported successfully")
-      expect(result.content[0].text).toMatch(/Address: 0x[a-fA-F0-9]{40}/)
+      expect(result.content).toBeDefined()
+      expect(result.content?.[0]?.text).toContain("Hyperliquid wallet imported successfully")
+      expect(result.content?.[0]?.text).toMatch(/Address: 0x[a-fA-F0-9]{40}/)
     })
 
     it("should reject invalid private key", async () => {
