@@ -6,7 +6,7 @@ describe("Direct MCP Server Test", () => {
     console.log("🔍 Testing MCP server directly via stdio")
 
     const server = spawn({
-      cmd: ["bun", "run", "src/cli.ts"],
+      cmd: [process.execPath, "run", "src/cli.ts"],
       env: { NODE_ENV: "test" },
       stdio: ["pipe", "pipe", "pipe"],
     })

@@ -253,7 +253,7 @@ describe("Private Key Management Integration Test", () => {
 
       expect(unlockResult.isError).toBe(true)
       if (unlockResult.isError) {
-        expect(unlockResult.content).toMatch(/(incorrect|invalid|wrong|password)/i)
+        expect(unlockResult.content[0].text).toMatch(/(incorrect|invalid|wrong|password)/i)
       }
     })
 
@@ -265,7 +265,7 @@ describe("Private Key Management Integration Test", () => {
 
       expect(weakResult.isError).toBe(true)
       if (weakResult.isError) {
-        expect(weakResult.content).toMatch(/(8.*character|minimum|length)/i)
+        expect(weakResult.content[0].text).toMatch(/(8.*character|minimum|length)/i)
       }
     })
   })
@@ -434,7 +434,7 @@ describe("Private Key Management Integration Test", () => {
 
         expect(result.isError).toBe(true)
         if (result.isError) {
-          expect(result.content).toMatch(/(invalid|format|private key)/i)
+          expect(result.content[0].text).toMatch(/(invalid|format|private key)/i)
         }
       }
     })
@@ -455,14 +455,14 @@ describe("Private Key Management Integration Test", () => {
 
       expect(importResult.isError).toBe(true)
       if (importResult.isError) {
-        expect(importResult.content).toMatch(/(locked|unlock|keystore)/i)
+        expect(importResult.content[0].text).toMatch(/(locked|unlock|keystore)/i)
       }
 
       // Try to list keys when locked
       const listResult = await server.callTool("list_encrypted_keys", {})
       expect(listResult.isError).toBe(true)
       if (listResult.isError) {
-        expect(listResult.content).toMatch(/(locked|unlock|keystore)/i)
+        expect(listResult.content[0].text).toMatch(/(locked|unlock|keystore)/i)
       }
     })
 
@@ -474,7 +474,7 @@ describe("Private Key Management Integration Test", () => {
 
       expect(removeResult.isError).toBe(true)
       if (removeResult.isError) {
-        expect(removeResult.content).toMatch(/(not found|doesn't exist|unknown)/i)
+        expect(removeResult.content[0].text).toMatch(/(not found|doesn't exist|unknown)/i)
       }
     })
 
