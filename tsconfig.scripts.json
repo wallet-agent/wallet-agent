@@ -5,11 +5,11 @@
     "module": "ES2022",
     "target": "ES2022",
     "moduleResolution": "node",
-    
+
     // Enable features needed for scripts
     "allowImportingTsExtensions": false,
     "verbatimModuleSyntax": false,
-    
+
     // Script-specific settings
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
