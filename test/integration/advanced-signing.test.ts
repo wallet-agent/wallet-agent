@@ -91,7 +91,10 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
         if (signatureMatch) {
           expect(signatureMatch[0]).toMatch(/^0x[a-fA-F0-9]{130}$/)
         }
-        console.log("✓ Complex message signed successfully:", `${signatureMatch?.[0]?.substring(0, 20)}...`)
+        console.log(
+          "✓ Complex message signed successfully:",
+          `${signatureMatch?.[0]?.substring(0, 20)}...`,
+        )
       }
     })
 
