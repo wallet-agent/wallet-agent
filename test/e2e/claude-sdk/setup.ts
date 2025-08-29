@@ -39,9 +39,10 @@ export async function testPrompt(
     // This tests the basic Claude functionality but may not use all MCP tools
     const escapedPrompt = userPrompt.replace(/"/g, '\\"').replace(/\$/g, "\\$")
 
-    // Use the global MCP configuration (local development server) with permission bypass
+    // Use the test MCP configuration with the wallet-agent server
+    const mcpConfigPath = new URL('./mcp-config.json', import.meta.url).pathname
     const result = await Promise.race([
-      $`echo "${escapedPrompt}" | claude --print --dangerously-skip-permissions`.quiet(),
+      $`echo "${escapedPrompt}" | claude --print --dangerously-skip-permissions --mcp-config ${mcpConfigPath}`.quiet(),
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error("Claude CLI timeout after 30 seconds")), 30000),
       ),

@@ -5,14 +5,17 @@ import {
   deployTestContracts,
   isAnvilRunning,
 } from "../setup/deploy-contracts.js"
-import { expectToolSuccess, TEST_PRIVATE_KEY } from "./handlers/setup.js"
+import { expectToolSuccess, setupContainer, TEST_PRIVATE_KEY } from "./handlers/setup.js"
 
 const useRealAnvil = process.env.USE_REAL_ANVIL === "true"
 
 describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", () => {
   let deployedContracts: DeployedContracts
 
-  // Don't use setupContainer() as it resets wallet state before each test
+  // Setup container before each test
+  beforeEach(() => {
+    setupContainer()
+  })
 
   // Helper to ensure wallet is connected
   async function ensureWalletConnected() {
@@ -41,6 +44,9 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
     // Deploy contracts
     console.log("Deploying test contracts for E2E testing...")
     deployedContracts = await deployTestContracts()
+
+    // Setup container for initial configuration
+    setupContainer()
 
     // Load Storage contract ABI into wallet-agent
     await expectToolSuccess("load_wagmi_config", {
