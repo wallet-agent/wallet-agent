@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test"
 import { existsSync, unlinkSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { TestContainer } from "../../src/test-container.js"
+import { handleToolCall } from "../../src/tools/handlers.js"
 
 interface McpServer {
   callTool(
@@ -15,6 +17,7 @@ interface McpServer {
 
 describe("Contract Development Workflow Integration Test", () => {
   let server: McpServer
+  let testContainer: TestContainer
   let tempWagmiFile: string
 
   // Sample ERC-20 contract for testing
@@ -127,19 +130,35 @@ describe("Contract Development Workflow Integration Test", () => {
     },
   }
 
-  beforeEach(() => {
-    // Create a mock server that implements the expected interface
+  beforeEach(async () => {
+    testContainer = TestContainer.createForTest({})
+
     server = {
-      async callTool(name: string, _args: any) {
-        // Mock implementation that returns success responses
-        return {
-          isError: false,
-          content: [{ text: `Mock response for ${name}`, type: "text" }],
+      async callTool(name: string, args: any) {
+        try {
+          ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+          const result = await handleToolCall({
+            method: "tools/call",
+            params: {
+              name,
+              arguments: args,
+            },
+          })
+          return {
+            isError: false,
+            content: result.content || [],
+          }
+        } catch (error) {
+          return {
+            isError: true,
+            content: [],
+            error: error instanceof Error ? error.message : String(error),
+          }
         }
       },
-    } as McpServer
+    }
 
-    // Create temporary Wagmi config file
     tempWagmiFile = join(process.cwd(), "test-wagmi-config.json")
     writeFileSync(tempWagmiFile, JSON.stringify(sampleWagmiConfig, null, 2))
   })

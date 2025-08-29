@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test"
+import { TestContainer } from "../../src/test-container.js"
+import { handleToolCall } from "../../src/tools/handlers.js"
 
 interface McpServer {
   callTool(
@@ -13,24 +15,42 @@ interface McpServer {
 
 describe("Private Key Management Integration Test", () => {
   let server: McpServer
+  let testContainer: TestContainer
 
-  // Test private keys (from Anvil's default accounts)
   const testPrivateKey1 = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
   const testPrivateKey2 = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
   const testAddress1 = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
   const testAddress2 = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
   const testMasterPassword = "secure-test-password-123"
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    testContainer = TestContainer.createForTest({})
+
     server = {
-      async callTool(name: string, _args: any) {
-        // Mock implementation that returns success responses
-        return {
-          isError: false,
-          content: [{ text: `Mock response for ${name}`, type: "text" }],
+      async callTool(name: string, args: any) {
+        try {
+          ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+          const result = await handleToolCall({
+            method: "tools/call",
+            params: {
+              name,
+              arguments: args,
+            },
+          })
+          return {
+            isError: false,
+            content: result.content || [],
+          }
+        } catch (error) {
+          return {
+            isError: true,
+            content: [],
+            error: error instanceof Error ? error.message : String(error),
+          }
         }
       },
-    } as McpServer
+    }
   })
 
   describe("1. Basic Private Key Management", () => {

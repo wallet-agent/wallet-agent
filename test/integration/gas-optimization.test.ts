@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test"
+import { TestContainer } from "../../src/test-container.js"
+import { handleToolCall } from "../../src/tools/handlers.js"
 
 interface McpServer {
   callTool(
@@ -13,22 +15,40 @@ interface McpServer {
 
 describe("Gas Optimization Integration Test", () => {
   let server: McpServer
+  let testContainer: TestContainer
 
-  // Test wallet details (Anvil default accounts)
   const testAddress1 = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
   const testAddress2 = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
   const testPrivateKey1 = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    testContainer = TestContainer.createForTest({})
+
     server = {
-      async callTool(name: string, _args: any) {
-        // Mock implementation that returns success responses
-        return {
-          isError: false,
-          content: [{ text: `Mock response for ${name}`, type: "text" }],
+      async callTool(name: string, args: any) {
+        try {
+          ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+          const result = await handleToolCall({
+            method: "tools/call",
+            params: {
+              name,
+              arguments: args,
+            },
+          })
+          return {
+            isError: false,
+            content: result.content || [],
+          }
+        } catch (error) {
+          return {
+            isError: true,
+            content: [],
+            error: error instanceof Error ? error.message : String(error),
+          }
         }
       },
-    } as McpServer
+    }
   })
 
   describe("1. Basic Gas Estimation", () => {

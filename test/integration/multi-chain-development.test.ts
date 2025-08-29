@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test"
+import { TestContainer } from "../../src/test-container.js"
+import { handleToolCall } from "../../src/tools/handlers.js"
 
 interface McpServer {
   callTool(
@@ -13,21 +15,39 @@ interface McpServer {
 
 describe("Multi-Chain Development Integration Test", () => {
   let server: McpServer
+  let testContainer: TestContainer
 
-  // Test wallet address (Anvil default account)
   const testAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
   const testPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    testContainer = TestContainer.createForTest({})
+
     server = {
-      async callTool(name: string, _args: any) {
-        // Mock implementation that returns success responses
-        return {
-          isError: false,
-          content: [{ text: `Mock response for ${name}`, type: "text" }],
+      async callTool(name: string, args: any) {
+        try {
+          ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+          const result = await handleToolCall({
+            method: "tools/call",
+            params: {
+              name,
+              arguments: args,
+            },
+          })
+          return {
+            isError: false,
+            content: result.content || [],
+          }
+        } catch (error) {
+          return {
+            isError: true,
+            content: [],
+            error: error instanceof Error ? error.message : String(error),
+          }
         }
       },
-    } as McpServer
+    }
   })
 
   describe("1. Built-in Chain Operations", () => {
@@ -38,13 +58,11 @@ describe("Multi-Chain Development Integration Test", () => {
       if (!chainInfoResult.isError) {
         const response = chainInfoResult.content[0].text
         expect(response).toMatch(/(current|chain|id)/i)
-        // Should include common chains
         expect(response).toMatch(/(ethereum|mainnet|polygon|arbitrum|base)/i)
       }
     })
 
     test("should switch between built-in chains", async () => {
-      // Switch to Ethereum mainnet
       const switchMainnetResult = await server.callTool("switch_chain", {
         chainId: 1,
       })
@@ -55,7 +73,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(switchMainnetResult.content[0].text).toMatch(/(switched|mainnet)/i)
       }
 
-      // Verify chain switch worked
       const chainInfoResult = await server.callTool("get_chain_info", {})
       expect(chainInfoResult.isError).toBe(false)
       if (!chainInfoResult.isError) {
@@ -64,7 +81,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(response).toMatch(/(current.*1|id.*1)/i)
       }
 
-      // Switch to Polygon
       const switchPolygonResult = await server.callTool("switch_chain", {
         chainId: 137,
       })
@@ -75,7 +91,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(switchPolygonResult.content[0].text).toMatch(/(switched|polygon)/i)
       }
 
-      // Switch to Anvil (local testing)
       const switchAnvilResult = await server.callTool("switch_chain", {
         chainId: 31337,
       })
@@ -119,7 +134,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(response).toContain("12345")
       }
 
-      // Verify the custom chain appears in chain info
       const chainInfoResult = await server.callTool("get_chain_info", {})
       expect(chainInfoResult.isError).toBe(false)
       if (!chainInfoResult.isError) {
@@ -130,7 +144,6 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should switch to custom chains", async () => {
-      // Add a custom chain first
       await server.callTool("add_custom_chain", {
         chainId: 54321,
         name: "Development Chain",
@@ -139,7 +152,6 @@ describe("Multi-Chain Development Integration Test", () => {
         blockExplorerUrl: "https://dev-explorer.example.com",
       })
 
-      // Switch to the custom chain
       const switchResult = await server.callTool("switch_chain", {
         chainId: 54321,
       })
@@ -150,7 +162,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(switchResult.content[0].text).toMatch(/(switched|dev)/i)
       }
 
-      // Verify current chain
       const chainInfoResult = await server.callTool("get_chain_info", {})
       expect(chainInfoResult.isError).toBe(false)
       if (!chainInfoResult.isError) {
@@ -161,7 +172,6 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should update custom chain configuration", async () => {
-      // Add a custom chain
       await server.callTool("add_custom_chain", {
         chainId: 11111,
         name: "Original Chain",
@@ -170,7 +180,6 @@ describe("Multi-Chain Development Integration Test", () => {
         blockExplorerUrl: "https://original-explorer.com",
       })
 
-      // Update the chain configuration
       const updateResult = await server.callTool("update_custom_chain", {
         chainId: 11111,
         name: "Updated Chain",
@@ -186,7 +195,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(response).toContain("Updated Chain")
       }
 
-      // Verify the update
       const chainInfoResult = await server.callTool("get_chain_info", {})
       expect(chainInfoResult.isError).toBe(false)
       if (!chainInfoResult.isError) {
@@ -198,7 +206,6 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should remove custom chains", async () => {
-      // Add a custom chain
       await server.callTool("add_custom_chain", {
         chainId: 22222,
         name: "Temporary Chain",
@@ -207,14 +214,12 @@ describe("Multi-Chain Development Integration Test", () => {
         blockExplorerUrl: "https://temp-explorer.com",
       })
 
-      // Verify it exists
       const chainInfoBefore = await server.callTool("get_chain_info", {})
       expect(chainInfoBefore.isError).toBe(false)
       if (!chainInfoBefore.isError) {
         expect(chainInfoBefore.content[0].text).toContain("Temporary Chain")
       }
 
-      // Remove the custom chain
       const removeResult = await server.callTool("remove_custom_chain", {
         chainId: 22222,
       })
@@ -226,7 +231,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(response).toContain("22222")
       }
 
-      // Verify it's no longer available
       const chainInfoAfter = await server.callTool("get_chain_info", {})
       expect(chainInfoAfter.isError).toBe(false)
       if (!chainInfoAfter.isError) {
@@ -235,7 +239,6 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should handle duplicate chain IDs", async () => {
-      // Add a custom chain
       await server.callTool("add_custom_chain", {
         chainId: 33333,
         name: "First Chain",
@@ -244,7 +247,6 @@ describe("Multi-Chain Development Integration Test", () => {
         blockExplorerUrl: "https://first-explorer.com",
       })
 
-      // Try to add another chain with the same ID
       const duplicateResult = await server.callTool("add_custom_chain", {
         chainId: 33333,
         name: "Second Chain",
@@ -260,7 +262,6 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should prevent removal of built-in chains", async () => {
-      // Try to remove Ethereum mainnet (built-in chain)
       const removeResult = await server.callTool("remove_custom_chain", {
         chainId: 1,
       })
@@ -274,7 +275,6 @@ describe("Multi-Chain Development Integration Test", () => {
 
   describe("3. Cross-Chain Balance Checking", () => {
     beforeEach(async () => {
-      // Connect wallet for balance operations
       await server.callTool("connect_wallet", {
         address: testAddress,
       })
@@ -289,13 +289,11 @@ describe("Multi-Chain Development Integration Test", () => {
       ]
 
       for (const chain of chains) {
-        // Switch to the chain
         const switchResult = await server.callTool("switch_chain", {
           chainId: chain.id,
         })
         expect(switchResult.isError).toBe(false)
 
-        // Check balance on this chain
         const balanceResult = await server.callTool("get_balance", {})
         expect(balanceResult.isError).toBe(false)
 
@@ -309,10 +307,8 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should handle balance queries for specific addresses on different chains", async () => {
-      // Switch to Ethereum
       await server.callTool("switch_chain", { chainId: 1 })
 
-      // Check balance of a specific address (Vitalik's address)
       const ethBalanceResult = await server.callTool("get_balance", {
         address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
       })
@@ -321,10 +317,8 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(ethBalanceResult.content[0].text).toMatch(/\d+(\.\d+)?\s*ETH/i)
       }
 
-      // Switch to Polygon
       await server.callTool("switch_chain", { chainId: 137 })
 
-      // Check same address balance on Polygon
       const maticBalanceResult = await server.callTool("get_balance", {
         address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
       })
@@ -337,7 +331,6 @@ describe("Multi-Chain Development Integration Test", () => {
 
   describe("4. Cross-Chain Transaction Operations", () => {
     beforeEach(async () => {
-      // Import private key and connect for transactions
       await server.callTool("import_private_key", {
         privateKey: testPrivateKey,
       })
@@ -355,10 +348,8 @@ describe("Multi-Chain Development Integration Test", () => {
       const chains = [31337, 1, 137, 42161] // Anvil, Ethereum, Polygon, Arbitrum
 
       for (const chainId of chains) {
-        // Switch to the chain
         await server.callTool("switch_chain", { chainId })
 
-        // Estimate gas for a simple ETH transfer
         const gasResult = await server.callTool("estimate_gas", {
           to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
           value: "0.01",
@@ -380,7 +371,6 @@ describe("Multi-Chain Development Integration Test", () => {
       ]
 
       for (const testCase of testCases) {
-        // Switch to the chain
         const switchResult = await server.callTool("switch_chain", {
           chainId: testCase.chainId,
         })
@@ -390,7 +380,6 @@ describe("Multi-Chain Development Integration Test", () => {
           expect(switchResult.content[0].text).toContain(testCase.name)
         }
 
-        // Check that balance shows correct currency symbol
         const balanceResult = await server.callTool("get_balance", {})
         expect(balanceResult.isError).toBe(false)
         if (!balanceResult.isError) {
@@ -407,7 +396,6 @@ describe("Multi-Chain Development Integration Test", () => {
 
   describe("5. Multi-Chain Contract Operations", () => {
     test("should handle contract interactions across chains", async () => {
-      // Connect wallet first
       await server.callTool("connect_wallet", {
         address: testAddress,
       })
@@ -416,10 +404,8 @@ describe("Multi-Chain Development Integration Test", () => {
       const chains = [31337, 1, 137] // Anvil, Ethereum, Polygon
 
       for (const chainId of chains) {
-        // Switch to the chain
         await server.callTool("switch_chain", { chainId })
 
-        // Get current chain info to verify switch
         const chainInfo = await server.callTool("get_chain_info", {})
         expect(chainInfo.isError).toBe(false)
         if (!chainInfo.isError) {
@@ -431,10 +417,8 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should validate chain-specific contract addresses", async () => {
-      // Switch to Ethereum mainnet
       await server.callTool("switch_chain", { chainId: 1 })
 
-      // Try to interact with a contract (this will likely fail without proper setup, but should validate chain)
       const chainInfo = await server.callTool("get_chain_info", {})
       expect(chainInfo.isError).toBe(false)
       if (!chainInfo.isError) {
@@ -445,7 +429,6 @@ describe("Multi-Chain Development Integration Test", () => {
 
   describe("6. Error Handling and Edge Cases", () => {
     test("should handle network connectivity issues", async () => {
-      // Add a custom chain with an unreachable RPC
       const unreachableChainResult = await server.callTool("add_custom_chain", {
         chainId: 99999,
         name: "Unreachable Chain",
@@ -456,19 +439,16 @@ describe("Multi-Chain Development Integration Test", () => {
 
       expect(unreachableChainResult.isError).toBe(false) // Adding should succeed
 
-      // Try to switch to it (this may timeout or fail gracefully)
       const switchResult = await server.callTool("switch_chain", {
         chainId: 99999,
       })
 
-      // Should either succeed (if network call is lazy) or fail gracefully
       if (switchResult.isError) {
         expect(switchResult.content).toMatch(/(network|connection|rpc|timeout)/i)
       }
     })
 
     test("should validate custom chain parameters", async () => {
-      // Test invalid chain ID (negative)
       const invalidChainId = await server.callTool("add_custom_chain", {
         chainId: -1,
         name: "Invalid Chain",
@@ -482,7 +462,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(invalidChainId.content).toMatch(/(invalid|chain id|negative)/i)
       }
 
-      // Test invalid RPC URL
       const invalidRpc = await server.callTool("add_custom_chain", {
         chainId: 55555,
         name: "Invalid RPC Chain",
@@ -498,7 +477,6 @@ describe("Multi-Chain Development Integration Test", () => {
     })
 
     test("should handle operations on non-existent custom chains", async () => {
-      // Try to update a chain that doesn't exist
       const updateResult = await server.callTool("update_custom_chain", {
         chainId: 77777,
         name: "Nonexistent Chain",
@@ -512,7 +490,6 @@ describe("Multi-Chain Development Integration Test", () => {
         expect(updateResult.content).toMatch(/(not found|doesn't exist|unknown)/i)
       }
 
-      // Try to remove a chain that doesn't exist
       const removeResult = await server.callTool("remove_custom_chain", {
         chainId: 88888,
       })
@@ -612,7 +589,6 @@ describe("Multi-Chain Development Integration Test", () => {
         chainId: 12345,
       })
 
-      // Verify final state
       const finalChainInfo = await server.callTool("get_chain_info", {})
       expect(finalChainInfo.isError).toBe(false)
       if (!finalChainInfo.isError) {

@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test"
+import { TestContainer } from "../../src/test-container.js"
+import { handleToolCall } from "../../src/tools/handlers.js"
 
 interface McpServer {
   callTool(
@@ -13,17 +15,36 @@ interface McpServer {
 
 describe("ENS Integration Test", () => {
   let server: McpServer
+  let testContainer: TestContainer
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    testContainer = TestContainer.createForTest({})
+
     server = {
-      async callTool(name: string, _args: any) {
-        // Mock implementation that returns success responses
-        return {
-          isError: false,
-          content: [{ text: `Mock response for ${name}`, type: "text" }],
+      async callTool(name: string, args: any) {
+        try {
+          ;(globalThis as any).__walletAgentTestContainer = testContainer
+
+          const result = await handleToolCall({
+            method: "tools/call",
+            params: {
+              name,
+              arguments: args,
+            },
+          })
+          return {
+            isError: false,
+            content: result.content || [],
+          }
+        } catch (error) {
+          return {
+            isError: true,
+            content: [],
+            error: error instanceof Error ? error.message : String(error),
+          }
         }
       },
-    } as McpServer
+    }
   })
 
   describe("ENS Name Resolution", () => {

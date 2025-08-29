@@ -263,9 +263,8 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       console.log("✓ Recipient received tokens:", recipientBalance)
     })
 
-    it.skip("should read from ERC721 NFT contract", async () => {
-      // Skip: NFT contract doesn't have mint function, so no tokens exist
-      // Get NFT owner
+    it("should read from ERC721 NFT contract", async () => {
+      // Get NFT owner (token #1 is minted to deployer in constructor)
       const ownerResult = await expectToolSuccess("read_contract", {
         contract: deployedContracts.erc721,
         function: "ownerOf",
@@ -290,8 +289,8 @@ describe.skipIf(!useRealAnvil)("Contract Tools E2E Tests with Real Deployment", 
       console.log("✓ NFT collection name:", nftName)
     })
 
-    it.skip("should write to ERC721 NFT contract", async () => {
-      // Skip: NFT contract doesn't have mint function, so no tokens exist
+    it("should write to ERC721 NFT contract", async () => {
+      // Approve spender for token #1 (token exists from constructor)
       const spender = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       const tokenId = "1"
 
