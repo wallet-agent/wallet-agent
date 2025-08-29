@@ -24,6 +24,13 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
   const testAddress2 = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
   const testAddress3 = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
 
+  // Helper function to set up wallet for signing
+  async function setupWalletForSigning(privateKey: string, address: string) {
+    await server.callTool("import_private_key", { privateKey })
+    await server.callTool("set_wallet_type", { type: "privateKey" })
+    await server.callTool("connect_wallet", { address })
+  }
+
   beforeEach(async () => {
     testContainer = TestContainer.createForTest({})
 
@@ -58,9 +65,7 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
 
   describe("Complex Message Signing Patterns", () => {
     test("should sign long complex messages", async () => {
-      await server.callTool("import_private_key", {
-        privateKey: testPrivateKey1,
-      })
+      await setupWalletForSigning(testPrivateKey1, testAddress1)
 
       const complexMessage = `
         This is a very long and complex message that includes:
@@ -80,16 +85,18 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
 
       expect(result.isError).toBe(false)
       if (!result.isError) {
-        const signature = result.content[0].text
-        expect(signature).toMatch(/^0x[a-fA-F0-9]{130}$/)
-        console.log("✓ Complex message signed successfully:", `${signature.substring(0, 20)}...`)
+        const responseText = result.content[0].text
+        const signatureMatch = responseText.match(/0x[a-fA-F0-9]{130}/)
+        expect(signatureMatch).toBeTruthy()
+        if (signatureMatch) {
+          expect(signatureMatch[0]).toMatch(/^0x[a-fA-F0-9]{130}$/)
+        }
+        console.log("✓ Complex message signed successfully:", `${signatureMatch?.[0]?.substring(0, 20)}...`)
       }
     })
 
     test("should sign binary-like messages", async () => {
-      await server.callTool("import_private_key", {
-        privateKey: testPrivateKey1,
-      })
+      await setupWalletForSigning(testPrivateKey1, testAddress1)
 
       const binaryMessage = `0x${"deadbeef".repeat(32)}`
 
@@ -99,16 +106,18 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
 
       expect(result.isError).toBe(false)
       if (!result.isError) {
-        const signature = result.content[0].text
-        expect(signature).toMatch(/^0x[a-fA-F0-9]{130}$/)
+        const responseText = result.content[0].text
+        const signatureMatch = responseText.match(/0x[a-fA-F0-9]{130}/)
+        expect(signatureMatch).toBeTruthy()
+        if (signatureMatch) {
+          expect(signatureMatch[0]).toMatch(/^0x[a-fA-F0-9]{130}$/)
+        }
         console.log("✓ Binary-like message signed successfully")
       }
     })
 
     test("should generate different signatures for similar messages", async () => {
-      await server.callTool("import_private_key", {
-        privateKey: testPrivateKey1,
-      })
+      await setupWalletForSigning(testPrivateKey1, testAddress1)
 
       const messages = [
         "Hello World",
@@ -126,7 +135,12 @@ describe("Advanced Signing and Multi-Signature Integration Test", () => {
 
         expect(result.isError).toBe(false)
         if (!result.isError) {
-          signatures.push(result.content[0].text)
+          const responseText = result.content[0].text
+          const signatureMatch = responseText.match(/0x[a-fA-F0-9]{130}/)
+          expect(signatureMatch).toBeTruthy()
+          if (signatureMatch) {
+            signatures.push(signatureMatch[0])
+          }
         }
       }
 
