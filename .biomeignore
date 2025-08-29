@@ -1,2 +1,0 @@
-# Temporarily ignore test files with acceptable any usage
-test/**/*.test.ts
