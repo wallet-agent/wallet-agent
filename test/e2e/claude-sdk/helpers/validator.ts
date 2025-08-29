@@ -261,10 +261,8 @@ export function validateWorkflow(results: TestResult[], expectedFlow: string[]) 
 export function validateResponseStructure(result: TestResult) {
   expect(result).toHaveProperty("success")
   expect(result).toHaveProperty("toolsUsed")
-  expect(result).toHaveProperty("messages")
   expect(result).toHaveProperty("finalResult")
 
   expect(Array.isArray(result.toolsUsed)).toBe(true)
-  // messages property not part of TestResult interface
   expect(typeof result.finalResult).toBe("string")
 }
