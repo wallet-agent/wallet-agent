@@ -141,7 +141,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.1",
-    "@nktkas/hyperliquid": "^0.24.0",
+    "@nktkas/hyperliquid": "^0.25.4",
     "@wagmi/connectors": "^5.9.1",
     "@wagmi/core": "^2.18.1",
     "pino": "^9.9.0",
