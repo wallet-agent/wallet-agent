@@ -129,7 +129,7 @@
   },
   "simple-git-hooks-comment": "These hooks are for standalone wallet-agent repo. In monorepo context, root hooks take precedence.",
   "devDependencies": {
-    "@anthropic-ai/claude-code": "^1.0.96",
+    "@anthropic-ai/claude-code": "^2.0.22",
     "@biomejs/biome": "2.1.4",
     "@types/bun": "latest",
     "cross-env": "^10.0.0",
