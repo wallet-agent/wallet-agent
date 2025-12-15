@@ -62,7 +62,7 @@ jobs:
         tar -czf wallet-agent-${{ github.ref_name }}.tar.gz dist/ package.json README.md LICENSE
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: build-artifact
         path: wallet-agent-${{ github.ref_name }}.tar.gz
